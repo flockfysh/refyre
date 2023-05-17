@@ -1,0 +1,70 @@
+'''
+Sample input file 
+
+In this case, we want refyre to parse the following directory structure 
+
+train/
+    images/
+        image_cat_0.jpg
+        image_cat_1.jpg
+        image_cat_2.jpg
+        image_dog_0.jpg
+        image_dog_1.jpg
+        ...
+    labels/
+        image_cat_0.txt
+        image_cat_1.txt
+        image_cat_2.txt
+        image_dog_0.txt
+        image_dog_1.txt
+        ...
+
+valid/
+    images/
+        image_cat_0.jpg
+        image_cat_1.jpg
+        image_cat_2.jpg
+        ...
+    labels/
+        image_cat_0.txt
+        image_cat_1.txt
+        image_cat_2.txt
+        ...
+
+test/
+    images/
+        image_cat_0.jpg
+        image_cat_1.jpg
+        image_cat_2.jpg
+        ...
+    labels/
+        image_cat_0.txt
+        image_cat_1.txt
+        image_cat_2.txt
+        ...
+'''
+
+
+[dir="person/Desktop/train"|name=""|pattern=""]
+    [dir="images/"|name=""|pattern=""]
+        [dir=""|name="cat_images"|pattern="image_cat_*"]
+        [dir=""|name="dog_images"|pattern="image_dog_*"]
+    [dir="labels/"|name=""|pattern=""]
+        [dir=""|name="cat_labels"|pattern="image_cat_*"]
+        [dir=""|name="dog_labels"|pattern="image_dog_*"]
+
+[dir="person/Desktop/valid"|name=""|pattern=""]
+    [dir="images/"|name=""|pattern=""]
+        [dir=""|name="+cat_images"|pattern="image_cat_*"]
+        [dir=""|name="+dog_images"|pattern="image_dog_*"]
+    [dir="labels/"|name=""|pattern=""]
+        [dir=""|name="+cat_labels"|pattern="image_cat_*"]
+        [dir=""|name="+dog_labels"|pattern="image_dog_*"]
+
+[dir="person/Desktop/test"|name=""|pattern=""]
+    [dir="images/"|name=""|pattern=""]
+        [dir=""|name="+cat_images"|pattern="image_cat_*"]
+        [dir=""|name="+dog_images"|pattern="image_dog_*"]
+    [dir="labels/"|name=""|pattern=""]
+        [dir=""|name="+cat_labels"|pattern="image_cat_*"]
+        [dir=""|name="+dog_labels"|pattern="image_dog_*"]

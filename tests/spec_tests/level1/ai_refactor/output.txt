@@ -1,0 +1,64 @@
+'''
+Sample output file 
+
+In this case, we want refyre to parse the following directory structure 
+
+train/
+    cat/
+        images/
+            image_cat_0.jpg
+            image_cat_1.jpg
+            ...
+        labels/
+            image_cat_0.txt
+            image_cat_1.txt
+            ...
+    dog/
+        images/
+            image_dog_0.jpg
+            image_dog_1.jpg
+            ...
+        labels/
+            image_dog_0.txt
+            image_dog_1.txt
+            ...
+
+
+test/
+    cat/
+        images/
+            image_cat_0.jpg
+            image_cat_1.jpg
+            ...
+        labels/
+            image_cat_0.txt
+            image_cat_1.txt
+            ...
+    dog/
+        images/
+            image_dog_0.jpg
+            image_dog_1.jpg
+            ...
+        labels/
+            image_dog_0.txt
+            image_dog_1.txt
+            ...
+
+'''
+
+
+[dir="person/Desktop/train"|name=""|pattern=""]
+    [dir="cat"|name=""|pattern=""]
+        [dir="images"|name="cat_images"|pattern=""]
+        [dir="labels"|name="cat_labels"|pattern=""]
+    [dir="dog"|name=""|pattern=""]
+        [dir="images"|name="dog_images"|pattern=""]
+        [dir="labels"|name="dog_labels"|pattern=""]
+        
+[dir="person/Desktop/test"|name=""|pattern=""]
+    [dir="cat"|name=""|pattern=""]
+        [dir="images"|name="cat_images"|pattern=""]
+        [dir="labels"|name="cat_labels"|pattern=""]
+    [dir="dog"|name=""|pattern=""]
+        [dir="images"|name="dog_images"|pattern=""]
+        [dir="labels"|name="dog_labels"|pattern=""]

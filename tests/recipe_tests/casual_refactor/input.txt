@@ -1,0 +1,19 @@
+'''
+Sample input file 
+
+In this case, we just want a casual refactor of a couple things
+
+This is the input spec, with the directories looking like this:
+
+a/
+    b/
+    c/
+    d/
+
+'''
+
+
+[dir="person/Desktop/a"|name="a"|pattern=""]
+    [dir="b/"|name="b"|pattern="b"]
+    [dir="c/"|name="c"|pattern="c"]
+    [dir="d/"|name="d"|pattern="d"]

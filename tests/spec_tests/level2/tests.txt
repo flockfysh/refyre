@@ -1,0 +1,6 @@
+Level 2 tests focus on the capabilities of refyre targeted towards data science and easy data analysis 
+
+They focus on parsing the input data, and then using the variables to test:
+1 - DataStack + Pandas
+2 - DataStack + Matplotlib
+3 - Custom DataStack data ops

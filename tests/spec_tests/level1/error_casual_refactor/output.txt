@@ -1,0 +1,19 @@
+'''
+Sample input file 
+
+In this case, we just want a casual refactor of a couple things
+
+This is the input spec, with the directories looking like this:
+
+a/
+b/
+c/
+d/
+'''
+
+
+[dir=""|name="e"|pattern="a"] #Spec failure - no variable has the name 'e'
+[dir=""|name="b"|pattern="b"]
+[dir=""|name="c"|pattern="c"]
+[dir=""|name="d"|pattern="d"] #Spec failure - no base dir specified
+

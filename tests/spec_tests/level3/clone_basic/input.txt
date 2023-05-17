@@ -1,0 +1,9 @@
+'''
+Sample input file 
+
+In this case, we're testing whether a basic clone would work
+
+'''
+
+
+[dir="person/Desktop/yolov5"|name=""|pattern=""|type="link:https://github.com/ultralytics/yolov5/blob/master/requirements.txt"]

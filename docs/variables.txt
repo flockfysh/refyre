@@ -1,0 +1,17 @@
+Variables are by far the most important part of the refyre 
+file graph / concept. Therefore, we're going to devote an entire page to their
+conception, creation, and basic feature set to be accomplished.
+
+
+Basic Featureset:
+
+MODIFICATIONS: A variable can be a means through which users can make broad scale file modifications.
+For our basic set, we'll support the following operations:
+
+    - Cut / Moving files 
+    - Copy / Duplicating files
+    - Zipping / Packaging files
+
+TRANSPORT:
+
+    - GET / POSTing basic files
