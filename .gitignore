@@ -4,3 +4,6 @@ false/
 .env
 test.py
 inp.txt
+.DS_Store
+oup.txt
+inp.txt
