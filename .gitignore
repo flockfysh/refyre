@@ -2,3 +2,5 @@
 false/
 .pytest_cache
 .env
+test.py
+inp.txt

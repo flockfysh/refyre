@@ -34,9 +34,11 @@ class Parser:
                 top = pop(stack)
 
                 #Grab all the nodes with the same level
-                cur.append(top[0])
                 while stack[-1][1] == top[1]:
                     cur.append(pop(stack)[0]) 
+
+                #Append top last to preserve ordering - THIS IS CRUCIAL TO PRESERVE USER INTENT
+                cur.append(top[0])
                 
                 #Now, we know that the next node, whatever it is, must have a lower level
                 stack[-1][0].add_children(cur)
@@ -44,18 +46,21 @@ class Parser:
                 #Clear the list
                 cur.clear()
 
-            push(stack, (FileGraphNode(children = list([]), pattern = tok.pattern, directory = tok.directory, type = tok.dirtype, name = tok.name, is_root = Path(tok.directory).exists()) , tok.tab_level))
+            push(stack, (FileGraphNode(children = list([]), pattern = tok.pattern, directory = tok.directory, type = tok.dirtype, name = tok.name, is_root = Path(tok.directory).exists(), flags = tok.flags) , tok.tab_level))
 
         #Compress the remainder of the stack
         while len(stack) > 1: 
 
             top = pop(stack)
-            cur = [top[0]]
+            cur = []
 
             while top[1] == stack[-1][1]:
                 #Grab all the nodes with the same level
                 cur.append(pop(stack)[0]) 
-                
+            
+            #Append top last to preserve ordering - THIS IS CRUCIAL TO PRESERVE USER INTENT
+            cur.append(top[0])
+
             #Now, we know that the next node, whatever it is, must have a lower level
             stack[-1][0].add_children(cur)
 

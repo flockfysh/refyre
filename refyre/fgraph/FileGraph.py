@@ -13,7 +13,7 @@ class FileGraph:
         #Make a virtual node stringing together all the graphs 
 
         #DO NOT DELETE THE children []. This led me on a 2 hour goose chase; i.e. object memory gets repeatedly screwed up, causing it to conflate values with another node. Don't delete it. DONT!!!
-        self.fgraph_root = FileGraphNode(is_root = False, children = [])     
+        self.fgraph_root = FileGraphNode(is_root = True, children = [])     
 
 
     def add_graph(self, graph):
