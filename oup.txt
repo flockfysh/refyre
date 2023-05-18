@@ -1,5 +1,0 @@
-[dir="atest"|flags="*da"]
-    [dir="a"|name="var1"|pattern="\d"]
-    [dir="b"]
-    [dir="d"]
-    [dir="e"|name="var2"|pattern="a.txt"]
