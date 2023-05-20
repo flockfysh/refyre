@@ -1,5 +1,5 @@
 [dir="atest"|flags="*da"]
-    [dir="a"|name="var1"|pattern="\d"]
-    [dir="b"]
+    [dir="a"|name="var1[0:1:1]"|pattern="\d"|serialize="$cat$.txt"]
+    [dir="b"|name="var1[1:2:1]"]
     [dir="d"]
     [dir="e"|name="var2"|pattern="a.txt"]

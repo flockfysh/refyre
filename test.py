@@ -4,4 +4,4 @@ from refyre import Refyre
 ref = Refyre()
 ref.add_spec('inp.txt')
 
-zipped = ref["var1"].zip()
+ref.create_spec('oup.txt')

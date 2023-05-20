@@ -5,16 +5,17 @@ class Token:
     '''
         A single Lexer token
     '''
-    def __init__(self, tab_level, pattern = "", dir = "",  type = "", name = "", flags = ""):
+    def __init__(self, tab_level, pattern = "", dir = "",  type = "", name = "", flags = "", serialize=""):
         self.tab_level = tab_level
         self.pattern = pattern
         self.directory = dir
         self.dirtype = type
         self.name = name
         self.flags = flags
+        self.serialize = serialize
 
     def __repr__(self):
-        return f"Token(tab_level={self.tab_level},pattern={self.pattern},directory={self.directory},dirtype={self.dirtype},name={self.name},flags={self.flags})"
+        return f"Token(tab_level={self.tab_level},pattern={self.pattern},directory={self.directory},dirtype={self.dirtype},name={self.name},flags={self.flags},serialize={self.serialize})"
 
 class Lexer:
     '''
@@ -56,22 +57,32 @@ class Lexer:
         '''
 
         #Extract all data inside the pattern
-        inside_bracket_pattern = r'\[(.*?)\]'
+        #inside_bracket_pattern = r'\[(.*?)\]'
+        #inside_bracket_pattern = r'\[(.*?(?=\[(?!.*?\])).*?)\]'
+        #inside_bracket_pattern = r'\[(?:[^\[\]]+|(?R))*\]'
+        inside_bracket_pattern = r'\[([^[\]]*(?:\[[^[\]]*\])*[^[\]]*)\]'
 
-        matches = re.findall(inside_bracket_pattern, line)
 
+    
+        print(line)
+        matches = re.search(inside_bracket_pattern, line).group(1)
+
+        print(matches)
         #Rule: Only one cluster per line
-        if len(matches) > 1:
-            raise Exception("You can only specify one cluster per line!")
+        #if len(matches) > 1:
+            #raise Exception("You can only specify one cluster per line!")
 
-        match = matches[0].split('|')
+        match = matches.split('|')
         dict_of_args = {}
+
+        print(match)
 
         #Extract the key and value of each item, while accounting for potential spaces
         extraction_pattern = r'\s*([^=\s]+)\s*=\s*"(.*?)"\s*'
         for arg in match:
 
             matches = re.match(extraction_pattern, arg)
+
 
             key = matches.group(1)
             val = matches.group(2)

@@ -1,6 +1,5 @@
 from refyre.fgraph import FileGraph
-from refyre.reader import Lexer
-from refyre.reader import Parser
+from refyre.reader import Lexer, Parser, create_lambda_generator_function, extract_key_elements, get_slice
 from refyre.fcluster import FileCluster
 
 #pathlib
@@ -40,7 +39,7 @@ class Refyre:
             The refyre variables ("FileClusters") can be
             internally referred to through the Refyre object
         '''
-        return self.variables[key]
+        return self.variables[key] if key in self.variables else None
     
 
     #The Five Fundamental Operations of Refyre
@@ -174,16 +173,30 @@ class Refyre:
         path.mkdir(parents = True, exist_ok = True)        
 
         if node.name != "":
+            
+            #Extract the key information
+            name, start, stop, step = extract_key_elements(node.name)
+
+            #Grab the desired slice
+            desired_slice = get_slice(self.variables[name], start, stop, step)
+
+            #Grab the actual data
+            sliced = self.variables[name][desired_slice]
+
 
             if mode == "copy":
-                print('copying ', node.name, 'to', path, self.variables[node.name])
-                self.variables[node.name] = self.variables[node.name].copy(path)
-                print('post copying ', node.name, 'to', path, self.variables[node.name])
+                print('copying ', name, 'to', path, sliced)
+                sliced = sliced.copy(path)
+                print('post copying ', name, 'to', path, sliced)
             
             elif mode == "cut":
-                print('cut', node.name, 'to', path, self.variables[node.name])
-                self.variables[node.name] = self.variables[node.name].move(path)
-                print('post cut', node.name, 'to', path, self.variables[node.name])
+                print('cut', name, 'to', path, sliced)
+                sliced = sliced.move(path)
+                print('post cut', name, 'to', path, sliced)
+            
+            #The refresher method will eliminate the invalid paths, so let's add back in the new paths
+            self.variables[name] += sliced
+
         
             
     def __post_generate(self, node, path = "", mode = "copy", flags = ""):
@@ -212,8 +225,25 @@ class Refyre:
 
             var_pths = []
             if node.name != '':
+                #Extract the key information - handling slicing
+                name, start, stop, step = extract_key_elements(node.name)
+
+                #Grab the desired slice
+                desired_slice = get_slice(self.variables[name], start, stop, step)
+
+                #Grab the actual data
+                sliced = self.variables[name][desired_slice]
+
+                #If we need to serialize the node, we do it first
+                if node.serialize != '':
+                    print()
+                    sliced = sliced.rename(create_lambda_generator_function(node.serialize))
+                    self.variables[name] += sliced
+
                 #Next we grab all the values from our variables that are a part of the dir
-                p = self.variables[node.name].filter(lambda x : new_path in x.parents)
+                p = sliced.filter(lambda x : new_path in x.parents)
+
+
                 print(p)
                 var_pths = p.vals()
 

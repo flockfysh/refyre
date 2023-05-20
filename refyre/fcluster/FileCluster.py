@@ -11,6 +11,9 @@ import zipfile
 #GET/POST requests
 import requests
 
+#Iteration
+from .FileClusterIterator import FileClusterIterator
+
 def refresh(input_arr):
     '''
     A simple refresher method. This will handle variable conflicts.
@@ -19,7 +22,7 @@ def refresh(input_arr):
 
     Particularly useful for variables with overlapping data
     '''
-    return [ v for v in input_arr if v.exists() ]
+    return [ v for v in set(input_arr) if v.exists() ]
         
 def with_refresh(func):
     def refreshed(self, *args, **kwargs):
@@ -65,6 +68,44 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = new_values, as_pathlib = True)
     
+    @with_refresh
+    def __and__(self, other):
+        '''
+            other - another FileCluster
+
+            Returns the intersection between the two FileClusters
+        '''
+
+        return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).intersection(other.values)))
+    
+    @with_refresh
+    def __or__(self, other):
+        '''
+            other - another FileCluster
+
+            Returns the union between two FileClusters
+        '''
+
+        return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).union(other.values)))
+    
+    @with_refresh
+    def __sub__(self, other):
+        '''
+            other - another FileCluster
+
+            Returns all the files that are exclusively in self
+        '''
+
+        return FileCluster(input_paths = [], input_patterns = [], values = [v for v in self.values if v not in other.values])
+
+    @with_refresh
+    def __eq__(self, other):
+        return set(self.values) == set(other.values)
+    
+    @with_refresh
+    def contains(self, other):
+        return self & other == other
+
     def __populate(self, input_paths, input_patterns):
         '''
         Populates a variable, using the input paths and directories 
@@ -97,6 +138,22 @@ class FileCluster:
     @with_refresh
     def __repr__(self):
         return f"FileCluster(values = {self.values})"
+
+    @with_refresh
+    def __len__(self):
+        return len(self.values)
+
+    @with_refresh
+    def __iter__(self):
+        return 
+    
+    @with_refresh
+    def __getitem__(self, key):
+        print(key)
+        if isinstance(key, slice):
+            return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key.start:key.stop:key.step])
+        elif isinstance(key, int):
+            return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key])
 
     @with_refresh
     def map(self, map_func):
@@ -208,6 +265,18 @@ class FileCluster:
                 fl.unlink()
 
         return FileCluster(input_patterns = [], input_paths = [], values = [])
+
+    @with_refresh
+    def rename(self, rename_function):
+        '''
+            rename_function: a function that takes an integer as an input 
+        '''
+        nvals = []
+        for i, v in enumerate(self.values):
+            print('renaming', v,v.parent / rename_function(i) )
+            nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
+
+        return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
     @with_refresh
     def zip(self, save_dir = '.', save_name = "out.zip"):
