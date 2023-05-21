@@ -1,10 +1,9 @@
+from refyre.utils import optional_dependencies 
 
-#Pandas support
-import pandas as pd
-
-#NumPy support
-import numpy as np
-
+with optional_dependencies("warn"):
+    import numpy as np 
+    import pandas as pd
+    import matplotlib.pyplot as plt
 
 class PandasStack:
 

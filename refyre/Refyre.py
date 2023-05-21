@@ -1,6 +1,7 @@
 from refyre.fgraph import FileGraph
-from refyre.reader import Lexer, Parser, create_lambda_generator_function, extract_key_elements, get_slice
+from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser
 from refyre.fcluster import FileCluster
+from refyre.utils import is_valid_regex
 
 #pathlib
 from pathlib import Path
@@ -48,7 +49,68 @@ class Refyre:
             Construct Operation:
                 - Receives an input spec, and creates an fgraph
         '''
-        return Parser.parse(Lexer.lex(input_path))
+        return self.__expand(Parser.parse(Lexer.lex(input_path)))[0]
+    
+
+
+    def __expand(self, node, path = ""):
+        '''
+            Expands all regex directories into a static fgraph.
+
+            This method enables a single cluster to target multiple directories
+        '''
+
+        new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
+        print('new path: ', new_path, node.directory, node.pattern)
+        
+        if not new_path.exists() and not is_valid_regex(node.directory):
+            print('invalid in general')
+            return [None]
+
+        if not new_path.exists() and is_valid_regex(node.directory):
+            print('valid regex')
+
+            #Create nodes for each of the pattern matches
+            ret = []
+            for fl in new_path.parent.iterdir():
+
+                print('file', fl)
+                if re.search(r'{}'.format(node.directory), fl.as_posix()) and fl not in ret:
+
+                    #Make a copy of the original node, the only thing we gotta swap out is the directory
+                    pattern_matched_node = node.copy()
+                    assert pattern_matched_node.pattern == node.pattern
+
+                    assert type(fl.name) == str
+                    #Update the directory with the name 
+                    pattern_matched_node.directory = fl.name 
+                    print('found match', fl.name)
+
+                    ret.append(pattern_matched_node)                 
+
+            #Now, attempt to check for all the node children of the original node
+            #We will insert each of the current node's children into the new matched nodes, and recurse on them
+
+            for pattern_node in ret:
+                nchilds = []
+
+                for child in node.children:
+                    new_path = Path(pattern_node.directory) if pattern_node.is_root_dir() else Path(path) / pattern_node.directory 
+
+                    nchilds.extend(self.__expand(child, new_path))
+
+                pattern_node.children = [c for c in nchilds if c is not None]
+            
+            return ret
+
+        else:
+            print('in else')
+            nchild = []
+            for child in node.children:
+                nchild.extend(self.__expand(child, new_path))
+            
+            node.children = [c for c in nchild if c is not None]
+            return [node]
 
     def __verify(self, node, path = ""):
         '''
@@ -153,8 +215,13 @@ class Refyre:
             if operator == "" or (operator == "+" and name not in self.variables):
                 self.variables[name] = FileCluster(input_paths = [path], input_patterns = [node.pattern])
 
+                print('\nactivation init', operator, node.pattern, path, 'var name', name)
+                print('result: ', self.variables[name])
+
             elif operator == "+":
                 self.variables[name] += FileCluster(input_paths = [path], input_patterns = [node.pattern])
+                print('\nactivation append', operator, node.pattern, path, 'var name', name)
+                print('result: ', self.variables[name])
 
     def __create_output(self, node, path, mode):
         '''
@@ -175,10 +242,11 @@ class Refyre:
         if node.name != "":
             
             #Extract the key information
-            name, start, stop, step = extract_key_elements(node.name)
+            name, start, stop, step = VariableParser.extract_variable_data(node.name)
 
+            print(name, self.variables)
             #Grab the desired slice
-            desired_slice = get_slice(self.variables[name], start, stop, step)
+            desired_slice = VariableParser.get_slice(self.variables[name], start, stop, step)
 
             #Grab the actual data
             sliced = self.variables[name][desired_slice]
@@ -197,7 +265,6 @@ class Refyre:
             #The refresher method will eliminate the invalid paths, so let's add back in the new paths
             self.variables[name] += sliced
 
-        
             
     def __post_generate(self, node, path = "", mode = "copy", flags = ""):
         '''
@@ -226,10 +293,10 @@ class Refyre:
             var_pths = []
             if node.name != '':
                 #Extract the key information - handling slicing
-                name, start, stop, step = extract_key_elements(node.name)
+                name, start, stop, step = VariableParser.extract_variable_data(node.name)
 
                 #Grab the desired slice
-                desired_slice = get_slice(self.variables[name], start, stop, step)
+                desired_slice = VariableParser.get_slice(self.variables[name], start, stop, step)
 
                 #Grab the actual data
                 sliced = self.variables[name][desired_slice]
@@ -237,7 +304,7 @@ class Refyre:
                 #If we need to serialize the node, we do it first
                 if node.serialize != '':
                     print()
-                    sliced = sliced.rename(create_lambda_generator_function(node.serialize))
+                    sliced = sliced.rename(ExpressionGenerator.generate_expression(node.serialize))
                     self.variables[name] += sliced
 
                 #Next we grab all the values from our variables that are a part of the dir

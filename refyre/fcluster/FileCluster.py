@@ -113,9 +113,10 @@ class FileCluster:
 
         ret = []
         for dir_path, pattern in zip(input_paths, input_patterns):
+            print('pot', dir_path, pattern)
             for fl in Path(dir_path).iterdir():
-
-                if re.search(r'{}'.format(pattern), fl.as_posix()) and fl not in ret:
+                if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
+                    print('fl', fl, 'is match to ', dir_path, pattern)
                     ret.append(fl)
         
         return ret

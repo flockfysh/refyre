@@ -36,3 +36,16 @@ class FileGraphNode:
     def __repr__(self):
         return f"FileGraphNode(children = {self.children}, pattern = {self.pattern}, directory = {self.directory}, type = {self.type}, name = {self.name}, is_root = {self.is_root}, flag = {self.flags}, serialize = {self.serialize})"
     
+    def __copy__(self):
+        new_obj = self.__class__()
+        for k,v in vars(self).items():
+            try:
+                setattr(new_obj, k, copy.deepcopy(v))
+                print('copy', k, v)
+            except:
+                pass   # non-pickelable stuff wasn't needed
+
+        return new_obj
+    
+    def copy(self):
+        return self.__copy__()
