@@ -13,6 +13,7 @@ import requests
 
 #Iteration
 from .FileClusterIterator import FileClusterIterator
+from .AutoRefresher import AutoRefresher
 
 def refresh(input_arr):
     '''
@@ -42,10 +43,23 @@ class FileCluster:
         only contain valid data.
     '''
 
+    #Counter to manage IDs
+    GLOBAL_COUNTER = 0
+
+    #Stores references to each FileCluster; in the future, this can be used for tracking & mem management
+    clusters = []
+
     def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
         self.values = self.__populate(input_paths, input_patterns)
 
+        #ID the variable
+        self.id = FileCluster.GLOBAL_COUNTER
+        FileCluster.GLOBAL_COUNTER += 1
+
+        #Track the cluster
+        FileCluster.clusters.append(self)
+    
         #If the user didn't send the values as Pathlib objects already
         if not as_pathlib: 
             self.values += [ Path(pth) for pth in values ] 
@@ -54,7 +68,10 @@ class FileCluster:
 
         print('init', self.values)
     
-    @with_refresh
+    def all_clusters(self):
+        return FileCluster.clusters
+    
+    @AutoRefresher()
     def __add__(self, other):
         '''
             other - another FileCluster
@@ -68,7 +85,7 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = new_values, as_pathlib = True)
     
-    @with_refresh
+    @AutoRefresher()
     def __and__(self, other):
         '''
             other - another FileCluster
@@ -78,7 +95,7 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).intersection(other.values)))
     
-    @with_refresh
+    @AutoRefresher()
     def __or__(self, other):
         '''
             other - another FileCluster
@@ -88,7 +105,7 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).union(other.values)))
     
-    @with_refresh
+    @AutoRefresher()
     def __sub__(self, other):
         '''
             other - another FileCluster
@@ -98,11 +115,11 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = [v for v in self.values if v not in other.values])
 
-    @with_refresh
+    @AutoRefresher()
     def __eq__(self, other):
         return set(self.values) == set(other.values)
     
-    @with_refresh
+    @AutoRefresher()
     def contains(self, other):
         return self & other == other
 
@@ -121,7 +138,7 @@ class FileCluster:
         
         return ret
 
-    @with_refresh
+    @AutoRefresher()
     def vals(self):
         '''
             Returns a Pathlib.Paths list of all
@@ -129,26 +146,26 @@ class FileCluster:
         '''
         return self.values
     
-    @with_refresh
+    @AutoRefresher()
     def dirs(self):
         '''
             Returns a Paths list of all parent directories
         '''
         return list(set([v.parent for v in self.values]))
     
-    @with_refresh
+    @AutoRefresher()
     def __repr__(self):
         return f"FileCluster(values = {self.values})"
 
-    @with_refresh
+    @AutoRefresher()
     def __len__(self):
         return len(self.values)
 
-    @with_refresh
+    @AutoRefresher()
     def __iter__(self):
         return 
     
-    @with_refresh
+    @AutoRefresher()
     def __getitem__(self, key):
         print(key)
         if isinstance(key, slice):
@@ -156,7 +173,8 @@ class FileCluster:
         elif isinstance(key, int):
             return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key])
 
-    @with_refresh
+    #Update a map_func
+    @AutoRefresher()
     def map(self, map_func):
         '''
         Input: 
@@ -174,7 +192,7 @@ class FileCluster:
         print(p)
         return p
     
-    @with_refresh
+    @AutoRefresher()
     def reduce(self, reducer_function):
         '''
         Input: 
@@ -193,7 +211,6 @@ class FileCluster:
         
         return None
 
-    @with_refresh
     def move(self, target_dir):
         '''
         Input: 
@@ -209,9 +226,12 @@ class FileCluster:
         if not p.exists() or not p.is_dir():
             return None
 
-        return self.map(lambda v : Path(v.as_posix()).rename(p / v.name))
+        @AutoRefresher(does_modify = True, mapper_func = lambda x : p / x.name)
+        def exec_func(self, v):
+            return self.map(v)
+
+        return exec_func(self, lambda v : Path(v.as_posix()).rename(p / v.name))
     
-    @with_refresh
     def copy(self, target_dir):
         '''
         Input: 
@@ -230,9 +250,12 @@ class FileCluster:
             shutil.copy(str(v), str(p / v.name))
             return p / v.name
 
-        return self.map(copy_func)
+        @AutoRefresher(does_modify = True, mapper_func = lambda x : p / x.name, instance = self)
+        def exec_func(self):
+            return self.map(copy_func) 
+
+        return exec_func(self)
     
-    @with_refresh
     def filter(self, filter_func):
         '''
         Input: 
@@ -243,14 +266,17 @@ class FileCluster:
             - FileCluster object with the filtered values
         '''
 
+
         nvals = []
-        for v in self.values:
-            if filter_func(v):
-                nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
+        @AutoRefresher(does_modify = True, does_filter = True, filter_func = filter_func, instance = self)
+        def work(self):
+            for v in self.values:
+                if filter_func(v):
+                    nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
         
+        work(self)
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
     
-    @with_refresh
     def delete(self):
         '''
         Deletes all the files in the variable. 
@@ -259,27 +285,40 @@ class FileCluster:
             - Empty FileCluster object
         '''
 
-        for fl in self.values:
-            if fl.is_dir():
-                shutil.rmtree(fl.as_posix())
-            elif fl.is_file():
-                fl.unlink()
+        @AutoRefresher(does_modify = True, does_filter = True, filter_func = lambda x : False)
+        def work(self):
+            for fl in self.values:
+                if fl.is_dir():
+                    shutil.rmtree(fl.as_posix())
+                elif fl.is_file():
+                    fl.unlink()
 
+        work(self)
         return FileCluster(input_patterns = [], input_paths = [], values = [])
 
-    @with_refresh
     def rename(self, rename_function):
         '''
             rename_function: a function that takes an integer as an input 
         '''
-        nvals = []
-        for i, v in enumerate(self.values):
-            print('renaming', v,v.parent / rename_function(i) )
-            nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
 
+        i = -1
+        def sample(x):
+            nonlocal i
+            i += 1
+            return x.parent / rename_function(i)
+
+        @AutoRefresher(does_modify = True, mapper_func = sample)
+        def work(self):
+            nvals = []
+            for i, v in enumerate(self.values):
+                print('renaming', v,v.parent / rename_function(i) )
+                nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
+            return nvals
+
+        nvals = work(self)
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
-    @with_refresh
+    @AutoRefresher()
     def zip(self, save_dir = '.', save_name = "out.zip"):
         '''
         Zips all the files into a single zip.
@@ -298,7 +337,7 @@ class FileCluster:
         copied.delete()
         return FileCluster(input_patterns = [], input_paths = [], values = [save_p], as_pathlib = True)
 
-    @with_refresh
+    @AutoRefresher()
     def post(self, url, additional_data, payload_name):
         '''
         Uses the requests library to send a post request to the url, 

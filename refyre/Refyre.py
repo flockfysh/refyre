@@ -242,15 +242,7 @@ class Refyre:
         if node.name != "":
             
             #Extract the key information
-            name, start, stop, step = VariableParser.extract_variable_data(node.name)
-
-            print(name, self.variables)
-            #Grab the desired slice
-            desired_slice = VariableParser.get_slice(self.variables[name], start, stop, step)
-
-            #Grab the actual data
-            sliced = self.variables[name][desired_slice]
-
+            name, sliced = VariableParser(node.name, self.variables)
 
             if mode == "copy":
                 print('copying ', name, 'to', path, sliced)
@@ -293,18 +285,11 @@ class Refyre:
             var_pths = []
             if node.name != '':
                 #Extract the key information - handling slicing
-                name, start, stop, step = VariableParser.extract_variable_data(node.name)
-
-                #Grab the desired slice
-                desired_slice = VariableParser.get_slice(self.variables[name], start, stop, step)
-
-                #Grab the actual data
-                sliced = self.variables[name][desired_slice]
+                name, sliced = VariableParser(node.name, self.variables)
 
                 #If we need to serialize the node, we do it first
                 if node.serialize != '':
-                    print()
-                    sliced = sliced.rename(ExpressionGenerator.generate_expression(node.serialize))
+                    sliced = sliced.rename(ExpressionGenerator(node.serialize))
                     self.variables[name] += sliced
 
                 #Next we grab all the values from our variables that are a part of the dir

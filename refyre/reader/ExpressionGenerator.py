@@ -24,3 +24,13 @@ class ExpressionGenerator:
         lambda_function = lambda i: string.replace('$', str(i))
 
         return lambda_function
+
+    def __new__(self, string):
+        '''
+            Hijack the '__new__' method (usually used in constructors) 
+            and make it do our bidding >:)
+
+            Takes in an expression, return a lambda function.
+        '''
+
+        return ExpressionGenerator.generate_expression(string)

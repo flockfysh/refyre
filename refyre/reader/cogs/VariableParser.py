@@ -1,4 +1,5 @@
 import re 
+from refyre.fcluster import FileCluster
 
 class VariableParser:
     '''
@@ -6,36 +7,33 @@ class VariableParser:
     relating to variables. This class is the most relevant to the
     node.name attribute, and will normally be used to parse it.
     '''
-    def extract_variable_data(string):
-        '''
-        Extracts the key components of a variable expression.
+    def extract_variable_data(expression):
+        pattern1 = r'^(\w+)(?:\[(\d+)?:(\d+)?(?:\:(\d+))?\])?$'
+        pattern2 = r'^(\w+)\[(\d+)\]$'
 
-        We define the key information to be the variable name and the start, stop, and step indices.
+        match1 = re.match(pattern1, expression)
+        match2 = re.match(pattern2, expression)
 
-        Such an expression could look like
+        if match1:
+            print('match1')
+            name = match1.group(1)
+            start = match1.group(2)
+            stop = match1.group(3)
+            step = match1.group(4)
 
-        var1 --> return the entire var
-        var1[0] --> return only the first value
-        var1[0:5]--> return the first values 
-        var1[0:10:2] --> return values between 0-10, skipping by 2
-        '''
-        pattern = r'^(\w+)(?:\[(\d+)?:(\d+)?(?:\:(\d+))?\])?$'
-        match = re.match(pattern, string)
+            return name, start, stop, step
 
-        if match:
-            name = match.group(1)
-            start_index = match.group(2)
-            stop_index = match.group(3)
-            step_index = match.group(4)
+        elif match2:
+            print('match2')
+            name = match2.group(1)
+            start = match2.group(2)
+            stop = str(int(start) + 1)
+            step = None
 
-            # Convert start_index, stop_index, and step_index to integers if they exist
-            start_index = int(start_index) if start_index is not None else None
-            stop_index = int(stop_index) if stop_index is not None else None
-            step_index = int(step_index) if step_index is not None else None
+            return name, start, stop, step
 
-            return name, start_index, stop_index, step_index
         else:
-            return None, None, None, None
+            return None
 
     def get_slice(var, start, stop, step):
         '''
@@ -48,5 +46,31 @@ class VariableParser:
         Returns a slice object involving the three indices
         '''
 
+        assert isinstance(var, FileCluster)
+
         start, stop, step = 0 if start is None else start, len(var) if stop is None else stop, 1 if step is None else step
         return slice(start, stop, step)
+    
+    def __new__(self, expression, variable_dict):
+        '''
+            Hijack the '__new__' method (usually used in constructors) 
+            and make it do our bidding >:)
+
+            Takes in an expression, and returns the name of the variable, and the sequence of variable requested.
+        '''
+
+        out_data = VariableParser.extract_variable_data(expression)
+
+        if not out_data:
+            raise Exception(f"Expression {out_data} isn't a valid expression.")
+
+        name, start, stop, step = out_data
+
+        if name not in variable_dict:
+            raise Exception(f"{name} is not a recognized variable in variable dict {variable_dict}")
+
+        desired_slice = VariableParser.get_slice(variable_dict[name], start, stop, step)
+        variable_slice = variable_dict[name][desired_slice]
+
+        #Return the variable name, and the subset requested
+        return name, variable_slice
