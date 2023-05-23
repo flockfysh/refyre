@@ -1,5 +1,5 @@
 '''
-Sample output file 
+Sample input file 
 
 In this case, we just want a casual refactor of a couple things
 
@@ -11,9 +11,8 @@ c/
 d/
 '''
 
-
-[dir="person/Desktop/a"|name="a"|pattern="a"]
-[dir="person/Desktop/b"|name="b"|pattern="b"]
-[dir="person/Desktop/c"|name="c"|pattern="c"]
-[dir="person/Desktop/d"|name="d"|pattern="d"]
+[dir="a"|name="a"|flags="*da"]
+[dir="b/"|name="b"]
+[dir="c/"|name="c"]
+[dir="d/"|name="d"]
 

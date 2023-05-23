@@ -1,5 +1,7 @@
 from pathlib import Path
 from functools import wraps
+from refyre.utils import get_optimal_pattern
+from refyre.reader import PatternGenerator
 import re
 
 #Copying / Deleting
@@ -51,7 +53,10 @@ class FileCluster:
 
     def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
-        self.values = self.__populate(input_paths, input_patterns)
+
+        for pattern in input_patterns:
+            print('add', pattern, PatternGenerator(pattern))
+        self.values = self.__populate(input_paths, [ PatternGenerator(p) for p in input_patterns  ])
 
         #ID the variable
         self.id = FileCluster.GLOBAL_COUNTER
@@ -131,6 +136,7 @@ class FileCluster:
         for dir_path, pattern in zip(input_paths, input_patterns):
             print('pot', dir_path, pattern)
             for fl in Path(dir_path).iterdir():
+                print(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name) )
                 if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
                     print('fl', fl, 'is match to ', dir_path, pattern)
                     ret.append(fl)

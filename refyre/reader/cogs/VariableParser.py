@@ -45,8 +45,7 @@ class VariableParser:
         
         Returns a slice object involving the three indices
         '''
-
-        assert isinstance(var, FileCluster)
+        assert type(var) == FileCluster.FileCluster
 
         start, stop, step = 0 if start is None else start, len(var) if stop is None else stop, 1 if step is None else step
         return slice(start, stop, step)

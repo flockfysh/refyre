@@ -66,11 +66,13 @@ class AutoRefresher:
 
                             i = 0
                             potential_candidate = v
-                            while (self.conf_kw["mapper_func"](potential_candidate)).as_posix() in fdct:
-                                print('file conflict', potential_candidate, self.conf_kw["mapper_func"](potential_candidate))
-                                i += 1
-                                potential_candidate = self.conflict_filename(potential_candidate.parent, potential_candidate.stem, potential_candidate.suffix, i) 
-                            
+
+                            if self.conf_kw["mapper_func"](potential_candidate).as_posix() != potential_candidate.as_posix():
+                                while (self.conf_kw["mapper_func"](potential_candidate)).as_posix() in fdct:
+                                    print('file conflict', potential_candidate, self.conf_kw["mapper_func"](potential_candidate))
+                                    i += 1
+                                    potential_candidate = self.conflict_filename(potential_candidate.parent, potential_candidate.stem, potential_candidate.suffix, i) 
+                                
 
                             if potential_candidate != v:
                                 #Move all relevant ids to the filename

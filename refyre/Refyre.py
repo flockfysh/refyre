@@ -1,5 +1,5 @@
 from refyre.fgraph import FileGraph
-from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser
+from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser, PatternGenerator
 from refyre.fcluster import FileCluster
 from refyre.utils import is_valid_regex
 
@@ -14,6 +14,9 @@ import re
 
 #Deleting
 import shutil
+
+#Globbing
+import fnmatch
 
 class Refyre:
 
@@ -70,7 +73,7 @@ class Refyre:
         assert Path(path).exists(), f"Error, the path {path} doesn't exist"
         print('new path: ', new_path, node.directory, node.pattern)
         
-        if (Path(path).is_file()) or (not new_path.exists() and not is_valid_regex(node.directory)):
+        if (Path(path).is_file()) or (not new_path.exists() and not PatternGenerator.is_valid_regex(node.directory)):
             print('invalid in general')
             return [None]
         
@@ -78,7 +81,7 @@ class Refyre:
         if need_to_append and node.name != '' and not node.name.startswith('+'):
             node.name = '+' + node.name
 
-        if not new_path.exists() and is_valid_regex(node.directory):
+        if not new_path.exists() and PatternGenerator.is_valid_regex(node.directory):
             print('valid regex')
 
             #Create nodes for each of the pattern matches
@@ -88,7 +91,7 @@ class Refyre:
 
                 print('file', fl)
                 print(r'{}'.format(node.directory), fl.as_posix())
-                if re.search(r'{}'.format(node.directory), fl.as_posix()) and fl not in ret:
+                if re.search(r'{}'.format(PatternGenerator(node.directory)), fl.as_posix()) and fl not in ret:
 
                     #Ensure the node name has append mode, so that all the data across gets added
                     if node.name != '' and not node.name.startswith('+'):

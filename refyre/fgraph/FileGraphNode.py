@@ -1,5 +1,5 @@
 from pathlib import Path 
-import fnmatch
+from refyre.reader import PatternGenerator
 import copy
 
 class FileGraphNode:
@@ -15,6 +15,7 @@ class FileGraphNode:
     '''
     def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = ""):
         self.children = children
+
         self.pattern = pattern #fnmatch.translate(pattern) #Add this attribute to handle glob pattern recognition
         self.directory = directory
         self.type = type

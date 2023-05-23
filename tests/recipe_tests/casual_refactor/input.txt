@@ -13,7 +13,8 @@ a/
 '''
 
 
-[dir="person/Desktop/a"|name="a"|pattern=""]
-    [dir="b/"|name="b"|pattern="b"]
-    [dir="c/"|name="c"|pattern="c"]
-    [dir="d/"|name="d"|pattern="d"]
+[dir="a"|pattern="*.*"|name="a"]
+    [dir="b"|name="b"]
+    [dir="c"|name="c"]
+    [dir="d"|name="d"]
+
