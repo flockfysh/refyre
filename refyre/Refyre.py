@@ -52,14 +52,14 @@ class Refyre:
 
 
         print('HEEEERE', input_path)
-        p = Parser.parse(Lexer.lex(input_path))
+        p = Parser(Lexer(input_path))
 
         #Monkey patch, until we figure out how we can support directory clustering with output
         return self.__expand(p)[0] if not is_output else p
     
 
 
-    def __expand(self, node, path = ""):
+    def __expand(self, node, path = "", need_to_append = False):
         '''
             Expands all regex directories into a static fgraph.
 
@@ -67,25 +67,37 @@ class Refyre:
         '''
 
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
+        assert Path(path).exists(), f"Error, the path {path} doesn't exist"
         print('new path: ', new_path, node.directory, node.pattern)
         
-        if not new_path.exists() and not is_valid_regex(node.directory):
+        if (Path(path).is_file()) or (not new_path.exists() and not is_valid_regex(node.directory)):
             print('invalid in general')
             return [None]
+        
+        #If we are in some sort of sub directory, all variable operations must be appends by default
+        if need_to_append and node.name != '' and not node.name.startswith('+'):
+            node.name = '+' + node.name
 
         if not new_path.exists() and is_valid_regex(node.directory):
             print('valid regex')
 
             #Create nodes for each of the pattern matches
             ret = []
+            print(new_path, new_path.parent)
             for fl in new_path.parent.iterdir():
 
                 print('file', fl)
+                print(r'{}'.format(node.directory), fl.as_posix())
                 if re.search(r'{}'.format(node.directory), fl.as_posix()) and fl not in ret:
 
-                    #Make a copy of the original node, the only thing we gotta swap out is the directory
+                    #Ensure the node name has append mode, so that all the data across gets added
+                    if node.name != '' and not node.name.startswith('+'):
+                        node.name = '+' + node.name
+                        need_to_append = True
+
+
                     pattern_matched_node = node.copy()
-                    assert pattern_matched_node.pattern == node.pattern
+                    assert pattern_matched_node.pattern == node.pattern, f"Copy node has pattern {pattern_matched_node.pattern} while node has pattern {node.pattern}"
 
                     assert type(fl.name) == str
                     #Update the directory with the name 

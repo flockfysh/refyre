@@ -1,4 +1,6 @@
 from pathlib import Path 
+import fnmatch
+import copy
 
 class FileGraphNode:
     '''
@@ -13,7 +15,7 @@ class FileGraphNode:
     '''
     def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = ""):
         self.children = children
-        self.pattern = pattern
+        self.pattern = pattern #fnmatch.translate(pattern) #Add this attribute to handle glob pattern recognition
         self.directory = directory
         self.type = type
         self.name = name
@@ -37,13 +39,12 @@ class FileGraphNode:
         return f"FileGraphNode(children = {self.children}, pattern = {self.pattern}, directory = {self.directory}, type = {self.type}, name = {self.name}, is_root = {self.is_root}, flag = {self.flags}, serialize = {self.serialize})"
     
     def __copy__(self):
-        new_obj = self.__class__()
+        new_obj = FileGraphNode()
         for k,v in vars(self).items():
             try:
                 setattr(new_obj, k, copy.deepcopy(v))
-                print('copy', k, v)
-            except:
-                pass   # non-pickelable stuff wasn't needed
+            except Exception as e:
+                print(e)
 
         return new_obj
     

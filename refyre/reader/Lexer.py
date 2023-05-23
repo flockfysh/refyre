@@ -1,22 +1,8 @@
 import re
 from pathlib import Path
 from .cogs.lexer_utils import split_string_ignore_quotes, find_missing_separator
-
-class Token:
-    '''
-        A single Lexer token
-    '''
-    def __init__(self, tab_level, pattern = "", dir = "",  type = "", name = "", flags = "", serialize=""):
-        self.tab_level = tab_level
-        self.pattern = pattern
-        self.directory = dir
-        self.dirtype = type
-        self.name = name
-        self.flags = flags
-        self.serialize = serialize
-
-    def __repr__(self):
-        return f"Token(tab_level={self.tab_level},pattern={self.pattern},directory={self.directory},dirtype={self.dirtype},name={self.name},flags={self.flags},serialize={self.serialize})"
+from .cogs.LexerToken import Token
+import fnmatch
 
 class Lexer:
     '''
@@ -121,7 +107,6 @@ class Lexer:
         if num_spaces % Lexer.SPACES_PER_TAB != 0:
             raise Exception(f"Uneven number of tabs - we assume {Lexer.SPACES_PER_TAB} spaces / tab. If you have a different number (ex: 8 spaces / tab), modify the SPACES_PER_TAB variable.")
 
-
         try:
             t = Token(num_spaces // Lexer.SPACES_PER_TAB, **dict_of_args)
         except TypeError as e:
@@ -137,8 +122,8 @@ class Lexer:
             Performs "lexical analysis", a.k.a grabs all the important information 
             from each line
         '''
-        if not Path(input_file).exists():
-            raise Exception(f"The input file path to the spec at {input_file} doesn't exist!")
+        if not Path(input_file).exists() or not Path(input_file).is_file():
+            raise Exception(f"The input file path to the spec at {input_file} doesn't exist or is a directory!")
 
         with open(input_file, "r") as f:
             txt = f.read()
@@ -150,3 +135,6 @@ class Lexer:
             tokens.append(Lexer.extract_line_data(line))
             
         return tokens
+
+    def __new__(self, input_file):
+        return Lexer.lex(input_file)

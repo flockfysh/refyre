@@ -1,4 +1,6 @@
 from .Lexer import Lexer
+from .cogs.LexerToken import Token
+
 from refyre.fgraph import FileGraphNode
 from pathlib import Path
 
@@ -35,7 +37,8 @@ class Parser:
 
                 #Grab all the nodes with the same level
                 while stack[-1][1] == top[1]:
-                    cur.append(pop(stack)[0]) 
+                    p = pop(stack)[0]
+                    cur = [p] + cur 
 
                 #Append top last to preserve ordering - THIS IS CRUCIAL TO PRESERVE USER INTENT
                 cur.append(top[0])
@@ -56,7 +59,8 @@ class Parser:
 
             while top[1] == stack[-1][1]:
                 #Grab all the nodes with the same level
-                cur.append(pop(stack)[0]) 
+                p = pop(stack)[0]
+                cur = [p] + cur
             
             #Append top last to preserve ordering - THIS IS CRUCIAL TO PRESERVE USER INTENT
             cur.append(top[0])
@@ -68,4 +72,10 @@ class Parser:
             cur.clear()
         
         assert len(stack) == 1 and stack[0][1] == INF, "Improper root node, something went wrong in the parsing algorithm"
+        
+
         return stack[0][0]
+
+    def __new__(self, tokens):
+        assert type(tokens) == list and all([type(t) == Token for t in tokens]), "Invalid type found from Lexer output; something's going wrong."
+        return Parser.parse(tokens)
