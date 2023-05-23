@@ -44,12 +44,18 @@ class Refyre:
     
 
     #The Five Fundamental Operations of Refyre
-    def __construct(self, input_path):
+    def __construct(self, input_path, is_output = False):
         '''
             Construct Operation:
                 - Receives an input spec, and creates an fgraph
         '''
-        return self.__expand(Parser.parse(Lexer.lex(input_path)))[0]
+
+
+        print('HEEEERE', input_path)
+        p = Parser.parse(Lexer.lex(input_path))
+
+        #Monkey patch, until we figure out how we can support directory clustering with output
+        return self.__expand(p)[0] if not is_output else p
     
 
 
@@ -335,7 +341,7 @@ class Refyre:
         '''
 
         #Construct an fgraph instance
-        graph_to_add = self.__construct(spec_path)
+        graph_to_add = self.__construct(spec_path, is_output = False)
         print(graph_to_add)
  
         #Verify the fgraph instance, and then add it in
@@ -369,8 +375,9 @@ class Refyre:
         print('Creating spec.')
 
         #Construct the spec path
-        graph_to_add = self.__construct(spec_path)
+        graph_to_add = self.__construct(spec_path, is_output = True)
 
+        print(graph_to_add)
         print('Graph constructed. Activating variables.')
 
         #Do any actions inside the fgraph

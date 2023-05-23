@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from .cogs.lexer_utils import split_string_ignore_quotes, find_missing_separator
 
 class Token:
     '''
@@ -62,20 +63,30 @@ class Lexer:
         #inside_bracket_pattern = r'\[(?:[^\[\]]+|(?R))*\]'
         inside_bracket_pattern = r'\[([^[\]]*(?:\[[^[\]]*\])*[^[\]]*)\]'
 
+        #First, ensure the file is properly bracketed.
+        p = find_missing_separator(line)
+        if p:
+            print(f"ERROR: The lexer has found that some of the attributes don't have a '|' between them. This is a necessary, and will directly alter Lexer output if not fixed. Here's the attributes to check for:\n\n ")
+            for w in p:
+                print(w)
 
-    
-        print(line)
-        matches = re.search(inside_bracket_pattern, line).group(1)
+            print(f"\nHere's the line we detected the error on: {line.strip()}")
+            print('Make sure that there\'s a bar between all parts. For example, dir="a"name="k" is incorrect, while dir="a"|name="k" is.')
+            print('Aborting ...')
+            exit(1)
 
-        print(matches)
-        #Rule: Only one cluster per line
-        #if len(matches) > 1:
-            #raise Exception("You can only specify one cluster per line!")
 
-        match = matches.split('|')
+        try:
+            matches = re.search(inside_bracket_pattern, line).group(1)
+        except AttributeError as e:
+            print(f"ERROR: The lexer attempted to parse line {line} but couldn't find a match. Can you make sure that you have opening and closing brackets? ('[',']')")
+            print('Aborting ...')
+            exit(1)
+
+
+        match = split_string_ignore_quotes(matches)
         dict_of_args = {}
 
-        print(match)
 
         #Extract the key and value of each item, while accounting for potential spaces
         extraction_pattern = r'\s*([^=\s]+)\s*=\s*"(.*?)"\s*'
@@ -84,8 +95,21 @@ class Lexer:
             matches = re.match(extraction_pattern, arg)
 
 
-            key = matches.group(1)
-            val = matches.group(2)
+            try:
+                key = matches.group(1)
+            except AttributeError as e:
+                print("ERROR: it looks like you're missing a key attribute. Check to make sure each attribute and value have an '=' sign between them, and are in \"\".")
+                print(f"The error happened on line: {line.strip()}, when we tried to handle match {arg}")
+                print('Aborting ...')
+                exit(1)
+
+            try:
+                val = matches.group(2)
+            except AttributeError as e:
+                print("ERROR: it looks like you're missing a val attribute. Check to make sure each attribute and value have an '=' sign between them, and are in \"\".")
+                print(f"The error happened on line: {line.strip()}, when we tried to handle match {arg}")
+                print('Aborting ...')
+                exit(1)
 
             dict_of_args[key] = val
 
@@ -97,7 +121,16 @@ class Lexer:
         if num_spaces % Lexer.SPACES_PER_TAB != 0:
             raise Exception(f"Uneven number of tabs - we assume {Lexer.SPACES_PER_TAB} spaces / tab. If you have a different number (ex: 8 spaces / tab), modify the SPACES_PER_TAB variable.")
 
-        return Token(num_spaces // Lexer.SPACES_PER_TAB, **dict_of_args)
+
+        try:
+            t = Token(num_spaces // Lexer.SPACES_PER_TAB, **dict_of_args)
+        except TypeError as e:
+            print(f"ERROR: The lexer failed to read one of the attributes. It's most likely because you typed one of the attributes wrong. Here's the full error message below.")
+            print(e)
+            print('Aborting ...')
+            exit(1)
+
+        return t
 
     def lex(input_file):
         '''

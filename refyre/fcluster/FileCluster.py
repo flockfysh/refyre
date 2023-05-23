@@ -66,7 +66,6 @@ class FileCluster:
         else:
             self.values += values
 
-        print('init', self.values)
     
     def all_clusters(self):
         return FileCluster.clusters

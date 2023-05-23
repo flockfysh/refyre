@@ -31,7 +31,6 @@ class AutoRefresher:
         self.conf_args = a
         self.conf_kw = kw
         
-        print("init autorefresh", self.conf_args, self.conf_kw)
        
     def __call__(self, func):
         
@@ -72,7 +71,6 @@ class AutoRefresher:
                                 i += 1
                                 potential_candidate = self.conflict_filename(potential_candidate.parent, potential_candidate.stem, potential_candidate.suffix, i) 
                             
-                            print(potential_candidate, fdct, 'clearly, no file exists')
 
                             if potential_candidate != v:
                                 #Move all relevant ids to the filename
@@ -108,7 +106,6 @@ class AutoRefresher:
                         if "does_filter" in self.conf_kw and self.conf_kw["does_filter"] and "filter_func" in self.conf_kw:
                             
                             if not self.conf_kw["filter_func"](v):
-                                print('want filter', v)
 
                                 #Delete across all variables
                                 for cluster_id in fdct[v.as_posix()]:
@@ -184,7 +181,6 @@ class AutoRefresher:
             potential file conflicts
         '''
         if not mapper_func(fl).exists() or (mapper_func(fl).exists() and mapper_func(fl) == fl):
-            print('ret post handle', fl, fl.exists(), 'which would be mapped to ', mapper_func(fl))
             return fl
         
         i = 0
@@ -194,7 +190,6 @@ class AutoRefresher:
             potential_candidate = self.conflict_filename(fl.parent, fl.stem, fl.suffix, i)
             
         fl.rename(potential_candidate)
-        print('ret post handle 2', fl, fl.exists(), potential_candidate, potential_candidate.exists())
         return potential_candidate
         
     
