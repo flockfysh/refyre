@@ -8,11 +8,13 @@ class VariableParser:
     node.name attribute, and will normally be used to parse it.
     '''
     def extract_variable_data(expression):
-        pattern1 = r'^(\w+)(?:\[(\d+)?:(\d+)?(?:\:(\d+))?\])?$'
-        pattern2 = r'^(\w+)\[(\d+)\]$'
+        pattern1 = r'^([\w-]+)(?:\[(\d+)?:(\d+)?(?:\:(\d+))?\])?$'
+        pattern2 = r'^([\w-]+)\[(\d+)\]$'
 
         match1 = re.match(pattern1, expression)
         match2 = re.match(pattern2, expression)
+
+        print(match1, match2)
 
         if match1:
             print('match1')

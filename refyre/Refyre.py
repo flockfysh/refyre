@@ -263,6 +263,7 @@ class Refyre:
         if node.name != "":
             
             #Extract the key information
+            print('extract', node.name)
             name, sliced = VariableParser(node.name, self.variables)
 
             if mode == "copy":
