@@ -41,4 +41,4 @@ class PatternGenerator:
 
         #Clear out any leading / trailing spaces 
         print('glob')
-        return fnmatch.translate(pattern_string.strip())
+        return '' if pattern_string == '' else fnmatch.translate(pattern_string.strip())

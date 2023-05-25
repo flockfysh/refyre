@@ -13,7 +13,7 @@ class FileGraphNode:
 
         We will have one virtual "root" node stringing together all the other entry points.
     '''
-    def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = ""):
+    def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = "", imports=""):
         self.children = children
 
         self.pattern = pattern #fnmatch.translate(pattern) #Add this attribute to handle glob pattern recognition
@@ -23,6 +23,7 @@ class FileGraphNode:
         self.is_root = is_root
         self.flags = flags
         self.serialize = serialize
+        self.imports = imports
 
     def add_child(self, child):
         assert isinstance(child, FileGraphNode), "Children of FileGraphNode should only be FileGraphNodes"
@@ -37,7 +38,7 @@ class FileGraphNode:
         return self.is_root
         
     def __repr__(self):
-        return f"FileGraphNode(children = {self.children}, pattern = {self.pattern}, directory = {self.directory}, type = {self.type}, name = {self.name}, is_root = {self.is_root}, flag = {self.flags}, serialize = {self.serialize})"
+        return f"FileGraphNode(children = {self.children}, pattern = {self.pattern}, directory = {self.directory}, type = {self.type}, name = {self.name}, is_root = {self.is_root}, flag = {self.flags}, serialize = {self.serialize}, imports = {self.imports})"
     
     def __copy__(self):
         new_obj = FileGraphNode()

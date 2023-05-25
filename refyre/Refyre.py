@@ -47,7 +47,7 @@ class Refyre:
     
 
     #The Five Fundamental Operations of Refyre
-    def __construct(self, input_path, is_output = False):
+    def __construct(self, input_path, is_output = False, expand_path = ""):
         '''
             Construct Operation:
                 - Receives an input spec, and creates an fgraph
@@ -58,7 +58,7 @@ class Refyre:
         p = Parser(Lexer(input_path))
 
         #Monkey patch, until we figure out how we can support directory clustering with output
-        return self.__expand(p)[0] if not is_output else p
+        return self.__expand(p, path = expand_path)[0] if not is_output else p
     
 
 
@@ -68,6 +68,8 @@ class Refyre:
 
             This method enables a single cluster to target multiple directories
         '''
+        if not node:
+            return [None]
 
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
         assert Path(path).exists(), f"Error, the path {path} doesn't exist"
@@ -81,7 +83,7 @@ class Refyre:
         if need_to_append and node.name != '' and not node.name.startswith('+'):
             node.name = '+' + node.name
 
-        if not new_path.exists() and PatternGenerator.is_valid_regex(node.directory):
+        if not new_path.exists() and PatternGenerator.is_valid_regex(node.directory) and node.directory != '':
             print('valid regex')
 
             #Create nodes for each of the pattern matches
@@ -91,7 +93,7 @@ class Refyre:
 
                 print('file', fl)
                 print(r'{}'.format(node.directory), fl.as_posix())
-                if re.search(r'{}'.format(PatternGenerator(node.directory)), fl.as_posix()) and fl not in ret:
+                if re.search(r'{}'.format(PatternGenerator(node.directory)), fl.as_posix()) and fl not in ret and fl.is_dir(): #No files will be allowed to be fclusters
 
                     #Ensure the node name has append mode, so that all the data across gets added
                     if node.name != '' and not node.name.startswith('+'):
@@ -108,6 +110,15 @@ class Refyre:
                     print('found match', fl.name)
 
                     ret.append(pattern_matched_node)                 
+            
+            #Before we go to children, let's handle any imports we must
+            print('handling imports', node.imports, node.directory)
+            import_fgraph = None
+            if node.imports != '' and Path(node.imports).exists():
+                print('importing', node.imports)
+                import_fgraph = self.__construct(node.imports, expand_path = new_path)
+                import_fgraph.is_root = False
+                print('imported', import_fgraph)
 
             #Now, attempt to check for all the node children of the original node
             #We will insert each of the current node's children into the new matched nodes, and recurse on them
@@ -115,22 +126,33 @@ class Refyre:
             for pattern_node in ret:
                 nchilds = []
 
-                for child in node.children:
+                for child in node.children + [import_fgraph]:
                     new_path = Path(pattern_node.directory) if pattern_node.is_root_dir() else Path(path) / pattern_node.directory 
 
                     nchilds.extend(self.__expand(child, new_path))
 
-                pattern_node.children = [c for c in nchilds if c is not None]
+                pattern_node.children = [c for c in nchilds if c is not None] 
             
             return ret
 
         else:
             print('in else')
+            #Before we go to children, let's handle any imports we must
+            print('handling imports', node.imports, node.directory)
+            import_fgraph = None
+            if node.imports != '' and Path(node.imports).exists():
+                print('importing', node.imports)
+                
+                import_fgraph = self.__construct(node.imports, is_output = True)
+                import_fgraph.is_root = False
+
+                print("EEEEEETKJSDLKJSADL")
+
             nchild = []
-            for child in node.children:
+            for child in node.children + [import_fgraph]:
                 nchild.extend(self.__expand(child, new_path))
             
-            node.children = [c for c in nchild if c is not None]
+            node.children = [c for c in nchild  if c is not None]
             return [node]
 
     def __verify(self, node, path = ""):
@@ -179,6 +201,7 @@ class Refyre:
         new_path = new_path.as_posix()
 
         if node.name != "":
+            print('activating', new_path, node.directory, node.name)
             self.__parse_var(node, new_path, mode)
 
         for child in node.children:
@@ -234,6 +257,8 @@ class Refyre:
 
             #In this case, the user wants to define a variable
             if operator == "" or (operator == "+" and name not in self.variables):
+                print(name, 'define', path)
+                print('node', node)
                 self.variables[name] = FileCluster(input_paths = [path], input_patterns = [node.pattern])
 
                 print('\nactivation init', operator, node.pattern, path, 'var name', name)
@@ -377,7 +402,10 @@ class Refyre:
             print('Verification successful.')
             self.file_graph.add_graph(graph_to_add)
 
-            print('Graph added. Activating variables.')
+            print('Graph added. Activating variables.\n\n')
+            print(self.file_graph)
+            print('\n\n')
+
             self.__activate(self.file_graph.fgraph_root)
 
             print('On standby. Variables: ')
