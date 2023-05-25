@@ -264,7 +264,10 @@ class Refyre:
             
             #Extract the key information
             print('extract', node.name)
-            name, sliced = VariableParser(node.name, self.variables)
+            name, sliced, start, stop, step = VariableParser(node.name, self.variables)
+
+            #The refresher method will eliminate the invalid paths, so let's add back in the new paths at their original positions
+            v = self.variables[name].vals()
 
             if mode == "copy":
                 print('copying ', name, 'to', path, sliced)
@@ -276,8 +279,16 @@ class Refyre:
                 sliced = sliced.move(path)
                 print('post cut', name, 'to', path, sliced)
             
-            #The refresher method will eliminate the invalid paths, so let's add back in the new paths
-            self.variables[name] += sliced
+
+            s_v = sliced.vals()
+            print(sliced, v, start, stop, step)
+            for ind_s, ind_v in enumerate(range(start, stop, step)):
+                print(ind_s, ind_v, s_v, v)
+                v[ind_v] = s_v[ind_s]
+            
+            print('updated vals', v)
+            self.variables[name] = FileCluster(values = v, as_pathlib = True)
+            print(self.variables[name])
 
             
     def __post_generate(self, node, path = "", mode = "copy", flags = ""):

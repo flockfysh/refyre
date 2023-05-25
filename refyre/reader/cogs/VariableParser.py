@@ -49,8 +49,8 @@ class VariableParser:
         '''
         assert type(var) == FileCluster.FileCluster
 
-        start, stop, step = 0 if start is None else start, len(var) if stop is None else stop, 1 if step is None else step
-        return slice(start, stop, step)
+        start, stop, step = 0 if start is None else int(start), len(var) if stop is None else int(stop), 1 if step is None else int(step)
+        return slice(start, stop, step), start, stop, step
     
     def __new__(self, expression, variable_dict):
         '''
@@ -70,8 +70,8 @@ class VariableParser:
         if name not in variable_dict:
             raise Exception(f"{name} is not a recognized variable in variable dict {variable_dict}")
 
-        desired_slice = VariableParser.get_slice(variable_dict[name], start, stop, step)
+        desired_slice, start, stop, step = VariableParser.get_slice(variable_dict[name], start, stop, step)
         variable_slice = variable_dict[name][desired_slice]
 
         #Return the variable name, and the subset requested
-        return name, variable_slice
+        return name, variable_slice, start, stop, step

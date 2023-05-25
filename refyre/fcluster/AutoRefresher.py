@@ -131,7 +131,7 @@ class AutoRefresher:
                 #Add any expected filepath changes
 
                 #print('returned nvals', nvals)
-                instance.values = [v for v in list(set(nvals)) if v.exists() ]
+                instance.values = [v for v in list(dict.fromkeys(nvals)) if v.exists() ]
                 return func(instance, *args, **kwargs)
             
         
