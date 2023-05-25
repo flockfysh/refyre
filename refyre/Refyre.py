@@ -80,6 +80,7 @@ class Refyre:
             return [None]
         
         #If we are in some sort of sub directory, all variable operations must be appends by default
+        print("NEED_TO_APPEND", need_to_append)
         if need_to_append and node.name != '' and not node.name.startswith('+'):
             node.name = '+' + node.name
 
@@ -98,7 +99,6 @@ class Refyre:
                     #Ensure the node name has append mode, so that all the data across gets added
                     if node.name != '' and not node.name.startswith('+'):
                         node.name = '+' + node.name
-                        need_to_append = True
 
 
                     pattern_matched_node = node.copy()
@@ -107,7 +107,9 @@ class Refyre:
                     assert type(fl.name) == str
                     #Update the directory with the name 
                     pattern_matched_node.directory = fl.name 
-                    print('found match', fl.name)
+                    need_to_append = True
+
+                    print('found match', fl.name, need_to_append)
 
                     ret.append(pattern_matched_node)                 
             
@@ -129,7 +131,7 @@ class Refyre:
                 for child in node.children + [import_fgraph]:
                     new_path = Path(pattern_node.directory) if pattern_node.is_root_dir() else Path(path) / pattern_node.directory 
 
-                    nchilds.extend(self.__expand(child, new_path))
+                    nchilds.extend(self.__expand(child, new_path, need_to_append = need_to_append))
 
                 pattern_node.children = [c for c in nchilds if c is not None] 
             
@@ -143,7 +145,7 @@ class Refyre:
             if node.imports != '' and Path(node.imports).exists():
                 print('importing', node.imports)
                 
-                import_fgraph = self.__construct(node.imports, is_output = True)
+                import_fgraph = self.__construct(node.imports, is_output = True, need_to_append = need_to_append)
                 import_fgraph.is_root = False
 
                 print("EEEEEETKJSDLKJSADL")
@@ -221,11 +223,12 @@ class Refyre:
         #Updating the path
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
-        self.__create_output(node, new_path, mode)
+        print('mode', node.mode)
+        self.__create_output(node, new_path, mode if node.mode == '' else node.mode)
         new_path = new_path.as_posix()
 
         for child in node.children:
-            self.__output(child, new_path, mode)
+            self.__output(child, new_path, "copy")
         
 
     def __clear(self):
