@@ -1,7 +1,8 @@
 from refyre.fgraph import FileGraph
 from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser, PatternGenerator
 from refyre.fcluster import FileCluster
-from refyre.utils import is_valid_regex
+from refyre.utils import is_valid_regex, clone_node
+from refyre.core import CodeManager, AliasManager
 
 #pathlib
 from pathlib import Path
@@ -27,6 +28,8 @@ class Refyre:
 
         self.variables = {}
         self.file_graph = FileGraph()
+        self.code_manager = CodeManager()
+        self.alias_manager = AliasManager()
 
         if input_specs:
             assert isinstance(input_specs, list)
@@ -125,15 +128,28 @@ class Refyre:
             #Now, attempt to check for all the node children of the original node
             #We will insert each of the current node's children into the new matched nodes, and recurse on them
 
-            for pattern_node in ret:
+            for i, pattern_node in enumerate(ret):
                 nchilds = []
 
+                new_path = Path(pattern_node.directory) if pattern_node.is_root_dir() else Path(path) / pattern_node.directory 
                 for child in node.children + [import_fgraph]:
-                    new_path = Path(pattern_node.directory) if pattern_node.is_root_dir() else Path(path) / pattern_node.directory 
-
                     nchilds.extend(self.__expand(child, new_path, need_to_append = need_to_append))
 
                 pattern_node.children = [c for c in nchilds if c is not None] 
+
+                if node.flags == '*m' and not new_path.exists():
+                    print('making uncreated dir')
+                    new_path.mkdir(exist_ok = True, parents = True)
+
+                if pattern_node.type == 'git' and pattern_node.link != '':
+                    clone_node(pattern_node.link, new_path)
+
+                if pattern_node.alias != '':
+                    print('adding', pattern_node.alias)
+
+                    self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(i), Path(new_path.as_posix()), is_pathlib = True)
+                    
+
             
             return ret
 
@@ -149,12 +165,24 @@ class Refyre:
                 import_fgraph.is_root = False
 
                 print("EEEEEETKJSDLKJSADL")
-
+            
             nchild = []
             for child in node.children + [import_fgraph]:
                 nchild.extend(self.__expand(child, new_path))
             
             node.children = [c for c in nchild  if c is not None]
+
+            if node.flags == '*m' and not new_path.exists():
+                new_path.mkdir(exist_ok = True, parents = True)
+
+            if node.type == 'git' and node.link != '':
+                clone_node(node.link, new_path)
+                
+            if node.alias != '':
+                print('adding', node.alias)
+                print(ExpressionGenerator(node.alias)(1))
+                self.alias_manager.add(ExpressionGenerator(node.alias)(1), Path(new_path.as_posix()), is_pathlib = True)
+
             return [node]
 
     def __verify(self, node, path = ""):
@@ -205,6 +233,12 @@ class Refyre:
         if node.name != "":
             print('activating', new_path, node.directory, node.name)
             self.__parse_var(node, new_path, mode)
+
+        if node.flags != '':
+            #Activate the code manager
+            if '*c' in node.flags:
+                self.code_manager.add(new_path)
+
 
         for child in node.children:
             self.__activate(child, new_path, mode)

@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "refyre"
+version = "0.0.1"
+description = "Filesystem dominance is all you need."
+authors = ["Ansh <teamnebulaco@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/flockfysh/refyre"
+license = "MIT"
+keywords = ["files", "manipulation", "data science", ]
+packages = [
+    { include = "refyre",  from = "." },
+]
+classifiers =[
+            "Programming Language :: Python :: 3",
+            "Operating System :: OS Independent",
+            "License :: OSI Approved :: MIT License",
+]
+include = [
+    "LICENSE.md",
+]
+
+[tool.poetry.dependencies]
+python_requires = ">=3.7"
+requests = "2.30.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = {version="^7.0.1", python = ">=3.7,<4.0"}
+
+[tool.poetry.scripts]
+refyre = "cli"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

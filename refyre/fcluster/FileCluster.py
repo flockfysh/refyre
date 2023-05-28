@@ -230,12 +230,16 @@ class FileCluster:
         #If the directory doesn't actually exist or just isn't a directory, we return None
         if not p.exists() or not p.is_dir():
             return None
+        
+        def move_func(v):
+            shutil.move(str(v), str(p / v.name))
+            return p / v.name
 
         @AutoRefresher(does_modify = True, mapper_func = lambda x : p / x.name)
-        def exec_func(self, v):
-            return self.map(v)
+        def exec_func(self):
+            return self.map(move_func)
 
-        return exec_func(self, lambda v : Path(v.as_posix()).rename(p / v.name))
+        return exec_func(self)
     
     def copy(self, target_dir):
         '''
