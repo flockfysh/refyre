@@ -20,8 +20,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
-requests = { version = "2.30.0", python = ">=3.7" }
+requests = "*"
 
 
 [tool.poetry.dev-dependencies]
