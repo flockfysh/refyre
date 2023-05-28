@@ -15,3 +15,5 @@ def cli():
     args = parser.parse_args()
 
     ref = Refyre(input_specs = args.input, output_specs = args.output)
+
+cli()
