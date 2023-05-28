@@ -1,6 +1,6 @@
 from pathlib import Path
 from functools import wraps
-from refyre.utils import get_optimal_pattern
+from refyre.utils import get_optimal_pattern, optional_dependencies
 from refyre.reader import PatternGenerator
 import re
 
@@ -10,8 +10,6 @@ import shutil
 #Zipping
 import zipfile
 
-#GET/POST requests
-import requests
 
 #Iteration
 from .FileClusterIterator import FileClusterIterator
@@ -348,30 +346,34 @@ class FileCluster:
 
     @AutoRefresher()
     def post(self, url, additional_data, payload_name):
-        '''
-        Uses the requests library to send a post request to the url, 
-        alongside the additional payload parameters you specify. All the data 
-        you want to push through is sent as a zip 
 
-            url: Str link to the API endpoint
-            additional_data: a dict to any other metadata you want to ferry across
-            payload_name: what you want to name the zip going across
+        with optional_dependencies('warn'):
+            #GET/POST requests
+            import requests
+            '''
+            Uses the requests library to send a post request to the url, 
+            alongside the additional payload parameters you specify. All the data 
+            you want to push through is sent as a zip 
+
+                url: Str link to the API endpoint
+                additional_data: a dict to any other metadata you want to ferry across
+                payload_name: what you want to name the zip going across
 
 
-        Return type: the Response object returned from the requests.get() call
-        '''
+            Return type: the Response object returned from the requests.get() call
+            '''
 
-        #Zip all the files up to send
-        zipped = self.zip()
-        zipped_fp = zipped.vals()[0].as_posix()
+            #Zip all the files up to send
+            zipped = self.zip()
+            zipped_fp = zipped.vals()[0].as_posix()
 
-        resp = None
-        with open(zipped_fp, "rb") as f:
-            resp = requests.post(url = url, params = additional_data, files = { payload_name : f })
+            resp = None
+            with open(zipped_fp, "rb") as f:
+                resp = requests.post(url = url, params = additional_data, files = { payload_name : f })
 
-        #Delete the intermediate zip we constructed
-        zipped.delete()
+            #Delete the intermediate zip we constructed
+            zipped.delete()
 
-        return resp 
+            return resp 
 
     
