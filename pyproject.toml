@@ -21,7 +21,6 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-requests = "*"
 
 
 [tool.poetry.dev-dependencies]
