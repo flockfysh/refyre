@@ -25,16 +25,26 @@ class Lexer:
         multiline_removal_pattern = r"'''[\s\S]*?'''"
         updated_content = re.sub(multiline_removal_pattern, '', input_str)
 
+
+        split_lines = updated_content.split('\n')
+
         #Remove any single line comments
         singleline_removal_pattern = r'#.*$'
-        updated_content = re.sub(singleline_removal_pattern, '', updated_content)
+        
+        updated_content = [re.sub(singleline_removal_pattern, '', l) for l in split_lines] 
 
         #Remove any purely whitespace lines
         whitespace_pattern = r'^\s*$'
-        updated_content = re.sub(whitespace_pattern, '', updated_content).strip()
+
+        updated_content = [re.sub(whitespace_pattern, '', l) for l in updated_content]
+        updated_content = [l for l in updated_content if l != '']
+        updated_content = '\n'.join(updated_content)
+
 
         #Remove any stay newlines
         updated_content = re.sub(r'\n+', '\n', updated_content)
+
+
         return updated_content
 
     def extract_line_data(line):
@@ -130,10 +140,13 @@ class Lexer:
             cleaned_lines = Lexer.preprocess(txt)
             cleaned_lines = cleaned_lines.split('\n')
 
+            print(cleaned_lines)
+
         tokens = []
         for line in cleaned_lines:
             tokens.append(Lexer.extract_line_data(line))
             
+        print(tokens)
         return tokens
 
     def __new__(self, input_file):

@@ -7,30 +7,10 @@ import re
 #Copying / Deleting
 import shutil
 
-#Zipping
-import zipfile
-
-
 #Iteration
 from .FileClusterIterator import FileClusterIterator
-from .AutoRefresher import AutoRefresher
+from .Refresher import AutoRefresher
 
-def refresh(input_arr):
-    '''
-    A simple refresher method. This will handle variable conflicts.
-
-    Whenever data is altered, all the invalid paths will drop out.
-
-    Particularly useful for variables with overlapping data
-    '''
-    return [ v for v in set(input_arr) if v.exists() ]
-        
-def with_refresh(func):
-    def refreshed(self, *args, **kwargs):
-        self.values = refresh(self.values)
-        return func(self, *args, **kwargs)
-
-    return refreshed
 
 class FileCluster:
     '''
@@ -49,12 +29,12 @@ class FileCluster:
     #Stores references to each FileCluster; in the future, this can be used for tracking & mem management
     clusters = []
 
-    def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False):
+    def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False, recursive = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
 
         for pattern in input_patterns:
             print('add', pattern, PatternGenerator(pattern))
-        self.values = self.__populate(input_paths, [ PatternGenerator(p) for p in input_patterns  ])
+        self.values = self.__populate(input_paths, [ PatternGenerator(p) for p in input_patterns  ], recursive = recursive)
 
         #ID the variable
         self.id = FileCluster.GLOBAL_COUNTER
@@ -125,7 +105,7 @@ class FileCluster:
     def contains(self, other):
         return self & other == other
 
-    def __populate(self, input_paths, input_patterns):
+    def __populate(self, input_paths, input_patterns, recursive = False):
         '''
         Populates a variable, using the input paths and directories 
         '''
@@ -133,7 +113,9 @@ class FileCluster:
         ret = []
         for dir_path, pattern in zip(input_paths, input_patterns):
             print('pot', dir_path, pattern)
-            for fl in Path(dir_path).iterdir():
+
+            it = Path(dir_path).iterdir() if not recursive else Path(dir_path).glob('**/*')
+            for fl in it:
                 print(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name) )
                 if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
                     print('fl', fl, 'is match to ', dir_path, pattern)
@@ -166,54 +148,17 @@ class FileCluster:
 
     @AutoRefresher()
     def __iter__(self):
-        return 
+        return FileClusterIterator(self)
     
     @AutoRefresher()
     def __getitem__(self, key):
         print(key)
         if isinstance(key, slice):
-            return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key.start:key.stop:key.step])
+            return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key.start:key.stop:key.step], as_pathlib = True)
         elif isinstance(key, int):
-            return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key])
+            return FileCluster(input_patterns = [] , input_paths = [], values = [self.values[key]], as_pathlib = True)
 
-    #Update a map_func
-    @AutoRefresher()
-    def map(self, map_func):
-        '''
-        Input: 
-            - map_func: a function to map each filepath. The mapping must take a filepath and return a filepath
-        
-        Return:
-            - FileCluster object with the mapped values
-        '''
-
-        nvals = []
-        for v in self.values:
-            nvals.append(Path(map_func(v))) #Append a copy of the object to prevent object ref shenanigans
-        
-        p = FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
-        print(p)
-        return p
     
-    @AutoRefresher()
-    def reduce(self, reducer_function):
-        '''
-        Input: 
-            - reducer_function(a, b): Takes in two parameters that can be reduced into a third parameter
-        
-        Returns
-            - the Result of the reduction, or None if the array is empty
-        '''
-        if len(self.values):
-            a = self.values[0]
-
-            for i in range(1, len(self.values)):
-                a = reducer_function(a, self.values[i])
-
-            return a
-        
-        return None
-
     def move(self, target_dir):
         '''
         Input: 
@@ -262,27 +207,6 @@ class FileCluster:
             return self.map(copy_func) 
 
         return exec_func(self)
-    
-    def filter(self, filter_func):
-        '''
-        Input: 
-            - filter_func: a function to filter out values, given an input of a filepath.
-                - i.e, return False for any values we don't want to keep
-        
-        Return:
-            - FileCluster object with the filtered values
-        '''
-
-
-        nvals = []
-        @AutoRefresher(does_modify = True, does_filter = True, filter_func = filter_func, instance = self)
-        def work(self):
-            for v in self.values:
-                if filter_func(v):
-                    nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
-        
-        work(self)
-        return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
     
     def delete(self):
         '''
@@ -376,4 +300,61 @@ class FileCluster:
 
             return resp 
 
+    @AutoRefresher()
+    def map(self, map_func):
+        '''
+        Input: 
+            - map_func: a function to map each filepath. The mapping must take a filepath and return a filepath
+        
+        Return:
+            - FileCluster object with the mapped values
+        '''
+
+        nvals = []
+        for v in self.values:
+            nvals.append(Path(map_func(v))) #Append a copy of the object to prevent object ref shenanigans
+        
+        p = FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
+        print(p)
+        return p
     
+     
+    @AutoRefresher()
+    def reduce(self, reducer_function):
+        '''
+        Input: 
+            - reducer_function(a, b): Takes in two parameters that can be reduced into a third parameter
+        
+        Returns
+            - the Result of the reduction, or None if the array is empty
+        '''
+        if len(self.values):
+            a = self.values[0]
+
+            for i in range(1, len(self.values)):
+                a = reducer_function(a, self.values[i])
+
+            return a
+        
+        return None
+    
+    def filter(self, filter_func):
+        '''
+        Input: 
+            - filter_func: a function to filter out values, given an input of a filepath.
+                - i.e, return False for any values we don't want to keep
+        
+        Return:
+            - FileCluster object with the filtered values
+        '''
+
+
+        nvals = []
+        @AutoRefresher(does_modify = True, does_filter = True, filter_func = filter_func, instance = self)
+        def work(self):
+            for v in self.values:
+                if filter_func(v):
+                    nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
+        
+        work(self)
+        return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)

@@ -9,8 +9,9 @@ class FileClusterIterator:
 
     def __next__(self):
 
-        if self.index >= len(self.var):
+        if self.index + 1 >= len(self.var):
             raise StopIteration
         
         self.index += 1
-        return self.var[self.index]
+        r = self.var[self.index].vals()[0]
+        return r

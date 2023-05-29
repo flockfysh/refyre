@@ -19,14 +19,17 @@ import shutil
 #Globbing
 import fnmatch
 
+#json 
+import json
+
 class Refyre:
 
-    def __init__(self, input_specs = None, output_specs = None):
+    def __init__(self, input_specs = None, output_specs = None, variables = None):
         '''
             input_specs: A List[Str] of filepaths to the various specs refyre will target
         '''
 
-        self.variables = {}
+        self.variables = {} if not variables else variables
         self.file_graph = FileGraph()
         self.code_manager = CodeManager()
         self.alias_manager = AliasManager()
@@ -296,15 +299,26 @@ class Refyre:
             if operator == "" or (operator == "+" and name not in self.variables):
                 print(name, 'define', path)
                 print('node', node)
-                self.variables[name] = FileCluster(input_paths = [path], input_patterns = [node.pattern])
+                self.variables[name] = FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
 
                 print('\nactivation init', operator, node.pattern, path, 'var name', name)
                 print('result: ', self.variables[name])
 
             elif operator == "+":
-                self.variables[name] += FileCluster(input_paths = [path], input_patterns = [node.pattern])
+                self.variables[name] += FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
                 print('\nactivation append', operator, node.pattern, path, 'var name', name)
                 print('result: ', self.variables[name])
+
+
+            #Handle any flags 
+
+            #*f flag - only keep the files 
+            if '*f' in node.flags:
+                self.variables[name] = self.variables[name].filter(lambda x : x.is_file())
+
+            #*f flag - only keep directories
+            if '*d' in node.flags:
+                self.variables[name] = self.variables[name].filter(lambda x : x.is_dir())
 
     def __create_output(self, node, path, mode):
         '''
@@ -489,3 +503,30 @@ class Refyre:
             
     def get_vars(self):
         return self.variables
+
+    def save(self, save_dir = '.'):
+
+        pths = {}
+
+        for var_name in self.variables:
+            pths[var_name] = []
+
+            for p in self.variables[var_name]:
+                pths[var_name].append(p.as_posix())
+            
+        save_pth = Path(save_dir) / "refyre_state.json"
+        with open(save_pth.as_posix(), 'w') as f:
+            json.dump(pths, f, indent = 4)
+    
+    def load(load_filename):
+
+        with open(load_filename, 'r') as f:
+            pths = json.load(f)
+
+            variables = {}
+
+            for name in pths:
+                variables[name] = FileCluster(values = pths[name], as_pathlib = False)
+
+            return Refyre(variables = variables)
+

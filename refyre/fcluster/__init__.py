@@ -1,2 +1,2 @@
 from .FileCluster import FileCluster
-from .AutoRefresher import AutoRefresher
+from .Refresher import AutoRefresher

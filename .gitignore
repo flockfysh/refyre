@@ -12,3 +12,4 @@ atest
 new_dataset/*
 initial-data
 docs/*
+*.json
