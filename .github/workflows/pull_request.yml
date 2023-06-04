@@ -1,4 +1,4 @@
-name: CI
+name: Run refyre unit tests
 on: pull_request
 
 jobs:

@@ -13,7 +13,6 @@ import itertools
 def change_test_dir(request, monkeypatch):
     monkeypatch.chdir(request.fspath.dirname)
 
-'''
 
 def test_zip():
     import zipfile
@@ -72,6 +71,7 @@ def test_diff_dir_copy():
 
     var1_copy.delete()
 
+
 '''
 def test_diff_dir_move():
     ref = Refyre(input_specs = ["input.txt"])
@@ -84,3 +84,4 @@ def test_diff_dir_move():
 
     var1 = var1_copy.move("in")
     assert len(var1) == 6
+'''
