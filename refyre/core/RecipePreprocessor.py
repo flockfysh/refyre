@@ -6,6 +6,7 @@ from refyre.utils import optional_dependencies
 from refyre import Refyre
 from pip._internal import main as pip_main
 import subprocess
+import shutil
 
 def create_virtualenv_and_install_requirements(venv_path, requirements_file):
     # Create the virtual environment
@@ -57,15 +58,25 @@ class RecipePreprocessor:
             print(recipe_dict['env']['name'])
 
             #Setup the base directories based on an input spec
-            #ref = Refyre.Refyre(input_specs = [recipe_dict["input-spec"]])
+            ref = Refyre.Refyre(input_specs = [recipe_dict["input-spec"]])
 
-            #Create the env if it doesn't exist already:
+            #Create the env if it doesn't exist already or needs to be refreshed
             if 'env' in recipe_dict and recipe_dict['env']:
                 if 'name' in recipe_dict['env']:
                     if not Path(recipe_dict['env']['name']).exists():
                         create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])
+                    elif 'refresh' in recipe_dict['env'] and recipe_dict['env']['refresh']:
+                        shutil.rmtree(recipe_dict['env']['name'])
+                        create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])
 
-            
-            #Setup the base dir
+            #Activate the env 
+            activate_script = (
+                Path(venv_path) / "Scripts" / "activate" if sys.platform == "win32"
+                else Path(venv_path) / "bin" / "activate"
+            )
+            activate_cmd = f"source {activate_script}"
+            subprocess.run(activate_cmd, shell=True, check=True)
+
             return ref
             
+

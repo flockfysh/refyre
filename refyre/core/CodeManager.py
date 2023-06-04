@@ -20,6 +20,8 @@ class CodeManager:
             self.module_dirs.append(p.parent.as_posix()) 
             sys.path.append(p.parent.as_posix())
 
+    def clear(self):
+        self.module_dirs.clear()
 
 
     

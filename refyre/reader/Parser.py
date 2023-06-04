@@ -50,7 +50,7 @@ class Parser:
                 cur.clear()
 
             print('imports', tok.imports, tok.link)
-            push(stack, (FileGraphNode(children = list([]), pattern = tok.pattern, directory = tok.directory, type = tok.dirtype, name = tok.name, is_root = Path(tok.directory).exists(), flags = tok.flags, serialize = tok.serialize, imports = tok.imports, mode = tok.mode, link = tok.link, alias = tok.alias) , tok.tab_level))
+            push(stack, (FileGraphNode(children = list([]), pattern = tok.pattern, directory = tok.directory, type = tok.dirtype, name = tok.name, is_root = Path(tok.directory).exists(), flags = tok.flags, serialize = tok.serialize, imports = tok.imports, mode = tok.mode, link = tok.link, alias = tok.alias, limit = tok.limit) , tok.tab_level))
 
         #Compress the remainder of the stack
         while len(stack) > 1: 

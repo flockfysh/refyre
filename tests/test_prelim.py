@@ -1,4 +1,7 @@
+#Simple test designed to make sure that pytest is working properly
 
+def test_always_passes():
+    assert True
 
 def test_imports():
     #fgraph

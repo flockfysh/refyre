@@ -1,0 +1,1 @@
+[dir="a$"|name="vars"|mode="copy"|flags="*s"|alias="exp"]

@@ -11,6 +11,12 @@ import shutil
 from .FileClusterIterator import FileClusterIterator
 from .Refresher import AutoRefresher
 
+#Copy
+import copy
+
+#Zip
+import zipfile
+
 
 class FileCluster:
     '''
@@ -45,7 +51,7 @@ class FileCluster:
     
         #If the user didn't send the values as Pathlib objects already
         if not as_pathlib: 
-            self.values += [ Path(pth) for pth in values ] 
+            self.values += sorted([ Path(pth) for pth in values ])
         else:
             self.values += values
 
@@ -99,10 +105,12 @@ class FileCluster:
 
     @AutoRefresher()
     def __eq__(self, other):
+        if other is None or type(other) != FileCluster:
+            return False
         return set(self.values) == set(other.values)
     
     @AutoRefresher()
-    def contains(self, other):
+    def __contains__(self, other):
         return self & other == other
 
     def __populate(self, input_paths, input_patterns, recursive = False):
@@ -114,7 +122,7 @@ class FileCluster:
         for dir_path, pattern in zip(input_paths, input_patterns):
             print('pot', dir_path, pattern)
 
-            it = Path(dir_path).iterdir() if not recursive else Path(dir_path).glob('**/*')
+            it = sorted(Path(dir_path).iterdir()) if not recursive else sorted(Path(dir_path).glob('**/*'))
             for fl in it:
                 print(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name) )
                 if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
@@ -132,11 +140,19 @@ class FileCluster:
         return self.values
     
     @AutoRefresher()
+    def item(self):
+        '''
+            Returns a Pathlib.Paths list of all
+            filepaths
+        '''
+        return self.values[0]
+
+    @AutoRefresher()
     def dirs(self):
         '''
-            Returns a Paths list of all parent directories
+            Returns a FileCluster of all parent directories
         '''
-        return list(set([v.parent for v in self.values]))
+        return FileCluster(values = list(dict.fromkeys([v.parent for v in self.values])), as_pathlib = True)
     
     @AutoRefresher()
     def __repr__(self):
@@ -149,7 +165,15 @@ class FileCluster:
     @AutoRefresher()
     def __iter__(self):
         return FileClusterIterator(self)
+
+    @AutoRefresher()
+    def __copy__(self):
+        return FileCluster(values = self.values, as_pathlib = True)
     
+    @AutoRefresher()
+    def __deepcopy__(self):
+        return FileCluster(values = [Path(p.as_posix()) for p in self.values], as_pathlib = True)
+
     @AutoRefresher()
     def __getitem__(self, key):
         print(key)
@@ -199,10 +223,24 @@ class FileCluster:
             return None
 
         def copy_func(v):
-            shutil.copy(str(v), str(p / v.name))
-            return p / v.name
+            m = mapper_copy_func(v)
+            shutil.copy(str(v), str(m))
+            return m
 
-        @AutoRefresher(does_modify = True, mapper_func = lambda x : p / x.name, instance = self)
+        def mapper_copy_func(x):
+            n, i = x.name, 1
+            
+            while (p / n).exists():
+                n = f"{x.stem}({i}){x.suffix}"
+                i += 1
+            
+            print("OUT", p / n)
+            
+            return p / n
+
+
+
+        @AutoRefresher(does_modify = True, mapper_func = mapper_copy_func, instance = self)
         def exec_func(self):
             return self.map(copy_func) 
 
@@ -349,6 +387,7 @@ class FileCluster:
         '''
 
 
+
         nvals = []
         @AutoRefresher(does_modify = True, does_filter = True, filter_func = filter_func, instance = self)
         def work(self):
@@ -357,4 +396,13 @@ class FileCluster:
                     nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
         
         work(self)
+
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
+
+    @AutoRefresher()
+    def clone(self):
+        '''
+        Returns a deep clone of the current object
+        '''
+
+        return self.__deepcopy__()

@@ -1,5 +1,6 @@
 import fnmatch
 import re
+from .ExpressionGenerator import ExpressionGenerator
 
 class PatternGenerator:
     '''
@@ -17,18 +18,43 @@ class PatternGenerator:
 
     '''
     def is_valid_regex(pattern_string):
+        print(pattern_string)
         if pattern_string.startswith('r'):
             try:
                 re.compile(pattern_string[1:])
-            except re.error:
+            except re.error as e:
+                print(e)
+                return False
+        elif pattern_string.startswith('g'):
+            try:
+                re.compile(fnmatch.translate(pattern_string[1:]))
+            except re.error as e:
+                print(e)
                 return False
         else:
-            try:
-                re.compile(fnmatch.translate(pattern_string))
-            except re.error:
+            if not PatternGenerator.is_valid_genexp(pattern_string):
                 return False
-
         return True
+
+    def is_valid_genexp(expression):
+        return ExpressionGenerator.is_valid_genexp(expression)
+    
+    def convert_generator_expression(expression):
+        return ExpressionGenerator.convert_generator_expression(expression)
+
+    def get_pattern_type(pattern_string):
+        if pattern_string.startswith('r'):
+            return "regex"
+
+        if pattern_string.startswith('g'):
+            return "glob"
+        
+        #Handle generator expressions
+        if not ExpressionGenerator.is_null_generator(pattern_string):
+            return "generator_expression"
+
+        #Else, the string is a normal string
+        return "normal_string" 
 
     def __new__(self, pattern_string):
         '''
@@ -39,6 +65,13 @@ class PatternGenerator:
             print('regex')
             return pattern_string[1:]
 
-        #Clear out any leading / trailing spaces 
-        print('glob')
-        return '' if pattern_string == '' else fnmatch.translate(pattern_string.strip())
+        if pattern_string.startswith('g'):
+            print('glob')
+            return fnmatch.translate(pattern_string[1:])
+        
+        #Handle generator expressions
+        if not ExpressionGenerator.is_null_generator(pattern_string):
+            return ExpressionGenerator.convert_generator_expression(pattern_string)
+
+        #Else, the string is a normal string
+        return pattern_string

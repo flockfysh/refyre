@@ -26,3 +26,13 @@ def get_optimal_pattern(string):
         return fnmatch.translate(string)
     except re.error:    
         return None
+
+def extract_numbers(string):
+    pattern = r'(\d+)(?:-(\d+))?$'
+    match = re.match(pattern, string)
+    if match:
+        start = int(match.group(1))
+        end = int(match.group(2)) if match.group(2) else start
+        return start, end
+    else:
+        return None

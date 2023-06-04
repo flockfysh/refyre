@@ -4,7 +4,7 @@ class Token:
     '''
         A single Lexer token
     '''
-    def __init__(self, tab_level, pattern = "", dir = "",  type = "", name = "", flags = "", serialize="", imports="", mode = "", link = "", alias = ""):
+    def __init__(self, tab_level, pattern = "", dir = "",  type = "", name = "", flags = "", serialize="", imports="", mode = "", link = "", alias = "", limit = ""):
         self.tab_level = tab_level
         self.pattern = pattern
         self.directory = dir
@@ -16,6 +16,7 @@ class Token:
         self.mode = mode
         self.link = link
         self.alias = alias
+        self.limit = limit
 
 
     def __repr__(self):

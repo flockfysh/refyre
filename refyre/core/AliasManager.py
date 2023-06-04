@@ -16,3 +16,6 @@ class AliasManager:
     
     def aliases(self):
         return self.alias_dict
+    
+    def clear(self):
+        self.alias_dict.clear()

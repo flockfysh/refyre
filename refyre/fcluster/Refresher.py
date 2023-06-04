@@ -116,6 +116,9 @@ class AutoRefresher:
                                 
                                 #Delete the dict entry
                                 fdct.pop(v.as_posix(), None)
+
+                                #Still keep the values
+                                nvals.append(v)
                             
                             #Otherwise, it's just a normal file, treat it as such
                             else:
@@ -130,7 +133,7 @@ class AutoRefresher:
 
                 #Add any expected filepath changes
 
-                #print('returned nvals', nvals)
+                print('autorefresher returned nvals', nvals)
                 instance.values = [v for v in list(dict.fromkeys(nvals)) if v.exists() ]
                 return func(instance, *args, **kwargs)
             

@@ -13,7 +13,7 @@ class FileGraphNode:
 
         We will have one virtual "root" node stringing together all the other entry points.
     '''
-    def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = "", imports="", mode = "", link="", alias=""):
+    def __init__(self, children = [], pattern = "", directory = "", type = "", name = "", is_root = False, flags = "", serialize = "", imports="", mode = "", link="", alias="", limit = ""):
         self.children = children
 
         self.pattern = pattern #fnmatch.translate(pattern) #Add this attribute to handle glob pattern recognition
@@ -27,6 +27,7 @@ class FileGraphNode:
         self.mode = mode
         self.link = link
         self.alias = alias
+        self.limit = limit
 
 
     def add_child(self, child):
