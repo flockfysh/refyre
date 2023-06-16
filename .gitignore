@@ -13,3 +13,4 @@ new_dataset/*
 initial-data
 docs/*
 *.json
+__pycache__
