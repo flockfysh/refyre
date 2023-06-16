@@ -121,7 +121,6 @@ def test_subtraction_cluster():
     assert var1 - var1 == FileCluster(values = [])
     assert len(var1) == 6, "filtering num_only shouldn't have modified var1"
 
-
 def test_dirs():
     ref = Refyre(input_specs = ["input.txt"])
     var1 = ref["var1"]
@@ -151,7 +150,7 @@ def test_obj_copy_equality():
 
     for a, b, c in zip(var1, var1_copy, var1_copy_copy):
         assert a == b and b == c
-    
+
 def test_obj_move_same_directory():
     ref = Refyre(input_specs = ["input.txt"])
     var1 = ref["var1"]
@@ -159,6 +158,7 @@ def test_obj_move_same_directory():
 
     moved = var1.move("in")
 
+    print(type(moved))
     assert moved == var1, f"Moving to the same directory shouldn't alter the contents of the FileCluster, but premoved {var1} -> {moved}"
 
 def test_refyre_save():

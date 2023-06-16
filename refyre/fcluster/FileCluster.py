@@ -9,7 +9,7 @@ import shutil
 
 #Iteration
 from .FileClusterIterator import FileClusterIterator
-from .Refresher import AutoRefresher
+from .Broadcast import Broadcaster
 
 #Copy
 import copy
@@ -17,6 +17,26 @@ import copy
 #Zip
 import zipfile
 
+
+#Store a weak reference to the object
+import weakref
+
+
+def handle_file_conflict(destination_path):
+    if not destination_path.exists():
+        return destination_path
+
+    base_name = destination_path.stem
+    suffix = destination_path.suffix
+    directory = destination_path.parent
+
+    index = 1
+    while True:
+        new_name = f"{base_name}({index}){suffix}"
+        new_path = directory / new_name
+        if not new_path.exists():
+            return new_path
+        index += 1
 
 class FileCluster:
     '''
@@ -33,10 +53,11 @@ class FileCluster:
     GLOBAL_COUNTER = 0
 
     #Stores references to each FileCluster; in the future, this can be used for tracking & mem management
-    clusters = []
+    clusters = {}
 
     def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False, recursive = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
+        print('init')
 
         for pattern in input_patterns:
             print('add', pattern, PatternGenerator(pattern))
@@ -46,8 +67,9 @@ class FileCluster:
         self.id = FileCluster.GLOBAL_COUNTER
         FileCluster.GLOBAL_COUNTER += 1
 
-        #Track the cluster
-        FileCluster.clusters.append(self)
+        #Track the cluster without affecting garbage collection
+        self.weak_ref = weakref.ref(self)
+        FileCluster.clusters[self.id] = self.weak_ref
     
         #If the user didn't send the values as Pathlib objects already
         if not as_pathlib: 
@@ -55,11 +77,26 @@ class FileCluster:
         else:
             self.values += values
 
-    
+        #Track variable on broadcaster
+        Broadcaster.add(self.id, self.values)
+
     def all_clusters(self):
         return FileCluster.clusters
+
+    def __del__(self):
+        print('deleting')
+        FileCluster.clusters.pop(self.id)
+        Broadcaster.release(self.id)
+
     
-    @AutoRefresher()
+    @classmethod
+    def cleanup(cls):
+        for k in FileCluster.clusters:
+            obj = FileCluster.clusters[k]
+            if obj() is None:
+                FileCluster.clusters.pop(k)
+
+
     def __add__(self, other):
         '''
             other - another FileCluster
@@ -73,7 +110,6 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = new_values, as_pathlib = True)
     
-    @AutoRefresher()
     def __and__(self, other):
         '''
             other - another FileCluster
@@ -83,7 +119,6 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).intersection(other.values)))
     
-    @AutoRefresher()
     def __or__(self, other):
         '''
             other - another FileCluster
@@ -93,7 +128,6 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).union(other.values)))
     
-    @AutoRefresher()
     def __sub__(self, other):
         '''
             other - another FileCluster
@@ -103,13 +137,11 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = [v for v in self.values if v not in other.values])
 
-    @AutoRefresher()
     def __eq__(self, other):
         if other is None or type(other) != FileCluster:
             return False
         return set(self.values) == set(other.values)
     
-    @AutoRefresher()
     def __contains__(self, other):
         return self & other == other
 
@@ -131,7 +163,6 @@ class FileCluster:
         
         return ret
 
-    @AutoRefresher()
     def vals(self):
         '''
             Returns a Pathlib.Paths list of all
@@ -139,7 +170,6 @@ class FileCluster:
         '''
         return self.values
     
-    @AutoRefresher()
     def item(self):
         '''
             Returns a Pathlib.Paths list of all
@@ -147,34 +177,27 @@ class FileCluster:
         '''
         return self.values[0]
 
-    @AutoRefresher()
     def dirs(self):
         '''
             Returns a FileCluster of all parent directories
         '''
         return FileCluster(values = list(dict.fromkeys([v.parent for v in self.values])), as_pathlib = True)
     
-    @AutoRefresher()
     def __repr__(self):
         return f"FileCluster(values = {self.values})"
 
-    @AutoRefresher()
     def __len__(self):
         return len(self.values)
 
-    @AutoRefresher()
     def __iter__(self):
         return FileClusterIterator(self)
 
-    @AutoRefresher()
     def __copy__(self):
         return FileCluster(values = self.values, as_pathlib = True)
     
-    @AutoRefresher()
     def __deepcopy__(self):
         return FileCluster(values = [Path(p.as_posix()) for p in self.values], as_pathlib = True)
 
-    @AutoRefresher()
     def __getitem__(self, key):
         print(key)
         if isinstance(key, slice):
@@ -183,7 +206,8 @@ class FileCluster:
             return FileCluster(input_patterns = [] , input_paths = [], values = [self.values[key]], as_pathlib = True)
 
     
-    def move(self, target_dir):
+    @Broadcaster()
+    def move(self, target_dir, conflict_function = handle_file_conflict):
         '''
         Input: 
             - target_dir: the directory to which all files will be sent.
@@ -197,18 +221,31 @@ class FileCluster:
         #If the directory doesn't actually exist or just isn't a directory, we return None
         if not p.exists() or not p.is_dir():
             return None
-        
-        def move_func(v):
-            shutil.move(str(v), str(p / v.name))
-            return p / v.name
 
-        @AutoRefresher(does_modify = True, mapper_func = lambda x : p / x.name)
-        def exec_func(self):
-            return self.map(move_func)
+        nvals = []
+        changes = []
 
-        return exec_func(self)
+        for v in self.values:
+            print(v.parent, p)
+            if v.parent != p:
+                print('in')
+                dest = conflict_function(p / v.name)
+
+                #if dest is None, we ignore it
+                if dest:
+                    print(str(v), str(dest))
+                    shutil.move(str(v), str(dest))
+                    changes.append((str(v), str(dest)))
+                    nvals.append(Path(dest.as_posix()))
+            else:
+                print('else')
+                print(str(v))
+                changes.append((str(v), str(v)))
+                nvals.append(Path(v.as_posix()))
+            
+        return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
     
-    def copy(self, target_dir):
+    def copy(self, target_dir, conflict_function = handle_file_conflict):
         '''
         Input: 
             - target_dir: the directory to which all files will be sent.
@@ -221,31 +258,19 @@ class FileCluster:
         #If the directory doesn't actually exist or just isn't a directory, we return None
         if not p.exists() or not p.is_dir():
             return None
+        
+        nvals = []
+        for v in self.values:
+            dest = conflict_function(p / v.name)
 
-        def copy_func(v):
-            m = mapper_copy_func(v)
-            shutil.copy(str(v), str(m))
-            return m
-
-        def mapper_copy_func(x):
-            n, i = x.name, 1
+            #if dest is None, we ignore it
+            if dest:
+                shutil.copy(str(v), str(dest))
+                nvals.append(Path(dest.as_posix()))
             
-            while (p / n).exists():
-                n = f"{x.stem}({i}){x.suffix}"
-                i += 1
-            
-            print("OUT", p / n)
-            
-            return p / n
+        return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
-
-
-        @AutoRefresher(does_modify = True, mapper_func = mapper_copy_func, instance = self)
-        def exec_func(self):
-            return self.map(copy_func) 
-
-        return exec_func(self)
-    
+    @Broadcaster()
     def delete(self):
         '''
         Deletes all the files in the variable. 
@@ -254,40 +279,33 @@ class FileCluster:
             - Empty FileCluster object
         '''
 
-        @AutoRefresher(does_modify = True, does_filter = True, filter_func = lambda x : False)
-        def work(self):
-            for fl in self.values:
-                if fl.is_dir():
-                    shutil.rmtree(fl.as_posix())
-                elif fl.is_file():
-                    fl.unlink()
+        changes = []
+        for fl in self.values:
+            if fl.is_dir():
+                shutil.rmtree(fl.as_posix())
+                changes.append((fl.as_posix(), None))
+            elif fl.is_file():
+                fl.unlink()
+                changes.append((fl.as_posix(), None))
 
-        work(self)
-        return FileCluster(input_patterns = [], input_paths = [], values = [])
 
+        return changes, FileCluster(input_patterns = [], input_paths = [], values = [])
+
+    @Broadcaster()
     def rename(self, rename_function):
         '''
             rename_function: a function that takes an integer as an input 
         '''
 
-        i = -1
-        def sample(x):
-            nonlocal i
-            i += 1
-            return x.parent / rename_function(i)
+        nvals = []
+        changes = []
+        for i, v in enumerate(self.values):
+            print('renaming', v,v.parent / rename_function(i) )
+            nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
+            changes.append((v.as_posix(), nvals[-1]))
 
-        @AutoRefresher(does_modify = True, mapper_func = sample)
-        def work(self):
-            nvals = []
-            for i, v in enumerate(self.values):
-                print('renaming', v,v.parent / rename_function(i) )
-                nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
-            return nvals
+        return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
-        nvals = work(self)
-        return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
-
-    @AutoRefresher()
     def zip(self, save_dir = '.', save_name = "out.zip"):
         '''
         Zips all the files into a single zip.
@@ -297,6 +315,8 @@ class FileCluster:
 
         copied = self.copy(save_dir)
 
+        print('copy complete', Broadcaster.files_dict)
+
         with zipfile.ZipFile(save_p.as_posix(), 'w') as zipMe:        
             for fl in copied.values:
                 zipMe.write(fl.as_posix(), compress_type=zipfile.ZIP_DEFLATED)
@@ -304,9 +324,10 @@ class FileCluster:
         assert save_p.exists(), "For some reason, the newly created zip file does not exist"
 
         copied.delete()
+        print('copy deleted', Broadcaster.files_dict)
+
         return FileCluster(input_patterns = [], input_paths = [], values = [save_p], as_pathlib = True)
 
-    @AutoRefresher()
     def post(self, url, additional_data, payload_name):
 
         with optional_dependencies('warn'):
@@ -338,7 +359,7 @@ class FileCluster:
 
             return resp 
 
-    @AutoRefresher()
+    #DO NOT ADD AN AUTOREFRESHER DECORATOR HERE --> It will add a middleman to move() and copy() that will alter results
     def map(self, map_func):
         '''
         Input: 
@@ -357,7 +378,6 @@ class FileCluster:
         return p
     
      
-    @AutoRefresher()
     def reduce(self, reducer_function):
         '''
         Input: 
@@ -389,17 +409,12 @@ class FileCluster:
 
 
         nvals = []
-        @AutoRefresher(does_modify = True, does_filter = True, filter_func = filter_func, instance = self)
-        def work(self):
-            for v in self.values:
-                if filter_func(v):
-                    nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
+        for v in self.values:
+            if filter_func(v):
+                nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
         
-        work(self)
-
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
-    @AutoRefresher()
     def clone(self):
         '''
         Returns a deep clone of the current object

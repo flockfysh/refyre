@@ -21,8 +21,8 @@ class AutoRefresher:
     2. "optimize_single_real" - The most optimized, this mode deletes any paths in the variable that no longer exist, and ensures the paths are purely unique
 
     '''
-    REFRESHER_MODE = 'preserve'
-    VALID_MODES = ['preserve']
+    REFRESHER_MODE = 'off'
+    VALID_MODES = ['preserve', 'off']
 
     #A global dictionary to manage filepath movements
     files_dict = {} #Maps filepath strings to new strings. If a filepath is expected to be gone, it will contain the value None
@@ -33,8 +33,12 @@ class AutoRefresher:
         
        
     def __call__(self, func):
+
+        if AutoRefresher.REFRESHER_MODE == 'off':
+            def wrapper(instance, *args, **kwargs):
+                return func(instance, *args, **kwargs)
         
-        if AutoRefresher.REFRESHER_MODE == 'preserve':
+        elif AutoRefresher.REFRESHER_MODE == 'preserve':
 
 
             def wrapper(instance, *args, **kwargs):
@@ -48,6 +52,14 @@ class AutoRefresher:
                     fdct[k].discard(instance.id)
 
                 clusters = instance.all_clusters()
+
+                AutoRefresher.files_dict = {k : fdct[k] for k in fdct if len(fdct[k]) > 0}
+                fdct = AutoRefresher.files_dict
+
+                instance.values = [v for v in list(dict.fromkeys(instance.values)) if v.exists() ]
+
+                print("OONK")
+                print(fdct, instance.values)
 
                 for v in instance.values:
                     if v not in nvals and "does_modify" in self.conf_kw and self.conf_kw["does_modify"]:
@@ -79,6 +91,7 @@ class AutoRefresher:
 
                                 #Remove all the old values
                                 for cluster_id in fdct[v.as_posix()]:
+                                    print('Updating cluster', cluster_id)
                                     cluster_var = clusters[cluster_id]
                                     cluster_var.values = [p for p in cluster_var.values if p.as_posix() != v.as_posix()] + [Path(potential_candidate.as_posix())]
 
@@ -99,10 +112,42 @@ class AutoRefresher:
                                 #Rename the file
                                 v.rename(potential_candidate)
                                 assert potential_candidate.exists(), "New candidate doesnt exist after renaming"
+                            
+                            else:
+                                #If they're the same, update all of the old ones to match to the mapper
+
+                                print("SAMEEEE")
+                                print(v.as_posix(), fdct)
+
+                                if not v.as_posix() in fdct:
+                                    print(v.as_posix(), 'not in', fdct)
+                                    fdct[v.as_posix()] = set()
+
+                                for cluster_id in fdct[v.as_posix()]:
+                                    print('Synchronizing cluster', cluster_id)
+                                    cluster_var = clusters[cluster_id]
+                                    cluster_var.values = [p for p in cluster_var.values if p.as_posix() != v.as_posix()] + [self.conf_kw["mapper_func"](potential_candidate)]
+
+                                o_set = fdct[v.as_posix()]
+
+                                assert potential_candidate.as_posix() in fdct, "Old candidate is somehow not in our dictionary"
+
+                                if not self.conf_kw["mapper_func"](potential_candidate).as_posix() in fdct:
+                                    fdct[self.conf_kw["mapper_func"](potential_candidate).as_posix()] = set()
+
+                                #Update dict
+                                for n in o_set:
+                                    fdct[self.conf_kw["mapper_func"](potential_candidate).as_posix()].add(n)
+
+                                #Remove the old set
+                                fdct.pop(v.as_posix(), None)
+
+                                #DO NOT MODIFY THE POTENTIAL_CANDIDATE YET - the actual method will do that
 
                             #update dict, and add to nvals
-
                             insert(fdct, self.conf_kw["mapper_func"](potential_candidate).as_posix(), instance.id)
+
+                            print(v, '-->', potential_candidate, fdct)
                             nvals.append(potential_candidate)
                         
                         if "does_filter" in self.conf_kw and self.conf_kw["does_filter"] and "filter_func" in self.conf_kw:
@@ -110,6 +155,7 @@ class AutoRefresher:
                             if not self.conf_kw["filter_func"](v):
 
                                 #Delete across all variables
+                                print("DELETING", fdct, v.as_posix())
                                 for cluster_id in fdct[v.as_posix()]:
                                     cluster_var = clusters[cluster_id]
                                     cluster_var.values = [p for p in cluster_var.values if p.as_posix() != v.as_posix()]
@@ -134,7 +180,10 @@ class AutoRefresher:
                 #Add any expected filepath changes
 
                 print('autorefresher returned nvals', nvals)
+                AutoRefresher.files_dict = {k : fdct[k] for k in fdct if len(fdct[k]) > 0}
                 instance.values = [v for v in list(dict.fromkeys(nvals)) if v.exists() ]
+
+                print(fdct, instance.values)
                 return func(instance, *args, **kwargs)
             
         
@@ -200,5 +249,3 @@ class AutoRefresher:
     
     def conflict_filename(self, parent, fl_name, fl_stem, i):
         return parent / f"{fl_name}({i}){fl_stem}"
-
-
