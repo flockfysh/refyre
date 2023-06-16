@@ -1,0 +1,2 @@
+[dir="c1"|name="var[0]"]
+[dir="c2"|name="var[1:4]"]
