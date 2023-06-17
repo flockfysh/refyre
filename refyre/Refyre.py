@@ -109,6 +109,7 @@ class Refyre:
         if node.limit != '':
             has_limit = True
             lower, upper = extract_numbers(node.limit)
+        print("LIMIT STUFF", lower, upper, has_limit)
 
 
         print("DIR ", node.directory)
@@ -252,12 +253,6 @@ class Refyre:
 
                 print("EEEEEETKJSDLKJSADL")
             
-            nchild = []
-            for child in node.children + [import_fgraph]:
-                nchild.extend(self.__expand(child, new_path, step = step))
-            
-            node.children = [c for c in nchild  if c is not None]
-
             if node.flags == '*m' and not new_path.exists():
                 new_path.mkdir(exist_ok = True, parents = True)
 
@@ -268,6 +263,12 @@ class Refyre:
                 print('adding', node.alias)
                 print(ExpressionGenerator(node.alias)(1))
                 self.alias_manager.add(ExpressionGenerator(node.alias)(1), Path(new_path.as_posix()), is_pathlib = True)
+
+            nchild = []
+            for child in node.children + [import_fgraph]:
+                nchild.extend(self.__expand(child, new_path, step = step))
+            
+            node.children = [c for c in nchild  if c is not None]
 
             return [node]
 

@@ -18,7 +18,7 @@ def clone_node(url, fp):
     print('Cloning to ', tmp_empty)
     git.Repo.clone_from(url, tmp_empty)
 
-    mv_var = FileCluster(input_paths = [tmp_empty], input_patterns = ['*'])
+    mv_var = FileCluster(input_paths = [tmp_empty], input_patterns = ['g*'])
 
     mv_var.move(tmp_empty.parent)
 

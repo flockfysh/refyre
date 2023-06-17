@@ -73,10 +73,11 @@ class FileCluster:
     
         #If the user didn't send the values as Pathlib objects already
         if not as_pathlib: 
-            self.values += sorted([ Path(pth) for pth in values ])
+            self.values += [ Path(pth) for pth in values ]
         else:
             self.values += values
 
+        self.values = sorted(self.values)
         #Track variable on broadcaster
         Broadcaster.add(self.id, self.values)
 
@@ -84,18 +85,31 @@ class FileCluster:
         return FileCluster.clusters
 
     def __del__(self):
-        print('deleting')
-        FileCluster.clusters.pop(self.id)
+        print('deleting', self.id)
+        if self.id in FileCluster.clusters:
+            FileCluster.clusters.pop(self.id)
         Broadcaster.release(self.id)
 
     
     @classmethod
     def cleanup(cls):
-        for k in FileCluster.clusters:
+        for k in list(FileCluster.clusters):
             obj = FileCluster.clusters[k]
             if obj() is None:
                 FileCluster.clusters.pop(k)
 
+    @classmethod
+    def wipe(cls):
+        for k in list(FileCluster.clusters):
+            print('wiping', k)
+            obj = FileCluster.clusters[k]()
+            if obj is not None:
+                print('deleting', k)
+                del obj 
+        
+        FileCluster.GLOBAL_COUNTER = 0
+        Broadcaster.clear()
+        FileCluster.clusters.clear()
 
     def __add__(self, other):
         '''
@@ -302,11 +316,11 @@ class FileCluster:
         for i, v in enumerate(self.values):
             print('renaming', v,v.parent / rename_function(i) )
             nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
-            changes.append((v.as_posix(), nvals[-1]))
+            changes.append((v.as_posix(), nvals[-1].as_posix()))
 
         return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
-    def zip(self, save_dir = '.', save_name = "out.zip"):
+    def zip(self, save_dir = '.', save_name = "out.zip", conflict_function = handle_file_conflict):
         '''
         Zips all the files into a single zip.
         '''
@@ -317,6 +331,7 @@ class FileCluster:
 
         print('copy complete', Broadcaster.files_dict)
 
+        save_p = handle_file_conflict(save_p)
         with zipfile.ZipFile(save_p.as_posix(), 'w') as zipMe:        
             for fl in copied.values:
                 zipMe.write(fl.as_posix(), compress_type=zipfile.ZIP_DEFLATED)

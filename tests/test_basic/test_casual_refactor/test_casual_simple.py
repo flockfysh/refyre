@@ -20,6 +20,7 @@ def run_before_and_after_tests(monkeypatch):
     # Teardown : fill with any logic you want
     monkeypatch.chdir(str(cwd))
     shutil.rmtree('test')
+    FileCluster.wipe()
 
 
 def test_variable_read_sep_prelim():

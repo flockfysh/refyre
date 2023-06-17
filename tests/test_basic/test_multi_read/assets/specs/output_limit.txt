@@ -1,0 +1,1 @@
+[dir="a$"|name="var"|limit="4-5"|mode="copy"]

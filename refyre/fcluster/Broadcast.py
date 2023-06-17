@@ -26,6 +26,7 @@ class Broadcaster:
         
     @classmethod
     def release(cls, cluster_id):
+        print('released', cluster_id)
         for k in cls.files_dict:
             print(k, cluster_id, cls.files_dict[k])
             cls.files_dict[k].discard(cluster_id)

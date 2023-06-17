@@ -65,7 +65,8 @@ class VariableAction:
                 if '*d' in node.flags:
                     p = p.filter(lambda x : x.is_dir())
 
-                out_variable_dict[name] += p
+                #Add a conditional in case they never defined a variable before
+                out_variable_dict[name] = (p if name not in out_variable_dict else out_variable_dict[name] + p)
 
 
             return name, out_variable_dict[name] 

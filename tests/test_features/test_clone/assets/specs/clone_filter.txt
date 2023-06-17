@@ -1,0 +1,3 @@
+[dir="clone_folder"|type="git"|link="https://github.com/ultralytics/yolov5"|flags="*da"]
+    [dir="segment"]
+    [dir="data"]
