@@ -1,0 +1,3 @@
+[dir="dummymath"]
+    [dir="module3"]
+        [dir="m1"|flags="*c"]

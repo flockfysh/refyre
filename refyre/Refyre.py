@@ -586,6 +586,9 @@ class Refyre:
                 variables[name] = FileCluster(values = pths[name], as_pathlib = False)
 
             return Refyre(variables = variables)
+    
+    def aliases(self):
+        return self.alias_manager
 
     def step(self):
         '''

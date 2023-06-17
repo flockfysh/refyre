@@ -63,7 +63,4 @@ def test_clone_yolo_and_filter_reg_dirs_only():
     assert len([*Path('clone_folder').iterdir()]) == 7, f"{[*Path('clone_folder').iterdir()]} doesn't only have 7 directories"
     assert len([*Path('clone_folder/data').iterdir()]) > 0, "Shouldn't delete files from subdirectories"
 
-def test_clone_yolo_and_code_import():
-    ref = Refyre()
-    ref.create_spec('specs/clone_code.txt')
 
