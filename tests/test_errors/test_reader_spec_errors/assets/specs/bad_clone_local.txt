@@ -1,0 +1,1 @@
+[dir="a"|name="var"|type="git"|link="Users/b"]

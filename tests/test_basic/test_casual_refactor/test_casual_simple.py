@@ -40,10 +40,10 @@ def test_variable_read_sep_b():
     assert len(avar) == 2 and avar[0].item() == Path('b/b1.txt') and avar[1].item() == Path('b/b2.txt')
 
 def test_gen_var_check():
-    ref = Refyre(input_specs = ["input.txt"])
+    ref = Refyre(input_specs = ["input.txt"], output_specs = ['output.txt'])
     v = ref["var"]
     
-    assert len(v) == 4 
+    assert len(v) == 4  and len([*Path('c').iterdir()]) == 4
 
 def test_gen_var_easy2():
     ref = Refyre(input_specs = ["input.txt"])

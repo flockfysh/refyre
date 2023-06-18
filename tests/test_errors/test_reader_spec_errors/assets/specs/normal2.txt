@@ -1,0 +1,2 @@
+[dir="a"|name="var"]
+[dir="b"|name="var2"]

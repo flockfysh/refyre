@@ -13,7 +13,7 @@ def main(argv = None):
     parser.add_argument("-i", '--input', help = "filepaths to the input specs, seperated by spaces", nargs='+')
     parser.add_argument("-o", '--output', help = "filepaths to the output specs, seperated by spaces", nargs='+')
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     ref = Refyre(input_specs = args.input, output_specs = args.output)
 

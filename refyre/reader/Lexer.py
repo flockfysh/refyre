@@ -70,7 +70,7 @@ class Lexer:
             print(f"\nHere's the line we detected the error on: {line.strip()}")
             print('Make sure that there\'s a bar between all parts. For example, dir="a"name="k" is incorrect, while dir="a"|name="k" is.')
             print('Aborting ...')
-            exit(1)
+            raise Exception("Error in bracketing.")
 
 
         try:
@@ -78,7 +78,7 @@ class Lexer:
         except AttributeError as e:
             print(f"ERROR: The lexer attempted to parse line {line} but couldn't find a match. Can you make sure that you have opening and closing brackets? ('[',']')")
             print('Aborting ...')
-            exit(1)
+            raise Exception("Error in parsing lines.")
 
 
         match = split_string_ignore_quotes(matches)
@@ -98,7 +98,7 @@ class Lexer:
                 print("ERROR: it looks like you're missing a key attribute. Check to make sure each attribute and value have an '=' sign between them, and are in \"\".")
                 print(f"The error happened on line: {line.strip()}, when we tried to handle match {arg}")
                 print('Aborting ...')
-                exit(1)
+                raise Exception("Missing a key attribute")
 
             try:
                 val = matches.group(2)
@@ -106,7 +106,7 @@ class Lexer:
                 print("ERROR: it looks like you're missing a val attribute. Check to make sure each attribute and value have an '=' sign between them, and are in \"\".")
                 print(f"The error happened on line: {line.strip()}, when we tried to handle match {arg}")
                 print('Aborting ...')
-                exit(1)
+                raise Exception("Missing a val attribute")
 
             dict_of_args[key] = val
 
@@ -124,7 +124,7 @@ class Lexer:
             print(f"ERROR: The lexer failed to read one of the attributes. It's most likely because you typed one of the attributes wrong. Here's the full error message below.")
             print(e)
             print('Aborting ...')
-            exit(1)
+            raise Exception("Lexer failed to read attribute")
 
         return t
 

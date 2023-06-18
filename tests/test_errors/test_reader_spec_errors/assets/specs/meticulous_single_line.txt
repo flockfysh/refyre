@@ -1,0 +1,5 @@
+#Hey everyone! I'm a really nice Nancy who loves writing comments over every single line of code! Aren't I adorable?
+[dir="a"|name="var"] #Look at this cool comment
+#And this one!
+
+#Aren't I amazing? So meticulous!
