@@ -1,6 +1,7 @@
 from refyre.utils import optional_dependencies 
 from refyre.fcluster import FileCluster #Time to use the power of our variables :)
 from pathlib import Path
+from refyre.config import log
 import random
 import shutil
 

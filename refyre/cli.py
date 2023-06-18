@@ -18,4 +18,4 @@ def main(argv = None):
     ref = Refyre(input_specs = args.input, output_specs = args.output)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
