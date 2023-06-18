@@ -14,3 +14,4 @@ initial-data
 docs/*
 *.json
 __pycache__
+*.log

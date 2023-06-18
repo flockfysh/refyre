@@ -1,5 +1,6 @@
 import re 
 from refyre.fcluster import FileCluster
+from refyre.config import log
 
 class VariableParser:
     '''
@@ -14,10 +15,10 @@ class VariableParser:
         match1 = re.match(pattern1, expression)
         match2 = re.match(pattern2, expression)
 
-        print(match1, match2)
+        log(match1, match2)
 
         if match1:
-            print('match1')
+            log('match1')
             name = match1.group(1)
             start = match1.group(2)
             stop = match1.group(3)
@@ -26,7 +27,7 @@ class VariableParser:
             return name, start, stop, step
 
         elif match2:
-            print('match2')
+            log('match2')
             name = match2.group(1)
             start = match2.group(2)
             stop = str(int(start) + 1)

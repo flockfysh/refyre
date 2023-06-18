@@ -1,8 +1,9 @@
 import argparse 
+import sys
 from refyre import Refyre
 
 #Instantiate an argument parser
-def cli():
+def main(argv = None):
     parser = argparse.ArgumentParser(
         prog = "cli",
         description = "refyre v.0.0.1 CLI",
@@ -16,4 +17,5 @@ def cli():
 
     ref = Refyre(input_specs = args.input, output_specs = args.output)
 
-cli()
+if __name__ == '__main__':
+    sys.exit(main())

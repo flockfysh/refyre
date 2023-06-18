@@ -3,6 +3,8 @@ from .cogs.LexerToken import Token
 
 from refyre.fgraph import FileGraphNode
 from pathlib import Path
+from refyre.config import log
+from tqdm import tqdm
 
 
 #Utility stack (LIFO) data stucture methods
@@ -28,7 +30,7 @@ class Parser:
         push(stack, (FileGraphNode(is_root = True, children = []), INF))
 
         
-        for tok in tokens:
+        for tok in tqdm(tokens, desc = "Generating token stack", ncols = 100):
             cur = []
 
             #Resolve all the nodes with tab_level lower
@@ -49,7 +51,7 @@ class Parser:
                 #Clear the list
                 cur.clear()
 
-            print('imports', tok.imports, tok.link)
+            log('imports', tok.imports, tok.link)
             push(stack, (FileGraphNode(children = list([]), pattern = tok.pattern, directory = tok.directory, type = tok.dirtype, name = tok.name, is_root = Path(tok.directory).exists(), flags = tok.flags, serialize = tok.serialize, imports = tok.imports, mode = tok.mode, link = tok.link, alias = tok.alias, limit = tok.limit) , tok.tab_level))
 
         #Compress the remainder of the stack

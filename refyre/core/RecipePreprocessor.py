@@ -21,7 +21,7 @@ def create_virtualenv_and_install_requirements(venv_path, requirements_file):
     activate_cmd = f"source {activate_script} && python -m pip"
     
     # Install the requirements using pip within the virtual environment
-    print("installing reqs")
+    log("installing reqs")
     pip_install_cmd = f"{activate_cmd} install -r {requirements_file}"
     subprocess.run(pip_install_cmd, shell=True, check=True)
 
@@ -54,8 +54,8 @@ class RecipePreprocessor:
 
             '''
 
-            print(recipe_dict)
-            print(recipe_dict['env']['name'])
+            log(recipe_dict)
+            log(recipe_dict['env']['name'])
 
             #Setup the base directories based on an input spec
             ref = Refyre.Refyre(input_specs = [recipe_dict["input-spec"]])

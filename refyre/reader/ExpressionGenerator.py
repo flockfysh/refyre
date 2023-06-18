@@ -1,7 +1,5 @@
 import re 
-
-
-
+from refyre.config import log
 
 
 class ExpressionGenerator:
@@ -34,7 +32,7 @@ class ExpressionGenerator:
             By "null" generator, I just mean a genexp that 
             doesn't have any special characters, i.e. one that will stay the same
         '''
-        print('Checking: ', expression, '$' in expression)
+        log('Checking: ', expression, '$' in expression)
         return not ('$' in expression)
     
     def convert_generator_expression(expression):
@@ -45,10 +43,10 @@ class ExpressionGenerator:
     def reverse_generator_expression(expression, string):
         regex_pattern = ExpressionGenerator.convert_generator_expression(expression)
 
-        print(expression, regex_pattern)
+        log(expression, regex_pattern)
         match = re.match(regex_pattern, string)
         if match:
-            print(match.group(1), "exp",  expression, "str", string)
+            log(match.group(1), "exp",  expression, "str", string)
             return int(match.group(1))
         else:
             return None

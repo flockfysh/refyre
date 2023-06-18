@@ -7,7 +7,7 @@ import shutil
 def clone_node(url, fp):
     import git 
 
-    print("GEET", git)
+    log("GEET", git)
 
 
     #Ensure no file conflicts
@@ -15,7 +15,7 @@ def clone_node(url, fp):
     tmp_empty = fp / f'tmp{rand_num}'
 
 
-    print('Cloning to ', tmp_empty)
+    log('Cloning to ', tmp_empty)
     git.Repo.clone_from(url, tmp_empty)
 
     mv_var = FileCluster(input_paths = [tmp_empty], input_patterns = ['g*'])

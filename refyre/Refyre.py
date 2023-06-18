@@ -2,6 +2,7 @@ from refyre.fgraph import FileGraph
 from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser, PatternGenerator, VariableAction
 from refyre.fcluster import FileCluster
 from refyre.utils import is_valid_regex, clone_node, extract_numbers
+from refyre.config import logfile, log
 from refyre.core import CodeManager, AliasManager
 
 #pathlib
@@ -66,10 +67,10 @@ class Refyre:
         '''
 
 
-        print('HEEEERE', input_path)
+        log('HEEEERE', input_path)
         p = Parser(Lexer(input_path))
 
-        print("CONSTRUCT", p)
+        log("CONSTRUCT", p)
 
         #Monkey patch, until we figure out how we can support directory clustering with output
         return p.copy(), self.__expand(p, path = expand_path)[0] 
@@ -97,10 +98,10 @@ class Refyre:
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
         assert Path(path).exists(), f"Error, the path {path} doesn't exist"
-        print('new path: ', new_path, node.directory, node.pattern)
+        log('new path: ', new_path, node.directory, node.pattern)
         
         if (Path(path).is_file()) or (not new_path.exists() and not PatternGenerator.is_valid_regex(node.directory)):
-            print('invalid in general')
+            log('invalid in general')
             return [None]
         
 
@@ -109,28 +110,28 @@ class Refyre:
         if node.limit != '':
             has_limit = True
             lower, upper = extract_numbers(node.limit)
-        print("LIMIT STUFF", lower, upper, has_limit)
+        log("LIMIT STUFF", lower, upper, has_limit)
 
 
-        print("DIR ", node.directory)
+        log("DIR ", node.directory, )
         t = PatternGenerator.get_pattern_type(node.directory)
-        print('detected pattern to be ', t, node.directory == '')
+        log('detected pattern to be ', t, node.directory == '', )
 
         if t != "normal_string":
             file_num = 0
             ret = []
 
-            print(t)
+            log(t, )
 
             if (t == "regex" or t == "glob") and node.directory != '':
-                print('valid regex')
+                log('valid regex', )
 
                 #Create nodes for each of the pattern matches
-                print(new_path, new_path.parent)
+                log(new_path, new_path.parent, )
                 for fl in new_path.parent.iterdir():
 
-                    print('file', fl)
-                    print(r'{}'.format(node.directory), fl.as_posix())
+                    log('file', fl, )
+                    log(r'{}'.format(node.directory), fl.as_posix(), )
                     if re.search(r'{}'.format(PatternGenerator(node.directory)), fl.as_posix()) and fl not in ret and fl.is_dir() and file_num >= lower and file_num <= upper: #No files will be allowed to be fclusters
 
                         pattern_matched_node = node.copy()
@@ -140,7 +141,7 @@ class Refyre:
                         #Update the directory with the name 
                         pattern_matched_node.directory = fl.name 
 
-                        print('found match', fl.name)
+                        log('found match', fl.name, )
                         file_num += 1
                         ret.append(pattern_matched_node)                 
             
@@ -151,7 +152,7 @@ class Refyre:
 
                 mx_num = -1
 
-                print('\n\n\nGENERATOR!!!!')
+                log('\n\n\nGENERATOR!!!!', )
 
                 if has_limit:
                     for j in range(lower, upper + 1):
@@ -166,7 +167,7 @@ class Refyre:
                     
                     for fl in new_path.parent.iterdir():
 
-                        print("DIR", node.directory)
+                        log("DIR", node.directory, )
                         reversed_num = ExpressionGenerator.reverse_generator_expression(node.directory, fl.name)
                         if reversed_num:
                             mx_num = max(mx_num, reversed_num)
@@ -178,16 +179,16 @@ class Refyre:
                             #Update the directory with the name 
                             pattern_matched_node.directory = fl.name 
 
-                            print('found match', fl.name)
+                            log('found match', fl.name, )
                             file_num += 1
                             ret.append(pattern_matched_node)  
 
-                print('\n\n\n')
-                print(step, '*s', node.flags, '*s' in node.flags)
+                log('\n\n\n', )
+                log(step, '*s', node.flags, '*s' in node.flags, )
                 if step and '*s' in node.flags:
                     new_node = node.copy()
 
-                    print('adding new dir', mx_num + 1)
+                    log('adding new dir', mx_num + 1, )
                     new_node.directory = gen_func(mx_num + 1)
 
 
@@ -199,13 +200,13 @@ class Refyre:
 
             
             #Before we go to children, let's handle any imports we must
-            print('handling imports', node.imports, node.directory)
+            log('handling imports', node.imports, node.directory, )
             import_fgraph = None
             if node.imports != '' and Path(node.imports).exists():
-                print('importing', node.imports)
+                log('importing', node.imports, )
                 import_fgraph = self.__construct(node.imports, expand_path = new_path)
                 import_fgraph.is_root = False
-                print('imported', import_fgraph)
+                log('imported', import_fgraph, )
 
             #Now, attempt to check for all the node children of the original node
             #We will insert each of the current node's children into the new matched nodes, and recurse on them
@@ -220,16 +221,16 @@ class Refyre:
                 pattern_node.children = [c for c in nchilds if c is not None] 
 
                 if node.flags == '*m' and not new_path.exists():
-                    print('making uncreated dir')
+                    log('making uncreated dir', )
                     new_path.mkdir(exist_ok = True, parents = True)
 
                 if pattern_node.type == 'git' and pattern_node.link != '':
                     clone_node(pattern_node.link, new_path)
 
                 if pattern_node.alias != '':
-                    print('adding', pattern_node.alias)
+                    log('adding', pattern_node.alias, )
 
-                    print('reversing', node.directory, pattern_node.directory)
+                    log('reversing', node.directory, pattern_node.directory, )
                     n = ExpressionGenerator.reverse_generator_expression(node.directory, pattern_node.directory)
 
                     if ( ('*s' in node.flags or '*l' in node.flags) and n == mx_num + 1):
@@ -241,17 +242,17 @@ class Refyre:
             return ret if ret else [node]
 
         else:
-            print('in else')
+            log('in else', )
             #Before we go to children, let's handle any imports we must
-            print('handling imports', node.imports, node.directory)
+            log('handling imports', node.imports, node.directory, )
             import_fgraph = None
             if node.imports != '' and Path(node.imports).exists():
-                print('importing', node.imports)
+                log('importing', node.imports, )
                 
                 import_fgraph = self.__construct(node.imports, is_output = True)
                 import_fgraph.is_root = False
 
-                print("EEEEEETKJSDLKJSADL")
+                log("EEEEEETKJSDLKJSADL", )
             
             if node.flags == '*m' and not new_path.exists():
                 new_path.mkdir(exist_ok = True, parents = True)
@@ -260,8 +261,8 @@ class Refyre:
                 clone_node(node.link, new_path)
                 
             if node.alias != '':
-                print('adding', node.alias)
-                print(ExpressionGenerator(node.alias)(1))
+                log('adding', node.alias, )
+                log(ExpressionGenerator(node.alias)(1), )
                 self.alias_manager.add(ExpressionGenerator(node.alias)(1), Path(new_path.as_posix()), is_pathlib = True)
 
             nchild = []
@@ -283,7 +284,7 @@ class Refyre:
         '''
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
-        print('Testing to see if ', new_path, 'exists')
+        log('Testing to see if ', new_path, 'exists', )
         if not new_path.exists():
             return [False, None]
         
@@ -325,7 +326,7 @@ class Refyre:
         new_path = new_path.as_posix()
 
         if node.name != "":
-            print('activating', new_path, node.directory, node.name)
+            log('activating', new_path, node.directory, node.name, )
             self.__parse_var(node, new_path, mode)
 
         if node.flags != '':
@@ -351,7 +352,7 @@ class Refyre:
         #Updating the path
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
-        print('mode', node.mode)
+        log('mode', node.mode, )
         self.__create_output(node, new_path, mode if node.mode == '' else node.mode)
         new_path = new_path.as_posix()
 
@@ -387,7 +388,7 @@ class Refyre:
 
         if mode == "normal":
             name, v = VariableAction(node.name, node, path, self.variables, self.out_temp_var_dict,  True, False, mode = mode)
-            print('updated vals', name, v)
+            log('updated vals', name, v, )
 
     def __create_output(self, node, path, mode):
         '''
@@ -407,7 +408,7 @@ class Refyre:
 
         if node.name != "":
             name, v = VariableAction(node.name, node, path, self.variables, self.out_temp_var_dict , False, True, mode = mode)
-            print('updated vals', name, v)
+            log('updated vals', name, v, )
 
             
     def __post_generate(self, node, path = "", mode = "copy", flags = ""):
@@ -418,21 +419,21 @@ class Refyre:
 
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
         
-        print('\n\n',new_path, node.flags)
+        log('\n\n',new_path, node.flags, )
 
         if node.flags == '*d' or node.flags == "*da" or flags == "*da":
 
             #We're going to make a list of all the files that should be there, and find all files that aren't in that list 
-            print('On', new_path, node.is_root_dir())
+            log('On', new_path, node.is_root_dir(), )
 
             #First, we get a list of all children that aren't roots 
             children = [ (Path(new_path) / pth.directory) for pth in node.children if not pth.is_root_dir()]
-            print('non root', children)
+            log('non root', children, )
 
             #Then, we grab all the roots
             children += [ Path(pth.directory) for pth in node.children if pth.is_root_dir()]
 
-            print('all', children)
+            log('all', children, )
 
             var_pths = []
             if node.name != '':
@@ -448,31 +449,31 @@ class Refyre:
                 p = sliced.filter(lambda x : new_path in x.parents)
 
 
-                print(p)
+                log(p, )
                 var_pths = p.vals()
 
-            print('variable paths', var_pths)
+            log('variable paths', var_pths, )
 
             #Add 'em up, baby
             tot = children + var_pths
-            print('Total', tot)
+            log('Total', tot, )
 
             bad_files = []
             for pth in Path(new_path).iterdir():
                 if pth not in tot:
                     bad_files.append(pth)
                 
-            print('Bad files: ', bad_files)
+            log('Bad files: ', bad_files, )
             
             #Snip ... snip ... *ouch* >_<
             for fl in bad_files:
-                print('Deleting', fl)
+                log('Deleting', fl, )
                 if fl.is_dir():
                     shutil.rmtree(fl.as_posix())
                 elif fl.is_file():
                     fl.unlink()
                 else:
-                    print('No clue how to handle this file')
+                    log('No clue how to handle this file', )
 
 
         new_path = new_path.as_posix()
@@ -488,22 +489,22 @@ class Refyre:
 
         #Construct an fgraph instance
         proto, graph_to_add = self.__construct(spec_path, is_output = False)
-        print(graph_to_add)
+        log(graph_to_add, )
  
         #Verify the fgraph instance, and then add it in
         verification_successful, verified_graph = self.__verify(graph_to_add)
         if verification_successful:
 
-            print('Verification successful.')
-            print(verified_graph)
-            print()
+            log('Verification successful.', )
+            log(verified_graph, )
+            log()
 
             self.file_graph_blueprint.add_graph(proto)
             self.file_graph.add_graph(verified_graph)
 
-            print('Graph added. Activating variables.\n\n')
-            print(self.file_graph)
-            print('\n\n')
+            log('Graph added. Activating variables.\n\n', )
+            log(self.file_graph, )
+            log('\n\n', )
 
             self.out_temp_var_dict = self.variables.copy()
 
@@ -511,12 +512,12 @@ class Refyre:
 
             self.variables = self.out_temp_var_dict
 
-            print('On standby. Variables: ')
-            print(self.variables)
+            log('On standby. Variables: ', )
+            log(self.variables, )
         else:
-            print('Vertification failed. Maybe the spec has an invalid dir parameter specified somewhere?')
+            log('Vertification failed. Maybe the spec has an invalid dir parameter specified somewhere?', )
 
-        print('Spec addition complete.\n\n')
+        log('Spec addition complete.\n\n', )
     
     def create_spec(self, spec_path, mode = "cut", track = False):
         '''
@@ -530,13 +531,13 @@ class Refyre:
 
         assert Path(spec_path).exists(), f"The spec to create at {spec_path} cannot be located"
 
-        print('Creating spec.')
+        log('Creating spec.', )
 
         #Construct the spec path
         proto, graph_to_add = self.__construct(spec_path)
 
-        print(graph_to_add)
-        print('Graph constructed. Activating variables.')
+        log(graph_to_add, )
+        log('Graph constructed. Activating variables.', )
 
         self.out_temp_var_dict = self.variables.copy()
 
@@ -545,18 +546,18 @@ class Refyre:
 
         self.variables = self.out_temp_var_dict
 
-        print('Output complete. Commencing cleanup.')
+        log('Output complete. Commencing cleanup.', )
 
         #Do any cleanup inside the fgraph
         self.__post_generate(graph_to_add, mode = mode, flags = graph_to_add.flags)
 
         if track:
-            print('Tracking requested. Adding to fgraph cluster.')
+            log('Tracking requested. Adding to fgraph cluster.', )
 
             self.file_graph_blueprint.add_graph(proto)
             self.file_graph.add_graph(graph_to_add)
 
-            print('Graph added.')
+            log('Graph added.', )
             
     def get_vars(self):
         return self.variables
@@ -604,7 +605,7 @@ class Refyre:
         During step, each directory is created / analyzed
         '''
 
-        print('\n\n\n STEPPPY')
+        log('\n\n\n STEPPPY', )
 
         #Prevent conflicts
         self.out_temp_var_dict = self.variables.copy()
@@ -621,4 +622,4 @@ class Refyre:
         self.file_graph.add_graph(renewed_fgraph)
 
 
-        print('Step complete')
+        log('Step complete', )

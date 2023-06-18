@@ -1,6 +1,7 @@
 import fnmatch
 import re
 from .ExpressionGenerator import ExpressionGenerator
+from refyre.config import log
 
 class PatternGenerator:
     '''
@@ -18,18 +19,18 @@ class PatternGenerator:
 
     '''
     def is_valid_regex(pattern_string):
-        print(pattern_string)
+        log(pattern_string)
         if pattern_string.startswith('r'):
             try:
                 re.compile(pattern_string[1:])
             except re.error as e:
-                print(e)
+                log(e)
                 return False
         elif pattern_string.startswith('g'):
             try:
                 re.compile(fnmatch.translate(pattern_string[1:]))
             except re.error as e:
-                print(e)
+                log(e)
                 return False
         else:
             if not PatternGenerator.is_valid_genexp(pattern_string):
@@ -62,11 +63,11 @@ class PatternGenerator:
 
         '''
         if pattern_string.startswith('r'):
-            print('regex')
+            log('regex')
             return pattern_string[1:]
 
         if pattern_string.startswith('g'):
-            print('glob')
+            log('glob')
             return fnmatch.translate(pattern_string[1:])
         
         #Handle generator expressions

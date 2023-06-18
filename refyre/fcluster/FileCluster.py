@@ -1,6 +1,7 @@
 from pathlib import Path
 from functools import wraps
 from refyre.utils import get_optimal_pattern, optional_dependencies
+from refyre.config import log
 from refyre.reader import PatternGenerator
 import re
 
@@ -57,10 +58,10 @@ class FileCluster:
 
     def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False, recursive = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
-        print('init')
+        log('init')
 
         for pattern in input_patterns:
-            print('add', pattern, PatternGenerator(pattern))
+            log('add', pattern, PatternGenerator(pattern))
         self.values = self.__populate(input_paths, [ PatternGenerator(p) for p in input_patterns  ], recursive = recursive)
 
         #ID the variable
@@ -85,7 +86,7 @@ class FileCluster:
         return FileCluster.clusters
 
     def __del__(self):
-        print('deleting', self.id)
+        log('deleting', self.id)
         if self.id in FileCluster.clusters:
             FileCluster.clusters.pop(self.id)
         Broadcaster.release(self.id)
@@ -101,10 +102,10 @@ class FileCluster:
     @classmethod
     def wipe(cls):
         for k in list(FileCluster.clusters):
-            print('wiping', k)
+            log('wiping', k)
             obj = FileCluster.clusters[k]()
             if obj is not None:
-                print('deleting', k)
+                log('deleting', k)
                 del obj 
         
         FileCluster.GLOBAL_COUNTER = 0
@@ -166,13 +167,13 @@ class FileCluster:
 
         ret = []
         for dir_path, pattern in zip(input_paths, input_patterns):
-            print('pot', dir_path, pattern)
+            log('pot', dir_path, pattern)
 
             it = sorted(Path(dir_path).iterdir()) if not recursive else sorted(Path(dir_path).glob('**/*'))
             for fl in it:
-                print(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name) )
+                log(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name))
                 if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
-                    print('fl', fl, 'is match to ', dir_path, pattern)
+                    log('fl', fl, 'is match to ', dir_path, pattern)
                     ret.append(fl)
         
         return ret
@@ -213,7 +214,7 @@ class FileCluster:
         return FileCluster(values = [Path(p.as_posix()) for p in self.values], as_pathlib = True)
 
     def __getitem__(self, key):
-        print(key)
+        log(key)
         if isinstance(key, slice):
             return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key.start:key.stop:key.step], as_pathlib = True)
         elif isinstance(key, int):
@@ -240,20 +241,20 @@ class FileCluster:
         changes = []
 
         for v in self.values:
-            print(v.parent, p)
+            log(v.parent, p)
             if v.parent != p:
-                print('in')
+                log('in')
                 dest = conflict_function(p / v.name)
 
                 #if dest is None, we ignore it
                 if dest:
-                    print(str(v), str(dest))
+                    log(str(v), str(dest))
                     shutil.move(str(v), str(dest))
                     changes.append((str(v), str(dest)))
                     nvals.append(Path(dest.as_posix()))
             else:
-                print('else')
-                print(str(v))
+                log('else')
+                log(str(v))
                 changes.append((str(v), str(v)))
                 nvals.append(Path(v.as_posix()))
             
@@ -314,7 +315,7 @@ class FileCluster:
         nvals = []
         changes = []
         for i, v in enumerate(self.values):
-            print('renaming', v,v.parent / rename_function(i) )
+            log('renaming', v,v.parent / rename_function(i))
             nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
             changes.append((v.as_posix(), nvals[-1].as_posix()))
 
@@ -329,7 +330,7 @@ class FileCluster:
 
         copied = self.copy(save_dir)
 
-        print('copy complete', Broadcaster.files_dict)
+        log('copy complete', Broadcaster.files_dict)
 
         save_p = handle_file_conflict(save_p)
         with zipfile.ZipFile(save_p.as_posix(), 'w') as zipMe:        
@@ -339,7 +340,7 @@ class FileCluster:
         assert save_p.exists(), "For some reason, the newly created zip file does not exist"
 
         copied.delete()
-        print('copy deleted', Broadcaster.files_dict)
+        log('copy deleted', Broadcaster.files_dict)
 
         return FileCluster(input_patterns = [], input_paths = [], values = [save_p], as_pathlib = True)
 
@@ -389,7 +390,6 @@ class FileCluster:
             nvals.append(Path(map_func(v))) #Append a copy of the object to prevent object ref shenanigans
         
         p = FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
-        print(p)
         return p
     
      

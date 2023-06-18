@@ -1,4 +1,5 @@
 from refyre.utils import optional_dependencies 
+from refyre.config import log
 
 with optional_dependencies("warn"):
     import numpy as np 
