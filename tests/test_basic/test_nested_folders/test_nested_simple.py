@@ -2,7 +2,6 @@ import pytest
 from refyre import Refyre
 from refyre.fcluster import FileCluster
 from pathlib import Path
-from unittest.mock import patch
 import re
 import requests
 import shutil
