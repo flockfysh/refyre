@@ -81,7 +81,6 @@ class FileCluster:
         self.values = sorted(self.values)
         #Track variable on broadcaster
         Broadcaster.add(self.id, self.values)
-
     def all_clusters(self):
         return FileCluster.clusters
 

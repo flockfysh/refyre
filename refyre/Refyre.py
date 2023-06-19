@@ -58,6 +58,16 @@ class Refyre:
         '''
         return self.variables[key] if key in self.variables else None
     
+    def __setitem__(self, key, value):
+        '''
+            Attaches an externally made variable to the refyre object
+        '''
+        assert type(key) == str, "Key should be a string referring to a variable name"
+        assert type(value) == FileCluster, "Value should be a FileCluster variable"
+        self.variables[key] = value
+
+    def __contains__(self, key):
+        return key in self.variables
 
     #The Five Fundamental Operations of Refyre
     def __construct(self, input_path, is_output = False, expand_path = ""):

@@ -2,7 +2,9 @@ import pytest
 from refyre import Refyre
 from refyre.fcluster import FileCluster
 from pathlib import Path
+from unittest.mock import patch
 import re
+import requests
 import shutil
 
 #Setup and tear down each test
@@ -218,3 +220,24 @@ def test_slices_intermediate():
     assert len(var1) == 6, "var1 should have 6 files"
 
     assert var1[0::-1].vals() == [Path("in/1.txt"), ], f"Reverse slice {var1[0:2:-1].vals()} isn't working "
+
+def test_request_post():
+    #Instantiate refyre
+    ref = Refyre(input_specs = ["input.txt"])
+    var1 = ref["var1"]
+
+    # Create a mock response
+    expected_response = "Mock Response"
+    
+    # Mock the requests.get function
+    with patch.object(requests, 'post') as mock_post:
+        # Set the return value of the mock_get function
+        mock_post.return_value = type('MockResponse', (), {'text': expected_response})()
+
+        # Call the test method
+        result = var1.post('http://example.com', {'data' : "I love apples"},  "all_files")
+        
+        # Assert the expected response from the test method
+        assert result.text == expected_response
+
+

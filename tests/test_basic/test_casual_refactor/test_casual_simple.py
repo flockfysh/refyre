@@ -45,6 +45,18 @@ def test_gen_var_check():
     
     assert len(v) == 4  and len([*Path('c').iterdir()]) == 4
 
+def test_attached_gen_var_check():
+    ref = Refyre()
+    print('testing')
+    var = FileCluster(values = ["a/a1.txt", "a/a2.txt", "b/b1.txt", "b/b2.txt"])
+    
+    ref["var"] = var
+
+    assert "var" in ref, "var not properly added"
+
+    ref.create_spec('output.txt')
+    assert len(var) == 4  and len([*Path('c').iterdir()]) == 4
+
 def test_gen_var_easy2():
     ref = Refyre(input_specs = ["input.txt"])
     ref.create_spec("output2.txt")
