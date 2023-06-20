@@ -177,9 +177,10 @@ class Refyre:
                     
                     for fl in new_path.parent.iterdir():
 
-                        log("DIR", node.directory, )
                         reversed_num = ExpressionGenerator.reverse_generator_expression(node.directory, fl.name)
-                        if reversed_num:
+                        log("DIR", node.directory, str(fl), reversed_num)
+                        if reversed_num != None:
+                            log("REVERSED")
                             mx_num = max(mx_num, reversed_num)
 
                             pattern_matched_node = node.copy()
@@ -220,6 +221,7 @@ class Refyre:
 
             #Now, attempt to check for all the node children of the original node
             #We will insert each of the current node's children into the new matched nodes, and recurse on them
+            log('ret', ret)
 
             for i, pattern_node in enumerate(ret):
                 nchilds = []
@@ -248,8 +250,8 @@ class Refyre:
                     elif not ('*s' in node.flags or '*l' in node.flags):
                         self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(n), Path(new_path.as_posix()), is_pathlib = True)
                     
-
-            return ret if ret else [node]
+            
+            return ret
 
         else:
             log('in else', )
