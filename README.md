@@ -85,7 +85,7 @@ print(len(all_a_var_and_c_vars))
 And finally, after any analysis, you can use the variables to generate
 specs
 
-Let's say I want to generate directories & data in the format specified by `output_spec.txt`:
+Let's say you want to generate directories & data in the format specified by `output_spec.txt`:
 
 ```python
 '''
