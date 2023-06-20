@@ -472,3 +472,17 @@ class FileCluster:
         """
 
         return self.__deepcopy__()
+
+    def filesize(self, format = "bytes"):
+        """
+        Returns the total file size, in bytes 
+        """
+        total_size = 0.0
+
+        for pth in self.values:
+            if pth.is_dir():
+                total_size += sum([p.stat().st_size for p in Path(pth).rglob('*')])
+            elif pth.is_file():
+                total_size += pth.stat().st_size
+
+        return total_size
