@@ -1,11 +1,12 @@
 from refyre.utils import optional_dependencies 
-from refyre.config import log
 
 with optional_dependencies("warn"):
     import numpy as np 
     import pandas as pd
     import matplotlib.pyplot as plt
 
+# The PandasStack class is a Python class that creates a Pandas dataframe from a list of variables
+# using a mapper function.
 class PandasStack:
 
     def __init__(self, variables_array):

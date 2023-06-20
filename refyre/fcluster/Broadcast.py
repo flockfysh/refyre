@@ -1,5 +1,5 @@
 from pathlib import Path  
-from refyre.config import log
+from refyre.config import logger
 
 def insert(fdct, k, v):
     if k not in fdct:
@@ -27,9 +27,9 @@ class Broadcaster:
         
     @classmethod
     def release(cls, cluster_id):
-        log('released', cluster_id)
+        logger.debug(f'released {cluster_id}')
         for k in cls.files_dict:
-            log(k, cluster_id, cls.files_dict[k])
+            logger.debug(f'{k}, {cluster_id}, {cls.files_dict[k]}')
             cls.files_dict[k].discard(cluster_id)
 
 
@@ -46,12 +46,12 @@ class Broadcaster:
             change_arr, out = func(instance, *args, **kwargs)
 
 
-            log("CHANGE", change_arr)
-            log(out)
+            logger.debug(f"CHANGE {change_arr}")
+            logger.debug(out)
 
             clusters = instance.all_clusters()
 
-            log(self.files_dict)
+            logger.debug(self.files_dict)
             self.files_dict = {k:self.files_dict[k] for k in self.files_dict if len(self.files_dict[k]) > 0}
 
             for before, after in change_arr:
@@ -65,13 +65,13 @@ class Broadcaster:
                 before_vals = self.files_dict.pop(before)
 
                 #Assert no instance of after exists (otherwise a duplicate) (either None, or not in files_dict)
-                log(before, after, self.files_dict)
+                logger.debug(f'{before}, {after}, {self.files_dict}')
 
                 #Move everything to after & make the mods
                 if after:
-                    log('after not none')
+                    logger.debug('after not none')
                     if after in self.files_dict:
-                        log('heeres', self.files_dict[after])
+                        logger.debug(f'heeres {self.files_dict[after]}')
                     self.files_dict[after] = before_vals.union(self.files_dict[after]) if after in self.files_dict else before_vals
                     for cluster_id in before_vals:
                         cluster = clusters[cluster_id]()
@@ -79,7 +79,6 @@ class Broadcaster:
                             cluster.values[cluster.values.index(Path(before))] = Path(after)
                         
                 else:
-                    log('oonka saka')
                     for cluster_id in before_vals:
                         if cluster_id != instance.id:
                             cluster = clusters[cluster_id]()
@@ -89,7 +88,7 @@ class Broadcaster:
             Broadcaster.files_dict = self.files_dict
 
             instance.values = [v for v in list(dict.fromkeys(instance.values)) if v.exists() ]
-            log("RETURNED", instance.values, self.files_dict, Broadcaster.files_dict)
+            logger.debug(f"RETURNED {instance.values} {self.files_dict} {Broadcaster.files_dict}")
 
             return out
             

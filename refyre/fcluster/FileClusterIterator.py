@@ -8,6 +8,12 @@ class FileClusterIterator:
         self.index = -1
 
     def __next__(self):
+        """
+        This is an implementation of the `__next__` method for an iterator that raises a `StopIteration`
+        exception when the end of the iterator is reached.
+        :return: The `__next__` method is returning the next value in the `var_vals` list after
+        incrementing the `index` by 1.
+        """
 
         if self.index + 1 >= len(self.var_vals):
             raise StopIteration

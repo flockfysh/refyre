@@ -1,14 +1,14 @@
 from refyre.utils import optional_dependencies 
 from refyre.fcluster import FileCluster #Time to use the power of our variables :)
 from pathlib import Path
-from refyre.config import log
+from refyre.config import logger
 import random
 import shutil
 
 def clone_node(url, fp):
     import git 
 
-    log("GEET", git)
+    logger.debug(f"GEET {git}")
 
 
     #Ensure no file conflicts
@@ -16,7 +16,7 @@ def clone_node(url, fp):
     tmp_empty = fp / f'tmp{rand_num}'
 
 
-    log('Cloning to ', tmp_empty)
+    logger.debug(f'Cloning to {tmp_empty}')
     git.Repo.clone_from(url, tmp_empty)
 
     mv_var = FileCluster(input_paths = [tmp_empty], input_patterns = ['g*'])

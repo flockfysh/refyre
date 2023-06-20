@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from refyre.config import log
+from refyre.config import logger
 
 @contextmanager
 def optional_dependencies(error: str = "ignore"):
@@ -11,4 +11,4 @@ def optional_dependencies(error: str = "ignore"):
             raise e
         if error == "warn":
             msg = f'Missing optional dependency "{e.name}". Use pip or conda to install.'
-            log(f'Warning: {msg}')
+            logger.debug(f'Warning: {msg}')

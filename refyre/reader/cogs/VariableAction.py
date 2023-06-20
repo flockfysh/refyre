@@ -1,6 +1,6 @@
 from .VariableParser import VariableParser
 from refyre.fcluster import FileCluster
-from refyre.config import log
+from refyre.config import logger
 
 import re
 
@@ -80,27 +80,22 @@ class VariableAction:
             v = list(variable_dict[name].vals())
 
             if mode == "copy":
-                log('copying ', name, 'to', path, sliced)
                 sliced = sliced.copy(path)
-                log('post copying ', name, 'to', path, sliced)
             
             elif mode == "cut":
-                log('cut', name, 'to', path, sliced)
                 sliced = sliced.move(path)
-                log('post cut', name, 'to', path, sliced)
             
 
 
             if operator == '':
                 s_v = sliced.vals()
-                log(sliced, v, start, stop, step)
                 for ind_s, ind_v in enumerate(range(start, stop, step)):
                     v[ind_v] = s_v[ind_s]
-                log('updated vals', v)
+                logger.debug(f'updated vals {v}')
 
                 out_variable_dict[name] = variable_dict[name]
             elif operator == "+":
-                log("APPENDING", variable_dict[name], v)
+                logger.debug(f"APPENDING {variable_dict[name]} {v}")
 
 
                 out_variable_dict[name] += sliced

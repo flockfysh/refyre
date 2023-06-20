@@ -1,7 +1,7 @@
 from pathlib import Path
 from functools import wraps
 from refyre.utils import get_optimal_pattern, optional_dependencies
-from refyre.config import log
+from refyre.config import logger
 from refyre.reader import PatternGenerator
 import re
 
@@ -58,10 +58,10 @@ class FileCluster:
 
     def __init__(self, input_paths = [], input_patterns = [], values = [], as_pathlib = False, recursive = False):
         assert len(input_paths) == len(input_patterns), "Uneven lengths for input paths and patterns"
-        log('init')
+        logger.debug('init')
 
         for pattern in input_patterns:
-            log('add', pattern, PatternGenerator(pattern))
+            logger.debug(f'add {pattern} {PatternGenerator(pattern)}')
         self.values = self.__populate(input_paths, [ PatternGenerator(p) for p in input_patterns  ], recursive = recursive)
 
         #ID the variable
@@ -85,7 +85,7 @@ class FileCluster:
         return FileCluster.clusters
 
     def __del__(self):
-        log('deleting', self.id)
+        logger.debug(f'deleting {self.id}')
         if self.id in FileCluster.clusters:
             FileCluster.clusters.pop(self.id)
         Broadcaster.release(self.id)
@@ -101,10 +101,10 @@ class FileCluster:
     @classmethod
     def wipe(cls):
         for k in list(FileCluster.clusters):
-            log('wiping', k)
+            logger.debug(f'wiping {k}')
             obj = FileCluster.clusters[k]()
             if obj is not None:
-                log('deleting', k)
+                logger.debug(f'deleting {k}')
                 del obj 
         
         FileCluster.GLOBAL_COUNTER = 0
@@ -166,13 +166,11 @@ class FileCluster:
 
         ret = []
         for dir_path, pattern in zip(input_paths, input_patterns):
-            log('pot', dir_path, pattern)
+            logger.debug(f'pot {dir_path} {pattern}')
 
             it = sorted(Path(dir_path).iterdir()) if not recursive else sorted(Path(dir_path).glob('**/*'))
             for fl in it:
-                log(pattern, fl.name,re.search(r'{}'.format(pattern), fl.name))
                 if re.search(r'{}'.format(pattern), fl.name) and fl not in ret:
-                    log('fl', fl, 'is match to ', dir_path, pattern)
                     ret.append(fl)
         
         return ret
@@ -213,7 +211,6 @@ class FileCluster:
         return FileCluster(values = [Path(p.as_posix()) for p in self.values], as_pathlib = True)
 
     def __getitem__(self, key):
-        log(key)
         if isinstance(key, slice):
             return FileCluster(input_patterns = [] , input_paths = [], values = self.values[key.start:key.stop:key.step], as_pathlib = True)
         elif isinstance(key, int):
@@ -222,13 +219,19 @@ class FileCluster:
     
     @Broadcaster()
     def move(self, target_dir, conflict_function = handle_file_conflict):
-        '''
-        Input: 
-            - target_dir: the directory to which all files will be sent.
+        """
+        The above code defines functions for moving, copying, and deleting files in a directory, with
+        options for handling conflicts and broadcasting changes.
         
-        Returns
-            - FileCluster object with the new values 
-        '''
+        :param target_dir: The directory to which files will be moved or copied
+        :param conflict_function: conflict_function is a function that takes in a Path object
+        representing a file and returns a Path object representing the destination file path. This
+        function is used in the move and copy methods to handle file conflicts, such as when a file with
+        the same name already exists in the target directory. The default conflict
+        :return: The `move` method returns a tuple containing a list of changes made (as tuples of old
+        and new file paths) and a new `FileCluster` object with updated values.
+        """
+
 
         p = Path(target_dir)
 
@@ -240,20 +243,20 @@ class FileCluster:
         changes = []
 
         for v in self.values:
-            log(v.parent, p)
+            logger.debug(f'{v.parent}, {p}')
             if v.parent != p:
-                log('in')
+                logger.debug('in')
                 dest = conflict_function(p / v.name)
 
                 #if dest is None, we ignore it
                 if dest:
-                    log(str(v), str(dest))
+                    logger.debug(f'{str(v)}, {str(dest)}')
                     shutil.move(str(v), str(dest))
                     changes.append((str(v), str(dest)))
                     nvals.append(Path(dest.as_posix()))
             else:
-                log('else')
-                log(str(v))
+                logger.debug('else')
+                logger.debug(str(v))
                 changes.append((str(v), str(v)))
                 nvals.append(Path(v.as_posix()))
             
@@ -286,13 +289,12 @@ class FileCluster:
 
     @Broadcaster()
     def delete(self):
-        '''
-        Deletes all the files in the variable. 
-
-        Return:
-            - Empty FileCluster object
-        '''
-
+        """
+        The function deletes all files in a FileCluster object and returns an empty object while keeping
+        track of the changes made.
+        :return: a tuple containing two elements: a list of changes made during the deletion process and
+        an empty FileCluster object.
+        """
         changes = []
         for fl in self.values:
             if fl.is_dir():
@@ -307,29 +309,46 @@ class FileCluster:
 
     @Broadcaster()
     def rename(self, rename_function):
-        '''
-            rename_function: a function that takes an integer as an input 
-        '''
-
+        """
+        This function renames files in a FileCluster object using a provided renaming function.
+        
+        :param rename_function: The `rename_function` parameter is a function that takes an integer as
+        an input and returns a string. This function is used to rename the files in the `values` list of
+        the `FileCluster` object. The integer input to the function is the index of the file in the
+        `values`
+        :return: a tuple containing two values: 
+        1. A list of tuples representing the changes made during the renaming process. Each tuple
+        contains two strings: the original path and the new path.
+        2. A new instance of the FileCluster class with the updated values after the renaming process.
+        """
+        
         nvals = []
         changes = []
         for i, v in enumerate(self.values):
-            log('renaming', v,v.parent / rename_function(i))
+            logger.debug(f'renaming, {v},{v.parent / rename_function(i)}')
             nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
             changes.append((v.as_posix(), nvals[-1].as_posix()))
 
         return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
     def zip(self, save_dir = '.', save_name = "out.zip", conflict_function = handle_file_conflict):
-        '''
-        Zips all the files into a single zip.
-        '''
+        """
+        This function zips all the files in a directory into a single zip file.
+        
+        :param save_dir: The directory where the zip file will be saved. If not specified, it will
+        default to the current working directory, defaults to . (optional)
+        :param save_name: The name of the zip file that will be created, defaults to out.zip (optional)
+        :param conflict_function: The conflict_function parameter is a function that is used to handle
+        conflicts that may arise when trying to save the zip file to the specified directory. It takes
+        in the path of the file that is being saved and returns a new path if there is a conflict with
+        an existing file in the directory. If no
+        :return: a `FileCluster` object that contains the path to the newly created zip file.
+        """
 
         save_p = Path(save_dir) / save_name
 
         copied = self.copy(save_dir)
 
-        log('copy complete', Broadcaster.files_dict)
 
         save_p = handle_file_conflict(save_p)
         with zipfile.ZipFile(save_p.as_posix(), 'w') as zipMe:        
@@ -339,11 +358,22 @@ class FileCluster:
         assert save_p.exists(), "For some reason, the newly created zip file does not exist"
 
         copied.delete()
-        log('copy deleted', Broadcaster.files_dict)
 
         return FileCluster(input_patterns = [], input_paths = [], values = [save_p], as_pathlib = True)
 
     def post(self, url, additional_data, payload_name):
+        """
+        This function sends a post request to a specified API endpoint with additional payload parameters
+        and returns the response object.
+        
+        :param url: The link to the API endpoint where the post request will be sent
+        :param additional_data: a dictionary containing any additional metadata you want to send along with
+        the request. This could include things like authentication tokens or other parameters required by
+        the API endpoint you are sending the request to
+        :param payload_name: The name you want to give to the zip file that will be sent as part of the POST
+        request
+        :return: the Response object returned from the requests.post() call.
+        """
 
         with optional_dependencies('warn'):
             #GET/POST requests
@@ -376,14 +406,16 @@ class FileCluster:
 
     #DO NOT ADD AN AUTOREFRESHER DECORATOR HERE --> It will add a middleman to move() and copy() that will alter results
     def map(self, map_func):
-        '''
-        Input: 
-            - map_func: a function to map each filepath. The mapping must take a filepath and return a filepath
+        """
+        This function maps each filepath in a FileCluster object using a given function and returns a
+        new FileCluster object with the mapped values.
         
-        Return:
-            - FileCluster object with the mapped values
-        '''
-
+        :param map_func: `map_func` is a function that takes a filepath as input and returns a filepath
+        as output. This function is used to map each filepath in the `values` attribute of a
+        `FileCluster` object. The resulting `FileCluster` object will have the same structure as the
+        original one, but
+        :return: A new FileCluster object with the mapped values.
+        """
         nvals = []
         for v in self.values:
             nvals.append(Path(map_func(v))) #Append a copy of the object to prevent object ref shenanigans
@@ -393,13 +425,17 @@ class FileCluster:
     
      
     def reduce(self, reducer_function):
-        '''
-        Input: 
-            - reducer_function(a, b): Takes in two parameters that can be reduced into a third parameter
+        """
+        The reduce function takes in a reducer function and returns the result of reducing the values in
+        the array using the reducer function, or None if the array is empty.
         
-        Returns
-            - the Result of the reduction, or None if the array is empty
-        '''
+        :param reducer_function: A function that takes in two parameters and returns a third parameter
+        that can be used to reduce a list of values into a single value. This function is used in the
+        reduce method of a class to perform the reduction operation on the list of values stored in the
+        class instance
+        :return: the result of the reduction of the values in the array using the given reducer
+        function. If the array is empty, it returns None.
+        """
         if len(self.values):
             a = self.values[0]
 
@@ -411,16 +447,16 @@ class FileCluster:
         return None
     
     def filter(self, filter_func):
-        '''
-        Input: 
-            - filter_func: a function to filter out values, given an input of a filepath.
-                - i.e, return False for any values we don't want to keep
+        """
+        This function takes a filter function as input and returns a new FileCluster object with values
+        filtered based on the input function.
         
-        Return:
-            - FileCluster object with the filtered values
-        '''
-
-
+        :param filter_func: filter_func is a function that takes a filepath as input and returns a boolean
+        value. It is used to filter out values that we don't want to keep in a FileCluster object. If the
+        function returns True for a given filepath, it will be included in the filtered FileCluster object.
+        If it
+        :return: A FileCluster object with the filtered values.
+        """
 
         nvals = []
         for v in self.values:
@@ -430,8 +466,9 @@ class FileCluster:
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
     def clone(self):
-        '''
-        Returns a deep clone of the current object
-        '''
+        """
+        The function returns a deep clone of the current object.
+        :return: A deep clone of the current object is being returned.
+        """
 
         return self.__deepcopy__()

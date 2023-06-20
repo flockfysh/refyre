@@ -2,8 +2,11 @@ from pathlib import Path
 import sys
 import venv
 import site
+
 from refyre.utils import optional_dependencies
 from refyre import Refyre
+from refyre.config import logger
+
 from pip._internal import main as pip_main
 import subprocess
 import shutil
@@ -21,7 +24,7 @@ def create_virtualenv_and_install_requirements(venv_path, requirements_file):
     activate_cmd = f"source {activate_script} && python -m pip"
     
     # Install the requirements using pip within the virtual environment
-    log("installing reqs")
+    logger.debug("installing reqs")
     pip_install_cmd = f"{activate_cmd} install -r {requirements_file}"
     subprocess.run(pip_install_cmd, shell=True, check=True)
 
@@ -54,8 +57,8 @@ class RecipePreprocessor:
 
             '''
 
-            log(recipe_dict)
-            log(recipe_dict['env']['name'])
+            logger.debug(recipe_dict)
+            logger.debug(recipe_dict['env']['name'])
 
             #Setup the base directories based on an input spec
             ref = Refyre.Refyre(input_specs = [recipe_dict["input-spec"]])

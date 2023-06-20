@@ -3,7 +3,7 @@ from pathlib import Path
 from .cogs.lexer_utils import split_string_ignore_quotes, find_missing_separator
 from .cogs.LexerToken import Token
 import fnmatch
-from refyre.config import log
+from refyre.config import logger
 
 class Lexer:
     '''
@@ -141,12 +141,12 @@ class Lexer:
             cleaned_lines = Lexer.preprocess(txt)
             cleaned_lines = cleaned_lines.split('\n')
 
-            log(cleaned_lines)
+            logger.debug(cleaned_lines)
         tokens = []
         for line in cleaned_lines:
             tokens.append(Lexer.extract_line_data(line))
             
-        log(tokens)
+        logger.debug(tokens)
         return tokens
 
     def __new__(self, input_file):
