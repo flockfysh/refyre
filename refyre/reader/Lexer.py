@@ -145,6 +145,7 @@ class Lexer:
         tokens = []
         for line in cleaned_lines:
             tokens.append(Lexer.extract_line_data(line))
+
             
         logger.debug(tokens)
         return tokens

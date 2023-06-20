@@ -24,6 +24,12 @@ class Parser:
             - Floor for tab depth is set to be -10. If it goes beyond this, ...
             the circus would really love to hire their new rising clown.
         '''
+
+        #Ensure that the tokens spacing is proper, i.e no crazy tabs to the front
+        assert tokens[0].tab_level == 0, "There should be no tabs for the first line"
+        for i in range(1, len(tokens)):
+            assert tokens[i].tab_level - tokens[i - 1].tab_level <= 1, f"Tab difference {i} {tokens[i].tab_level} and {i - 1} {tokens[i - 1].tab_level} is too high."
+
         stack = []
 
         #Push our virtual top

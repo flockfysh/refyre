@@ -48,11 +48,9 @@ def test_missing_seperator():
         ref = Refyre(input_specs = ['specs/missing_seperator.txt'])
 
 def test_multiline_comments():
-    try:
+
+    with pytest.raises(Exception) as e_info:
         ref = Refyre(input_specs = ['specs/crazy_multiline.txt'])
-    except Exception as e:
-        print(e)
-        pytest.fail("Multiline comments are still valid")
 
 def test_crazy_tabs_simple():
 
