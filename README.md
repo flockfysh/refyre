@@ -18,7 +18,7 @@ Enhance your favorite Python packages such as Pandas, NumPy, Spark, and other da
 Simply provide refyre with an "input specification", telling it what directories to focus on
 
 `sample_input_spec.txt`
-```
+```python
 '''
 Suppose you have a directory structure
 
@@ -42,7 +42,7 @@ You seek to analyze the a files and the c files
 ```
 
 Have refyre analyze the directory with the following:
-```
+```python
 #Main analysis line
 ref = Refyre(input_specs = ['sample_input_spec.txt'])
 
@@ -87,7 +87,7 @@ specs
 
 Let's say I want to generate directories & data in the format specified by `output_spec.txt`:
 
-```
+```python
 '''
 Sample output spec, creates
 directories d & e, and ports the data
@@ -98,11 +98,11 @@ from a_var and c_var into it.
 ```
 
 One line.
-```
+```python
 ref.create_spec('output_spec.txt')
 ```
 
-Alternatively, this entire process can be done through our CLI.
-```
+Alternatively, this entire process (minus the in-between analysis) can be done through our CLI.
+```python
 refyre -i input.txt -o output.txt
 ```
