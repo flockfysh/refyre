@@ -6,8 +6,8 @@ def test_always_passes():
 
 def test_imports():
     #fgraph
-    from refyre.fgraph import FileGraph
-    from refyre.fgraph import FileGraphNode
+    from refyre.graph import FileGraph
+    from refyre.graph import FileGraphNode
 
     #fcluster
 

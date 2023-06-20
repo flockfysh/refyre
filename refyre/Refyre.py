@@ -1,6 +1,6 @@
-from refyre.fgraph import FileGraph
-from refyre.reader import Lexer, Parser, ExpressionGenerator, VariableParser, PatternGenerator, VariableAction
-from refyre.fcluster import FileCluster
+from refyre.graph import FileGraph
+from refyre.reader import Lexer, Parser, ExpressionGenerator, PatternGenerator 
+from refyre.cluster import FileCluster, VariableParser, VariableAction
 from refyre.utils import is_valid_regex, clone_node, extract_numbers
 from refyre.config import logger
 from refyre.core import CodeManager, AliasManager
@@ -253,7 +253,7 @@ class Refyre:
             if node.imports != '' and Path(node.imports).exists():
                 logger.debug(f'importing {node.imports}')
                 
-                import_fgraph = self.__construct(node.imports, is_output = True)
+                bp, import_fgraph = self.__construct(node.imports, is_output = True)
                 import_fgraph.is_root = False
 
                 logger.debug("EEEEEETKJSDLKJSADL", )

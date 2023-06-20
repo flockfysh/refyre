@@ -1,5 +1,5 @@
 import re 
-from refyre.fcluster import FileCluster
+from refyre.cluster import FileCluster
 from refyre.config import logger
 
 class VariableParser:
@@ -48,7 +48,7 @@ class VariableParser:
         
         Returns a slice object involving the three indices
         '''
-        assert type(var) == FileCluster.FileCluster
+        assert type(var) == FileCluster
 
         start, stop, step = 0 if start is None else int(start), len(var) if stop is None else int(stop), 1 if step is None else int(step)
         return slice(start, stop, step), start, stop, step

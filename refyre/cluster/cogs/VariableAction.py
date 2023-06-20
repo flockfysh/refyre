@@ -1,5 +1,5 @@
 from .VariableParser import VariableParser
-from refyre.fcluster import FileCluster
+from refyre.cluster import FileCluster
 from refyre.config import logger
 
 import re
@@ -46,7 +46,7 @@ class VariableAction:
 
         if is_read:
             if operator == "":
-                out_variable_dict[name] = FileCluster.FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
+                out_variable_dict[name] = FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
 
                 if '*f' in node.flags:
                     out_variable_dict[name] = out_variable_dict[name].filter(lambda x : x.is_file())
@@ -57,7 +57,7 @@ class VariableAction:
 
             elif operator == "+":
                 
-                p = FileCluster.FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
+                p = FileCluster(input_paths = [path], input_patterns = [node.pattern], recursive = "*r" in node.flags)
 
                 if '*f' in node.flags:
                     p = p.filter(lambda x : x.is_file())

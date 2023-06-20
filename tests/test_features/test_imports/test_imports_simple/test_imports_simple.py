@@ -23,3 +23,9 @@ def run_before_and_after_tests(monkeypatch):
     shutil.rmtree('test')
     FileCluster.wipe()
 
+def test_imports():
+    ref = Refyre(input_specs = ['specs/input.txt'])
+
+    assert 'bvar' in ref, "bvar not found in ref"
+    assert ref['bvar'] == FileCluster(values = ['in/b/b1.txt', 'in/b/b2.txt']), f"{ref['bvar']} doesn't match expected"
+

@@ -66,7 +66,7 @@ print(len(zipped_c_var)) #1, the zipped c_var files
 #Get all the parents dirs
 c_var_parent_dirs = c_var.dirs()
 
-print(type(c_var)) #refyre.fcluster.FileCluster (this is what each variable type is)
+print(type(c_var)) #refyre.cluster.FileCluster (this is what each variable type is)
 
 #Do mass file management operations such as delete(), filter()
 all_a_var_and_c_vars = FileCluster(values = []) #Values are strings of filepaths you want to do operations on

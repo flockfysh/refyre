@@ -17,5 +17,5 @@ If you need to import from a file *from **another** directory*, use refyre.
 Here's a live example from `Parser.py`, where we import `FileGraphNode.py` to build our fgraph.
 
 ```
-from refyre.fgraph import FileGraphNode
+from refyre.graph import FileGraphNode
 ```

@@ -1,7 +1,7 @@
 from .Lexer import Lexer
 from .cogs.LexerToken import Token
 
-from refyre.fgraph import FileGraphNode
+from refyre.graph import FileGraphNode
 from pathlib import Path
 from refyre.config import logger
 from tqdm import tqdm

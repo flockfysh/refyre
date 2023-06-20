@@ -23,3 +23,12 @@ def run_before_and_after_tests(monkeypatch):
     shutil.rmtree('test')
     FileCluster.wipe()
 
+def test_imports_exp():
+    ref = Refyre(input_specs = ['specs/input.txt'])
+    ref.create_spec('specs/gen.txt', track = True)
+
+    assert len([*Path('exps').iterdir()]) == 0, "No experiments have been created yet"
+
+    for i in range(1, 6):
+        ref.step()
+        assert len([*Path('exps').iterdir()]) == i, "No experiments have been created yet"

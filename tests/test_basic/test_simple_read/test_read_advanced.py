@@ -1,6 +1,6 @@
 import pytest
 from refyre import Refyre
-from refyre.fcluster import FileCluster
+from refyre.cluster import FileCluster
 from pathlib import Path
 import shutil
 
