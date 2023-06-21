@@ -45,6 +45,7 @@ class RecipePreprocessor:
             recipe_dict = None
             with open(recipe_path, 'r') as f:
                 recipe_dict = yaml.safe_load(f)
+                logger.debug(recipe_dict)
             
             '''
             Currently, a recipe consists of attributes:
@@ -61,13 +62,29 @@ class RecipePreprocessor:
             logger.debug(recipe_dict['env']['name'])
 
             #Setup the base directories based on an input spec
+            logger.debug(f'Sending to: {recipe_dict["input-spec"]}')
+
+
+            #Current base directory is assumed to be CWD
+            '''
+            if 'base-dir' and Path(recipe_dict['base-dir']) != Path.cwd():
+                current_base_dir = Path.cwd()
+
+                logger.debug(f'{sys.path}, {current_base_dir.resolve()}')
+                sys.path.remove(str(current_base_dir.resolve()))
+
+                sys.path.append(str(Path(recipe_dict['base-dir'].resolve())))
+                logger.debug()
+            '''
+
             ref = Refyre.Refyre(input_specs = [recipe_dict["input-spec"]])
 
             #Create the env if it doesn't exist already or needs to be refreshed
+            venv_path = recipe_dict['env']['name']
             if 'env' in recipe_dict and recipe_dict['env']:
                 if 'name' in recipe_dict['env']:
                     if not Path(recipe_dict['env']['name']).exists():
-                        create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])
+                        create_virtualenv_and_install_requirements(venv_path, recipe_dict['env']['requirements'])
                     elif 'refresh' in recipe_dict['env'] and recipe_dict['env']['refresh']:
                         shutil.rmtree(recipe_dict['env']['name'])
                         create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])

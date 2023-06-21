@@ -1,0 +1,8 @@
+#Sample recipe that can be processed by refyre
+
+input-spec: specs/spec.txt
+base-dir: '.'
+env:
+  name: 'dev_env'
+  requirements: 'clone_folder/app/requirements.txt'
+  refresh: True
