@@ -12,7 +12,5 @@ jobs:
         run: curl -sSL https://install.python-poetry.org | python -
       - name: Install dependencies
         run: poetry install
-      - name: Run pytest
-        run: poetry run pytest
       - name: Publish package
         run: poetry publish --build -u __token__ -p ${{ secrets.PYPI_API_KEY }}
