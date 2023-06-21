@@ -1,4 +1,5 @@
 # Refyre: Filesystem dominance is all you need
+[![PyPI Version](https://img.shields.io/pypi/v/refyre.svg)](https://pypi.python.org/pypi/refyre)
 ___ 
 
 Refyre is an AI-fused Python package that provides two high level features:
