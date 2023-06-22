@@ -11,6 +11,7 @@ import shutil
 #Iteration
 from .FileClusterIterator import FileClusterIterator
 from .Broadcast import Broadcaster
+from .Cache import AutoCache
 
 #Copy
 import copy
@@ -71,6 +72,9 @@ class FileCluster:
         #Track the cluster without affecting garbage collection
         self.weak_ref = weakref.ref(self)
         FileCluster.clusters[self.id] = self.weak_ref
+
+        #Setup a cache dir
+        self.cache_dir = '.refyre_cache'
     
         #If the user didn't send the values as Pathlib objects already
         if not as_pathlib: 
@@ -472,6 +476,61 @@ class FileCluster:
         """
 
         return self.__deepcopy__()
+
+    def decompress(self, complete = False):
+        """
+        Takes any folders within the values, and replaces them with all the items in the folder
+
+        If complete is set to True, then it will recursively empty all files 
+        """
+        nvals = []
+        for pth in self.values:
+            if pth.is_dir():
+                nvals.extend([*pth.iterdir()] if not complete else [*pth.rglob('**/*')])
+            elif pth.is_file():
+                nvals.append(pth)
+        
+        return FileCluster(values = nvals, as_pathlib = True)
+            
+    def cache(self, cache_dir = '.refyre_cache'):
+        """
+        Saves all the files to cache
+        """
+
+        ca = AutoCache(self.cache_dir)
+        return ca.cache(self)
+    
+    def decache(self, ):
+        ca = AutoCache(self.cache_dir)
+        return ca.decache(self)
+    
+    def cached(self):
+        """
+        Returns all the FileCluster files in the cluster that are currently cached
+        """
+        nvals = []
+        ca = AutoCache(self.cache_dir)
+
+        for v in self.values:
+            if ca.contains(str(v)):
+                nvals.append(v)
+            
+        return FileCluster(values = nvals, as_pathlib = True)
+    
+    def unlink(self):
+        """
+        Returns a FileCluster detached from the Broadcaster system
+        """
+
+        f = self.clone()
+        Broadcaster.unlink(f.id)
+        return f
+    
+    def relink(self):
+        """
+        Reconnect the FileCluster to the broadcaster
+        """
+        return self.clone()
 
     def filesize(self, format = "bytes"):
         """

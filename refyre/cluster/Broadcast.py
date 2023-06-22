@@ -10,6 +10,7 @@ def insert(fdct, k, v):
 class Broadcaster:
 
     files_dict = {}
+    ignore_list = []
 
     def __init__(self, *a, **kw):
         self.conf_args = a 
@@ -32,6 +33,14 @@ class Broadcaster:
             logger.debug(f'{k}, {cluster_id}, {cls.files_dict[k]}')
             cls.files_dict[k].discard(cluster_id)
 
+        if cluster_id in cls.ignore_list:
+            cls.ignore_list.remove(cluster_id)
+
+    @classmethod
+    def unlink(cls, cluster_id):
+        if cluster_id not in cls.ignore_list:
+            cls.ignore_list.append(cluster_id)
+        
 
     def __call__(self, func):
         
@@ -42,8 +51,14 @@ class Broadcaster:
                     - If second tuple None, it implies a path was deleted
 
             '''
-            instance.values = [v for v in list(dict.fromkeys(instance.values)) if v.exists() ]
+
+            if instance.id not in self.ignore_list:
+                instance.values = [v for v in list(dict.fromkeys(instance.values)) if v.exists() ]
+
             change_arr, out = func(instance, *args, **kwargs)
+
+            if instance.id in self.ignore_list:
+                return out
 
 
             logger.debug(f"CHANGE {change_arr}")
@@ -92,4 +107,4 @@ class Broadcaster:
 
             return out
             
-        return wrapper
+        return wrapper 

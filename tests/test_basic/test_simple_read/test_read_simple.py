@@ -1,6 +1,7 @@
 import pytest
 from refyre import Refyre
-from refyre.cluster import FileCluster
+from refyre.cluster import FileCluster, AutoCache
+from refyre.config import logger
 from pathlib import Path
 from unittest.mock import patch
 import re
@@ -240,4 +241,26 @@ def test_request_post():
         # Assert the expected response from the test method
         assert result.text == expected_response
 
+def test_auto_cache():
+    ref = Refyre(input_specs = ["input.txt"])
+    var1 = ref["var1"]
 
+    assert len(var1) == 6, "var1 should have 6 files"
+    cached = var1.cache()
+
+    ca = AutoCache()
+    assert len(ca.cache_files) == 6
+    assert Path('.refyre_cache').exists() and len([*Path('.refyre_cache').iterdir()]) == 7
+    all_cached_files = var1.cached()
+
+
+    logger.debug(all_cached_files)
+    assert all_cached_files == var1
+
+    decached = var1.decache()
+    assert Path('.refyre_cache').exists() and len([*Path('.refyre_cache').iterdir()]) == 1
+
+    decached.delete()
+
+    AutoCache.obliterate(ca)
+    assert not Path('.refyre_cache').exists()

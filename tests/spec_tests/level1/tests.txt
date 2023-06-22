@@ -1,3 +1,0 @@
-These tests are pretty simple, just meant to make sure that basic functionality works
-
-- Simple and Complex Refactoring
