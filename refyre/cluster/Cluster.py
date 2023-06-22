@@ -3,6 +3,7 @@ from functools import wraps
 from refyre.utils import get_optimal_pattern, optional_dependencies
 from refyre.config import logger
 from refyre.reader import PatternGenerator
+from refyre.config import env
 import re
 
 #Copying / Deleting
@@ -85,7 +86,6 @@ class FileCluster:
         return FileCluster.clusters
 
     def __del__(self):
-        logger.debug(f'deleting {self.id}')
         if self.id in FileCluster.clusters:
             FileCluster.clusters.pop(self.id)
         Broadcaster.release(self.id)
@@ -486,3 +486,89 @@ class FileCluster:
                 total_size += pth.stat().st_size
 
         return total_size
+    
+    def chromafy(self, save_dir = "db", embedding = None):
+        """
+        Uses LangChain to automatially load and store all files as embeddings into a locally saved
+        ChromaDB instance
+        """
+        print('start')
+
+        from langchain.document_loaders import DirectoryLoader
+        from langchain.vectorstores import Chroma
+        from langchain.embeddings import HuggingFaceEmbeddings
+
+        all_embeddings = []
+        embeddings = HuggingFaceEmbeddings() if not embedding else embedding
+
+        print('started')
+        all_docs = []
+        for pth in self.values:
+            docs = None
+            print(pth, pth.suffix)
+
+            if pth.is_dir():
+                loader = DirectoryLoader(str(pth), show_progress=True)
+                docs = loader.load()
+                print('dir')
+
+            elif pth.suffix == '.csv':
+
+                from langchain.document_loaders.csv_loader import CSVLoader
+                loader = CSVLoader(file_path= str(pth))
+                docs = loader.load()
+                print('csv')
+            
+            elif pth.suffix == '.txt':
+
+                from langchain.document_loaders import TextLoader
+                loader = TextLoader(str(pth))
+                docs = loader.load()
+                print(docs)
+                print('txt')
+            
+            elif pth.suffix == '.html':
+
+                from langchain.document_loaders import BSHTMLLoader
+                loader = BSHTMLLoader(str(pth))
+                docs = loader.load()
+                print('html')
+
+            elif pth.suffix == '.json':
+                from langchain.document_loaders import JSONLoader
+                loader = JSONLoader(file_path= str(pth))
+                docs = loader.load()
+                print('json')
+
+            elif pth.suffix == '.md':
+                from langchain.document_loaders import UnstructuredMarkdownLoader
+                loader = UnstructuredMarkdownLoader(str(pth))
+                docs = loader.load()
+                print('md')
+
+            elif pth.suffix == '.pdf':
+                from langchain.document_loaders import UnstructuredPDFLoader
+                loader = UnstructuredPDFLoader(str(pth), mode="elements")
+                docs = loader.load()
+                print('pdf')
+
+            else:
+                from langchain.document_loaders import UnstructuredFileLoader
+                loader = UnstructuredFileLoader(str(pth))
+                docs = loader.load()
+                print('else')
+
+            assert docs is not None, "docs shouldn't be None"
+            all_docs.extend(docs)
+
+        store = Chroma.from_documents(
+                documents=all_docs, embedding=embeddings, persist_directory=save_dir
+        )
+        store.persist()
+
+        return FileCluster(values = [save_dir], as_pathlib = False)
+
+
+
+
+
