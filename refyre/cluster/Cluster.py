@@ -492,77 +492,61 @@ class FileCluster:
         Uses LangChain to automatially load and store all files as embeddings into a locally saved
         ChromaDB instance
         """
-        print('start')
-
         from langchain.document_loaders import DirectoryLoader
         from langchain.vectorstores import Chroma
         from langchain.embeddings import HuggingFaceEmbeddings
+        from langchain.document_loaders.csv_loader import CSVLoader
+        from langchain.document_loaders import TextLoader
+        from langchain.document_loaders import BSHTMLLoader
+        from langchain.document_loaders import JSONLoader
+        from langchain.document_loaders import UnstructuredMarkdownLoader
+        from langchain.document_loaders import UnstructuredPDFLoader
+        from langchain.document_loaders import UnstructuredFileLoader
 
         all_embeddings = []
         embeddings = HuggingFaceEmbeddings() if not embedding else embedding
 
-        print('started')
         all_docs = []
         for pth in self.values:
             docs = None
-            print(pth, pth.suffix)
 
             if pth.is_dir():
                 loader = DirectoryLoader(str(pth), show_progress=True)
                 docs = loader.load()
-                print('dir')
 
             elif pth.suffix == '.csv':
-
-                from langchain.document_loaders.csv_loader import CSVLoader
                 loader = CSVLoader(file_path= str(pth))
                 docs = loader.load()
-                print('csv')
             
             elif pth.suffix == '.txt':
-
-                from langchain.document_loaders import TextLoader
                 loader = TextLoader(str(pth))
                 docs = loader.load()
-                print(docs)
-                print('txt')
             
             elif pth.suffix == '.html':
-
-                from langchain.document_loaders import BSHTMLLoader
                 loader = BSHTMLLoader(str(pth))
                 docs = loader.load()
-                print('html')
 
             elif pth.suffix == '.json':
-                from langchain.document_loaders import JSONLoader
                 loader = JSONLoader(file_path= str(pth))
                 docs = loader.load()
-                print('json')
 
             elif pth.suffix == '.md':
-                from langchain.document_loaders import UnstructuredMarkdownLoader
                 loader = UnstructuredMarkdownLoader(str(pth))
                 docs = loader.load()
-                print('md')
 
             elif pth.suffix == '.pdf':
-                from langchain.document_loaders import UnstructuredPDFLoader
                 loader = UnstructuredPDFLoader(str(pth), mode="elements")
                 docs = loader.load()
-                print('pdf')
 
             else:
-                from langchain.document_loaders import UnstructuredFileLoader
                 loader = UnstructuredFileLoader(str(pth))
                 docs = loader.load()
-                print('else')
 
             assert docs is not None, "docs shouldn't be None"
             all_docs.extend(docs)
 
         store = Chroma.from_documents(
-                documents=all_docs, embedding=embeddings, persist_directory=save_dir
+            documents=all_docs, embedding=embeddings, persist_directory=save_dir
         )
         store.persist()
 
