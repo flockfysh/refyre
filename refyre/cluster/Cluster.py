@@ -9,7 +9,7 @@ import re
 import shutil
 
 #Iteration
-from .FileClusterIterator import FileClusterIterator
+from .ClusterIterator import FileClusterIterator
 from .Broadcast import Broadcaster
 from .Cache import AutoCache
 
@@ -85,6 +85,7 @@ class FileCluster:
         self.values = sorted(self.values)
         #Track variable on broadcaster
         Broadcaster.add(self.id, self.values)
+
     def all_clusters(self):
         return FileCluster.clusters
 
@@ -492,7 +493,7 @@ class FileCluster:
         
         return FileCluster(values = nvals, as_pathlib = True)
             
-    def cache(self, cache_dir = '.refyre_cache'):
+    def cache(self):
         """
         Saves all the files to cache
         """
@@ -500,7 +501,7 @@ class FileCluster:
         ca = AutoCache(self.cache_dir)
         return ca.cache(self)
     
-    def decache(self, ):
+    def decache(self):
         ca = AutoCache(self.cache_dir)
         return ca.decache(self)
     

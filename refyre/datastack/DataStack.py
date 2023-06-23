@@ -9,8 +9,8 @@ with optional_dependencies("warn"):
 # using a mapper function.
 class PandasStack:
 
-    def __init__(self, variables_array):
-        self.variables_array = variables_array
+    def __init__(self, association):
+        self.association = association 
     
     def create_dataframe(self, col_names, mapper_func):
         '''
@@ -19,15 +19,14 @@ class PandasStack:
                 - Note each tuple value should be the value for the corresponding columns (i.e the ith col_name should be associated with the ith tuple val)
         '''
 
-        vals = [ v.vals() for v in self.variables_array]
         out_dct = {}
 
         for n in col_names:
             out_dct[n] = []
 
-        for input_tuple in zip(*vals):
+        for input_tuple in self.association:
 
-            output_data = mapper_func(input_tuple)
+            output_data = mapper_func(*input_tuple)
             assert len(output_data) == len(col_names), "The data length and number of columns specified through the column names don't match up!"
 
             for i in range(len(col_names)):
