@@ -29,6 +29,6 @@ def test_imports_exp():
 
     assert len([*Path('exps').iterdir()]) == 0, "No experiments have been created yet"
 
-    for i in range(1, 6):
+    for i in range(1, 20):
         ref.step()
         assert len([*Path('exps').iterdir()]) == i, "No experiments have been created yet"

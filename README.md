@@ -39,7 +39,7 @@ You seek to analyze the a files and the c files
 '''
 [dir="a"|name="a_var"]
 [dir="b"]
-    [dir="c"|pattern="gc?.txt"|name="c_var"] #Glob patterns start with 'g', regex with 'r', no need for just normal pattern matching
+    [dir="c"|pattern="g!c?.txt"|name="c_var"] #Glob patterns start with 'g!', regex with 'r!', no need for just normal pattern matching
 ```
 
 Have refyre analyze the directory with the following:
@@ -121,8 +121,8 @@ As shown above, Pythonic comments can be used in a similar fashion to Python. Ba
 - **dir**: Specifies the directory the cluster is targeting. *Usually, the clusters are relative paths*.
     - You can specify the three pattern types to target multiple directories
 - **pattern**: Allows you to target specific files by specifying a template pattern. Currently, glob, regex, and "generator expressions" are supported.
-  - For glob patterns, add a 'g' before the pattern; ex: `g*.txt`
-  - For regex patterns, add an 'r' before the pattern ex: `r.txt`
+  - For glob patterns, add a 'g!' before the pattern; ex: `g!*.txt`
+  - For regex patterns, add an 'r!' before the pattern ex: `r!.txt`
   - Generator expressions a simplified pattern matching, that's more humanly controllable
     - Just one template matching --> `$` matches to a number
     - refyre supports generator expressions the most out of the three

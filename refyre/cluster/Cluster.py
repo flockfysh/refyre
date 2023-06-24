@@ -546,3 +546,17 @@ class FileCluster:
                 total_size += pth.stat().st_size
 
         return total_size
+
+    def filecount(self):
+        """
+        Returns the total number of files over all folders
+        """
+        total_files = 0
+
+        for pth in self.values:
+            if pth.is_dir():
+                total_files += len([p.stat().st_size for p in Path(pth).rglob('*')])
+            elif pth.is_file():
+                total_files += 1
+        
+        return total_files

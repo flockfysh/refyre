@@ -106,11 +106,11 @@ class Refyre:
 
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
-        assert Path(path).exists(), f"Error, the path {path} doesn't exist"
+        #assert Path(path).exists(), f"Error, the path {path} doesn't exist"
         logger.debug(f'new path: {new_path} {node.directory} {node.pattern}')
         
         if (Path(path).is_file()) or (not new_path.exists() and not PatternGenerator.is_valid_regex(node.directory)):
-            logger.debug('invalid in general')
+            logger.debug(f'invalid in general {Path(path)} {new_path} {not new_path.exists() and not PatternGenerator.is_valid_regex(node.directory)}')
             return [None]
         
 
@@ -207,7 +207,7 @@ class Refyre:
             #Before we go to children, let's handle any imports we must
             import_fgraph = None
             if node.imports != '' and Path(node.imports).exists():
-                import_fgraph = self.__construct(node.imports, expand_path = new_path)
+                _, import_fgraph = self.__construct(node.imports, expand_path = new_path)
                 import_fgraph.is_root = False
 
             #Now, attempt to check for all the node children of the original node
@@ -354,6 +354,7 @@ class Refyre:
             using the flags attribute.
         '''
         #Updating the path
+        logger.debug(f'in output')
         new_path = Path(node.directory) if node.is_root_dir() else Path(path) / node.directory
 
         logger.debug(f'mode {node.mode}')
@@ -408,7 +409,9 @@ class Refyre:
         '''
 
         #First of all, let's do the work we need to do 
+        logger.debug(f'Creating, {path}')
         path.mkdir(parents = True, exist_ok = True)        
+        logger.debug(path.exists())
 
         if node.name != "":
             name, v = VariableAction(node.name, node, path, self.variables, self.out_temp_var_dict , False, True, mode = mode)
