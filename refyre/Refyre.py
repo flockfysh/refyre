@@ -392,8 +392,10 @@ class Refyre:
         '''
 
         if mode == "normal":
-            name, v = VariableAction(node.name, node, path, self.variables, self.out_temp_var_dict,  True, False, mode = mode)
-            logger.debug(f'updated vals {name} {v}')
+            for v_name in node.name.split(','):
+                logger.debug(f'NAME {v_name}')
+                name, v = VariableAction(v_name, node, path, self.variables, self.out_temp_var_dict,  True, False, mode = mode)
+                logger.debug(f'updated vals {name} {v}')
 
     def __create_output(self, node, path, mode):
         '''
@@ -414,8 +416,10 @@ class Refyre:
         logger.debug(path.exists())
 
         if node.name != "":
-            name, v = VariableAction(node.name, node, path, self.variables, self.out_temp_var_dict , False, True, mode = mode)
-            logger.debug(f'updated vals {name} {v}')
+            for v_name in node.name.split(','):
+                logger.debug(f'NAME {v_name}')
+                name, v = VariableAction(v_name, node, path, self.variables, self.out_temp_var_dict , False, True, mode = mode)
+                logger.debug(f'updated vals {name} {v}')
 
             
     def __post_generate(self, node, path = "", mode = "copy", flags = ""):
@@ -582,7 +586,7 @@ class Refyre:
         save_pth = Path(save_dir) / "refyre_state.json"
         with open(save_pth.as_posix(), 'w') as f:
             json.dump(pths, f, indent = 4)
-    
+     
     def load(load_filename):
 
         with open(load_filename, 'r') as f:
