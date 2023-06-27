@@ -1,4 +1,4 @@
-name: Run refyre unit tests
+name: Run refyre unit tests on dispatch
 on: [workflow_dispatch]
 
 jobs:
