@@ -66,6 +66,9 @@ class Refyre:
         assert type(value) == FileCluster, "Value should be a FileCluster variable"
         self.variables[key] = value
 
+    def __len__(self):
+        return len(self.variables)
+
     def __contains__(self, key):
         return key in self.variables
 
@@ -493,7 +496,7 @@ class Refyre:
             self.__post_generate(child, new_path, mode, "*da" if node.flags == "*da" else flags)
         
 
-    def add_spec(self, spec_path):
+    def add_spec(self, spec_path, track = False):
         '''
         Adds a spec to parse
         '''
