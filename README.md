@@ -217,10 +217,9 @@ import pandas as pd
 ref = Refyre(input_specs = ['specs/in.txt'])
 
 #We will do some pandas visualizations on the input data
-stack = PandasStack([ref["images"]])
+stack = PandasStack(AssociationCluster(input_vars = [ref["images"]]))
 
-def processor(tup):
-    fp = tup[0]
+def processor(fp):
     print('processing', fp)
     im = Image.open(fp).convert('RGB')
     width, height = im.size 
