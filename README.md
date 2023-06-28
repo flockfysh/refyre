@@ -150,7 +150,7 @@ These are all the basic quantifiers you can use, they cover ~80% of refyre's inn
 Variables are the backbone of refyre. The clusters provide an *avenue* for the variables to easily target the data without worrying about writing any code. However, they aren't the only way to access variable's powers. The docs below, again, specify the most useful abilities for these variables.
 
 `FileCluster(values = [], dirs = [], patterns = [], as_pathlib = False,)`
-    - `values`: string filepaths, or `Path` objects depending on wheterh `as_pathlib` is true or false.
+    - `values`: string filepaths, or `Path` objects depending on whether `as_pathlib` is true or false.
     - `patterns`: corresponds to the dirs, lists what patterns you want to target
 
 FileClusters are strongly rooted in *object oriented operations*, meaning each operation returns another FileCluster, so you can continue channeling FileCluster capabilities. To get out of FileClusters, you can use the following options:
