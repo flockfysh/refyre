@@ -143,7 +143,7 @@ class Refyre:
                 for fl in new_path.parent.iterdir():
 
                     logger.info(f'file {fl}')
-                    if re.search(r'{}'.format(PatternGenerator(node.directory)), fl.as_posix()) and fl not in ret and fl.is_dir() and file_num >= lower and file_num <= upper: #No files will be allowed to be fclusters
+                    if re.search(r'{}'.format(PatternGenerator(node.directory)), str(fl)) and fl not in ret and fl.is_dir() and file_num >= lower and file_num <= upper: #No files will be allowed to be fclusters
 
                         pattern_matched_node = node.copy()
                         assert pattern_matched_node.pattern == node.pattern, f"Copy node has pattern {pattern_matched_node.pattern} while node has pattern {node.pattern}"
@@ -240,9 +240,9 @@ class Refyre:
                     n = ExpressionGenerator.reverse_generator_expression(node.directory, pattern_node.directory)
 
                     if ( ('*s' in node.flags or '*l' in node.flags) and n == mx_num + 1):
-                        self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(1), Path(new_path.as_posix()), is_pathlib = True)
+                        self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(1), Path(new_path), is_pathlib = True)
                     elif not ('*s' in node.flags or '*l' in node.flags):
-                        self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(n), Path(new_path.as_posix()), is_pathlib = True)
+                        self.alias_manager.add( ExpressionGenerator(pattern_node.alias)(n), Path(new_path), is_pathlib = True)
                     
             
             return ret
@@ -270,7 +270,7 @@ class Refyre:
             if node.alias != '':
                 logger.debug(f'adding {node.alias}')
                 logger.debug(ExpressionGenerator(node.alias)(1))
-                self.alias_manager.add(ExpressionGenerator(node.alias)(1), Path(new_path.as_posix()), is_pathlib = True)
+                self.alias_manager.add(ExpressionGenerator(node.alias)(1), Path(new_path), is_pathlib = True)
 
             nchild = []
             for child in node.children + [import_fgraph]:
@@ -295,7 +295,7 @@ class Refyre:
         if not new_path.exists():
             return [False, None]
         
-        new_path = new_path.as_posix()
+        new_path = str(new_path)
 
         if not node.children:
             return [True, node]
@@ -330,7 +330,7 @@ class Refyre:
         if not new_path.exists():
             raise Exception(f"Weird issue caught during activation ... an invalid path appeared - {new_path}")
 
-        new_path = new_path.as_posix()
+        new_path = str(new_path)
 
         if node.name != "":
             logger.info(f'activating {new_path} {node.directory} {node.name}')
@@ -362,7 +362,7 @@ class Refyre:
 
         logger.debug(f'mode {node.mode}')
         self.__create_output(node, new_path, mode if node.mode == '' else node.mode)
-        new_path = new_path.as_posix()
+        new_path = str(new_path)
 
         for child in node.children:
             self.__output(child, new_path, "copy")
@@ -483,14 +483,14 @@ class Refyre:
             for fl in bad_files:
                 logger.debug(f'Deleting {fl}')
                 if fl.is_dir():
-                    shutil.rmtree(fl.as_posix())
+                    shutil.rmtree(str(fl))
                 elif fl.is_file():
                     fl.unlink()
                 else:
                     logger.error('No clue how to handle this file', )
 
 
-        new_path = new_path.as_posix()
+        new_path = str(new_path)
 
         for child in node.children:
             self.__post_generate(child, new_path, mode, "*da" if node.flags == "*da" else flags)
@@ -584,10 +584,10 @@ class Refyre:
             pths[var_name] = []
 
             for p in self.variables[var_name]:
-                pths[var_name].append(p.as_posix())
+                pths[var_name].append(str(p))
             
         save_pth = Path(save_dir) / "refyre_state.json"
-        with open(save_pth.as_posix(), 'w') as f:
+        with open(str(save_pth), 'w') as f:
             json.dump(pths, f, indent = 4)
      
     def load(load_filename):

@@ -9,8 +9,8 @@ class CodeManager:
 
     def add(self, filepath):
         p = Path(filepath)
-        self.module_dirs.append(p.parent.as_posix()) 
-        sys.path.append(p.parent.as_posix())
+        self.module_dirs.append(str(p.parent)) 
+        sys.path.append(str(p.parent))
 
     def clear(self):
         self.module_dirs.clear()

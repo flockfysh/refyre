@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import shutil 
 
-sys.path.insert(0, Path('').absolute().as_posix())
+sys.path.insert(0, str(Path('').absolute()))
 
 import refyre
 

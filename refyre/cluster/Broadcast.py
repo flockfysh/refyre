@@ -23,7 +23,7 @@ class Broadcaster:
     @classmethod
     def add(cls, id, cluster_vals):
         for v in cluster_vals:
-            insert(cls.files_dict, v.as_posix(), id) 
+            insert(cls.files_dict, str(v), id) 
 
         
     @classmethod
@@ -97,7 +97,7 @@ class Broadcaster:
                     for cluster_id in before_vals:
                         if cluster_id != instance.id:
                             cluster = clusters[cluster_id]()
-                            cluster.values = [v for v in cluster.values if v.as_posix() != before] 
+                            cluster.values = [v for v in cluster.values if str(v) != before] 
 
             self.files_dict = {k:self.files_dict[k] for k in self.files_dict if len(self.files_dict[k]) > 0 and Path(k).exists()}
             Broadcaster.files_dict = self.files_dict

@@ -213,7 +213,7 @@ class FileCluster:
         return FileCluster(values = self.values, as_pathlib = True)
     
     def __deepcopy__(self):
-        return FileCluster(values = [Path(p.as_posix()) for p in self.values], as_pathlib = True)
+        return FileCluster(values = [Path(p) for p in self.values], as_pathlib = True)
 
     def __getitem__(self, key):
         if isinstance(key, slice):
@@ -258,12 +258,12 @@ class FileCluster:
                     logger.debug(f'{str(v)}, {str(dest)}')
                     shutil.move(str(v), str(dest))
                     changes.append((str(v), str(dest)))
-                    nvals.append(Path(dest.as_posix()))
+                    nvals.append(Path(dest))
             else:
                 logger.debug('else')
                 logger.debug(str(v))
                 changes.append((str(v), str(v)))
-                nvals.append(Path(v.as_posix()))
+                nvals.append(Path(v))
             
         return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
     
@@ -288,7 +288,7 @@ class FileCluster:
             #if dest is None, we ignore it
             if dest:
                 shutil.copy(str(v), str(dest))
-                nvals.append(Path(dest.as_posix()))
+                nvals.append(Path(dest))
             
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
@@ -303,11 +303,11 @@ class FileCluster:
         changes = []
         for fl in self.values:
             if fl.is_dir():
-                shutil.rmtree(fl.as_posix())
-                changes.append((fl.as_posix(), None))
+                shutil.rmtree(str(fl))
+                changes.append((str(fl), None))
             elif fl.is_file():
                 fl.unlink()
-                changes.append((fl.as_posix(), None))
+                changes.append((str(fl), None))
 
 
         return changes, FileCluster(input_patterns = [], input_paths = [], values = [])
@@ -331,8 +331,8 @@ class FileCluster:
         changes = []
         for i, v in enumerate(self.values):
             logger.debug(f'renaming, {v},{v.parent / rename_function(i)}')
-            nvals.append(Path(v.as_posix()).rename(v.parent / rename_function(i)))
-            changes.append((v.as_posix(), nvals[-1].as_posix()))
+            nvals.append(Path(v).rename(v.parent / rename_function(i)))
+            changes.append((str(v), str(nvals[-1])))
 
         return changes, FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
@@ -356,9 +356,9 @@ class FileCluster:
 
 
         save_p = handle_file_conflict(save_p)
-        with zipfile.ZipFile(save_p.as_posix(), 'w') as zipMe:        
+        with zipfile.ZipFile(str(save_p), 'w') as zipMe:        
             for fl in copied.values:
-                zipMe.write(fl.as_posix(), compress_type=zipfile.ZIP_DEFLATED)
+                zipMe.write(str(fl), compress_type=zipfile.ZIP_DEFLATED)
         
         assert save_p.exists(), "For some reason, the newly created zip file does not exist"
 
@@ -398,7 +398,7 @@ class FileCluster:
 
             #Zip all the files up to send
             zipped = self.zip()
-            zipped_fp = zipped.vals()[0].as_posix()
+            zipped_fp = str(zipped.item())
 
             resp = None
             with open(zipped_fp, "rb") as f:
@@ -466,7 +466,7 @@ class FileCluster:
         nvals = []
         for v in self.values:
             if filter_func(v):
-                nvals.append(Path(v.as_posix())) #Append a copy of the object to prevent object ref shenanigans
+                nvals.append(Path(v)) #Append a copy of the object to prevent object ref shenanigans
         
         return FileCluster(input_patterns = [], input_paths = [], values = nvals, as_pathlib = True)
 
