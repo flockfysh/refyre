@@ -10,6 +10,7 @@ import shutil
 
 #Iteration
 from .ClusterIterator import FileClusterIterator
+from .Parallelize import Parallelizer
 from .Broadcast import Broadcaster
 from .Cache import AutoCache
 
@@ -147,6 +148,14 @@ class FileCluster:
 
         return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values).union(other.values)))
     
+    def __xor__(self, other):
+        '''
+            other - another FileCluster
+
+            Returns the exclusive or between the two FileClusters
+        '''
+        return FileCluster(input_paths = [], input_patterns = [], values = list(set(self.values) ^ set(other.values)))
+    
     def __sub__(self, other):
         '''
             other - another FileCluster
@@ -221,7 +230,6 @@ class FileCluster:
         elif isinstance(key, int):
             return FileCluster(input_patterns = [] , input_paths = [], values = [self.values[key]], as_pathlib = True)
 
-    
     @Broadcaster()
     def move(self, target_dir, conflict_function = handle_file_conflict):
         """
