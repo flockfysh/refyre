@@ -237,9 +237,9 @@ class FileCluster:
         
         :param target_dir: The directory to which files will be moved or copied
         :param conflict_function: conflict_function is a function that takes in a Path object
-        representing a file and returns a Path object representing the destination file path. This
-        function is used in the move and copy methods to handle file conflicts, such as when a file with
-        the same name already exists in the target directory. The default conflict
+            representing a file and returns a Path object representing the destination file path. This
+            function is used in the move and copy methods to handle file conflicts, such as when a file with
+            the same name already exists in the target directory. The default conflict
         :return: The `move` method returns a tuple containing a list of changes made (as tuples of old
         and new file paths) and a new `FileCluster` object with updated values.
         """
@@ -325,9 +325,9 @@ class FileCluster:
         This function renames files in a FileCluster object using a provided renaming function.
         
         :param rename_function: The `rename_function` parameter is a function that takes an integer as
-        an input and returns a string. This function is used to rename the files in the `values` list of
-        the `FileCluster` object. The integer input to the function is the index of the file in the
-        `values`
+            an input and returns a string. This function is used to rename the files in the `values` list of
+            the `FileCluster` object. The integer input to the function is the index of the file in the
+            `values`
         :return: a tuple containing two values: 
         1. A list of tuples representing the changes made during the renaming process. Each tuple
         contains two strings: the original path and the new path.

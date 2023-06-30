@@ -19,12 +19,6 @@ class Parser:
         Refyre's static parser
     '''
     def parse(tokens, INF = -10, ):
-        '''
-        Things to note: 
-            - Floor for tab depth is set to be -10. If it goes beyond this, ...
-            the circus would really love to hire their new rising clown.
-        '''
-
         #Ensure that the tokens spacing is proper, i.e no crazy tabs to the front
         assert tokens[0].tab_level == 0, "There should be no tabs for the first line"
         for i in range(1, len(tokens)):
