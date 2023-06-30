@@ -11,22 +11,21 @@ from pip._internal import main as pip_main
 import subprocess
 import shutil
 
-def create_virtualenv_and_install_requirements(venv_path, requirements_file):
-    # Create the virtual environment
-    venv_builder = venv.EnvBuilder(with_pip=True)
-    venv_builder.create(venv_path)
+def create_virtualenv_and_install_requirements(directory, requirements_file):
+    """
+    Create a virtual environment in the specified directory using venv.Builder.
 
-    # Activate the virtual environment
-    activate_script = (
-        Path(venv_path) / "Scripts" / "activate" if sys.platform == "win32"
-        else Path(venv_path) / "bin" / "activate"
-    )
-    activate_cmd = f"source {activate_script} && python -m pip"
-    
-    # Install the requirements using pip within the virtual environment
-    logger.debug("installing reqs")
-    pip_install_cmd = f"{activate_cmd} install -r {requirements_file}"
-    subprocess.run(pip_install_cmd, shell=True, check=True)
+    Args:
+        directory (str): The directory path where the virtual environment will be created.
+    """
+    # Create the directory if it doesn't exist
+    Path(directory).mkdir(parents=True, exist_ok=True)
+
+    # Set up the builder
+    builder = venv.EnvBuilder(with_pip=True)
+
+    # Create the virtual environment
+    builder.create(directory)
 
 class RecipePreprocessor:
     def __new__(self, recipe_path):
