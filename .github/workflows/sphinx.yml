@@ -2,6 +2,9 @@ name: "Deploy Sphinx"
  
 # execute this workflow automatically when a we push to master
 on: [push]
+
+permissions:
+ contents: write
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
