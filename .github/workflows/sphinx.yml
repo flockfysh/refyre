@@ -48,4 +48,4 @@ jobs:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: gh-pages
           force: true
-          directory: ./docs/build/html
+          directory: ./docs/_build/html
