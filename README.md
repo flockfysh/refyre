@@ -1,4 +1,8 @@
-# Refyre: Filesystem dominance is all you need
+<p align="center">
+  <img src="./logo.png" />
+</p>
+
+# refyre: Large scale file management energized by AI
 [![PyPI Version](https://img.shields.io/pypi/v/refyre.svg)](https://pypi.python.org/pypi/refyre)
 ___ 
 
