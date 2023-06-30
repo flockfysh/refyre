@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'refyre'
-copyright = '2023, Ansh,flockfysh'
-author = 'Ansh,flockfysh'
+copyright = '2023, Ansh, flockfysh'
+author = 'Ansh, flockfysh'
 release = '0.0.1.5.2'
 
 # -- General configuration ---------------------------------------------------
