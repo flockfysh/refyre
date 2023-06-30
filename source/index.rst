@@ -1,5 +1,5 @@
 .. refyre documentation master file, created by
-   sphinx-quickstart on Thu Jun 29 23:39:19 2023.
+   sphinx-quickstart on Thu Jun 29 23:42:19 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
