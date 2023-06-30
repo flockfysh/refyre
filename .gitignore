@@ -11,7 +11,6 @@ testa2
 atest
 new_dataset/*
 initial-data
-docs/*
 *.json
 __pycache__
 *.log
