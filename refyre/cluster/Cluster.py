@@ -10,7 +10,6 @@ import shutil
 
 #Iteration
 from .ClusterIterator import FileClusterIterator
-from .Parallelize import Parallelizer
 from .Broadcast import Broadcaster
 from .Cache import AutoCache
 

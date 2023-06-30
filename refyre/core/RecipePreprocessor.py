@@ -89,13 +89,6 @@ class RecipePreprocessor:
                         shutil.rmtree(recipe_dict['env']['name'])
                         create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])
 
-            #Activate the env 
-            activate_script = (
-                Path(venv_path) / "Scripts" / "activate" if sys.platform == "win32"
-                else Path(venv_path) / "bin" / "activate"
-            )
-            activate_cmd = f"source {activate_script}"
-            subprocess.run(activate_cmd, shell=True, check=True)
 
             return ref
             
