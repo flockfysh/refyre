@@ -90,7 +90,6 @@ class FileCluster:
         return FileCluster.clusters
 
     def __del__(self):
-        logger.debug(f'deleting {self.id}')
         if self.id in FileCluster.clusters:
             FileCluster.clusters.pop(self.id)
         Broadcaster.release(self.id)
