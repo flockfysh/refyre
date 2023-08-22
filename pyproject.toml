@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "refyre"
-version = "0.0.1.5.2"
+version = "0.0.1.5.3"
 description = "Filesystem dominance is all you need."
 authors = ["Ansh <teamnebulaco@gmail.com>"]
 readme = "README.md"
