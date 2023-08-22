@@ -19,14 +19,15 @@ class AssociationCluster:
     def __init__(self, starting_vals = None, mapper_function = lambda x : x, one_to_one = False , as_pathlib = False, input_vars = []):
         self.values = []
 
-
         if starting_vals:
             out = []
             if not as_pathlib:
                 for p in starting_vals:
                     t = (Path(v) for v in p)
                     out += t
-            
+            else: 
+                out = starting_vals
+                
             self.values += out
 
         #ID the variable
@@ -41,7 +42,7 @@ class AssociationCluster:
             input_vars = [v.vals() for v in input_vars]
             iter_form = product(*input_vars) if not one_to_one else zip(*input_vars)
             for permutation in iter_form:
-                if mapper_function(permutation):
+                if mapper_function(*permutation):
                     self.values.append(permutation)
         
     
@@ -63,6 +64,9 @@ class AssociationCluster:
         
     def vals(self):
         return self.values
+    
+    def item(self):
+        return self.values[0]
 
     def __len__(self):
         return len(self.values) 
@@ -77,13 +81,13 @@ class AssociationCluster:
         return f"AssociationCluster(values = {self.values})"
 
     def __copy__(self):
-        return AssociationCluster(values = self.values, as_pathlib = True)
+        return AssociationCluster(starting_vals = self.values, as_pathlib = True)
     
     def __getitem__(self, key):
         if isinstance(key, slice):
-            return AssociationCluster(values = self.values[key.start:key.stop:key.step], as_pathlib = True)
+            return AssociationCluster(starting_vals = self.values[key.start:key.stop:key.step], as_pathlib = True)
         elif isinstance(key, int):
-            return AssociationCluster(values = [self.values[key]], as_pathlib = True)
+            return AssociationCluster(starting_vals = [self.values[key]], as_pathlib = True)
     
     def __del__(self):
         logger.debug(f'deleting {self.id}')
@@ -116,4 +120,4 @@ class AssociationCluster:
 
         new_values = self.values + other.values
 
-        return AssociationCluster(values = new_values, as_pathlib = True)
+        return AssociationCluster(starting_vals = new_values, as_pathlib = True)
