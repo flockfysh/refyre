@@ -10,7 +10,7 @@ from refyre.config import logger
 from pip._internal import main as pip_main
 import subprocess
 import shutil
-
+import os
 
 
 
@@ -29,6 +29,8 @@ def create_virtualenv_and_install_requirements(directory, requirements_file):
 
     # Create the virtual environment
     builder.create(directory)
+
+
 
 class RecipePreprocessor:
     def __new__(self, recipe_path):

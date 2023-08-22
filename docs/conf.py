@@ -5,6 +5,7 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+# https://www.sphinx-doc.org/en/master/tutorial/automatic-doc-generation.html
 
 project = 'refyre'
 copyright = '2023, Ansh, flockfysh'
