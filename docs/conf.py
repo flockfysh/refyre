@@ -16,7 +16,9 @@ release = '0.0.1.5.2'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [    
-    #'sphinx.ext.autodoc', #Automatic documentation from docstrings
+    'sphinx.ext.duration',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autodoc', #Automatic documentation from docstrings
 ]
 
 templates_path = ['_templates']
