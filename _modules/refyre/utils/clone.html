@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>refyre.reader.ExpressionGenerator - refyre 0.0.1.5.2 documentation</title>
+        <title>refyre.utils.clone - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -201,71 +201,33 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for refyre.reader.ExpressionGenerator</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">re</span> 
+          <h1>Source code for refyre.utils.clone</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">refyre.utils</span> <span class="kn">import</span> <span class="n">optional_dependencies</span> 
+<span class="kn">from</span> <span class="nn">refyre.cluster</span> <span class="kn">import</span> <span class="n">FileCluster</span> <span class="c1">#Time to use the power of our variables :)</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">refyre.config</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<div class="viewcode-block" id="clone_node"><a class="viewcode-back" href="../../../refyre.utils.html#refyre.utils.clone.clone_node">[docs]</a><span class="k">def</span> <span class="nf">clone_node</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">git</span> 
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GEET </span><span class="si">{</span><span class="n">git</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ExpressionGenerator"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator">[docs]</a><span class="k">class</span> <span class="nc">ExpressionGenerator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        The ExpressionGenerator class takes in an </span>
-<span class="sd">        input generator string, such as test$.txt, and returns a</span>
-<span class="sd">        lambda function that can be used to evaluate the expressions at various points.</span>
+    <span class="c1">#Ensure no file conflicts</span>
+    <span class="n">rand_num</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)])</span>
+    <span class="n">tmp_empty</span> <span class="o">=</span> <span class="n">fp</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;tmp</span><span class="si">{</span><span class="n">rand_num</span><span class="si">}</span><span class="s1">&#39;</span>
 
-<span class="sd">        For example, test$.txt returns a lambda function, that when called at i = 1, returns test1.txt</span>
 
-<span class="sd">        This class is a static class; it&#39;s sole purpose is to create an organized location</span>
-<span class="sd">        to generate complex expressions.</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cloning to </span><span class="si">{</span><span class="n">tmp_empty</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="o">.</span><span class="n">clone_from</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">tmp_empty</span><span class="p">)</span>
 
-<span class="sd">        For now, only numbers are supported. You can generate number expressions using the &#39;$&#39; symbol </span>
-<span class="sd">        as shown above.</span>
+    <span class="n">mv_var</span> <span class="o">=</span> <span class="n">FileCluster</span><span class="p">(</span><span class="n">input_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">tmp_empty</span><span class="p">],</span> <span class="n">input_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g*&#39;</span><span class="p">])</span>
 
-<span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="ExpressionGenerator.generate_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.generate_expression">[docs]</a>    <span class="k">def</span> <span class="nf">generate_expression</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-        <span class="c1"># Replace &#39;$&#39; with &#39;{}&#39; to use it as a placeholder for string formatting</span>
-        <span class="n">lambda_function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="n">mv_var</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tmp_empty</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">lambda_function</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.is_valid_genexp"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_valid_genexp">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid_genexp</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9/\-_$]+$&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ret: </span><span class="si">{</span><span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expression</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">expression</span><span class="p">))</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.is_null_generator"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_null_generator">[docs]</a>    <span class="k">def</span> <span class="nf">is_null_generator</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            By &quot;null&quot; generator, I just mean a genexp that </span>
-<span class="sd">            doesn&#39;t have any special characters, i.e. one that will stay the same</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Checking: , </span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="s1">&#39;$&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">expression</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;$&#39;</span> <span class="ow">in</span> <span class="n">expression</span><span class="p">)</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.convert_generator_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.convert_generator_expression">[docs]</a>    <span class="k">def</span> <span class="nf">convert_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
-        <span class="n">escaped_expression</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="n">escaped_expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;(\d+)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">regex_pattern</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.reverse_generator_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.reverse_generator_expression">[docs]</a>    <span class="k">def</span> <span class="nf">reverse_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="n">ExpressionGenerator</span><span class="o">.</span><span class="n">convert_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex_pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">, exp,  </span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">, str, </span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
-        
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            Hijack the &#39;__new__&#39; method (usually used in constructors) </span>
-<span class="sd">            and make it do our bidding &gt;:)</span>
-
-<span class="sd">            Takes in an expression, return a lambda function.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">return</span> <span class="n">ExpressionGenerator</span><span class="o">.</span><span class="n">generate_expression</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
+    <span class="n">tmp_empty</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span></div>
 </pre></div>
         </article>
       </div>

@@ -1,136 +1,767 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="refyre.config package" href="refyre.config.html" /><link rel="prev" title="refyre package" href="refyre.html" />
 
-<!DOCTYPE html>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>refyre.cluster package - refyre 0.0.1.5.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>refyre.cluster package &#8212; refyre 0.0.1.5.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="refyre.config package" href="refyre.config.html" />
-    <link rel="prev" title="refyre package" href="refyre.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
   
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
   
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
 
-          <div class="body" role="main">
-            
-  <div class="section" id="refyre-cluster-package">
-<h1>refyre.cluster package<a class="headerlink" href="#refyre-cluster-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="refyre-cluster-association-module">
-<h2>refyre.cluster.Association module<a class="headerlink" href="#refyre-cluster-association-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="refyre-cluster-broadcast-module">
-<h2>refyre.cluster.Broadcast module<a class="headerlink" href="#refyre-cluster-broadcast-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="refyre-cluster-cache-module">
-<h2>refyre.cluster.Cache module<a class="headerlink" href="#refyre-cluster-cache-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="refyre-cluster-cluster-module">
-<h2>refyre.cluster.Cluster module<a class="headerlink" href="#refyre-cluster-cluster-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="refyre-cluster-clusteriterator-module">
-<h2>refyre.cluster.ClusterIterator module<a class="headerlink" href="#refyre-cluster-clusteriterator-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
 
 
-          </div>
-          
-        </div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">refyre 0.0.1.5.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">refyre</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">refyre 0.0.1.5.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">refyre</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="refyre.html">refyre package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">refyre</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of refyre</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="refyre.html">refyre package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of refyre package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">refyre.cluster package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.config.html">refyre.config package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.core.html">refyre.core package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.datastack.html">refyre.datastack package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.graph.html">refyre.graph package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.reader.html">refyre.reader package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.utils.html">refyre.utils package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">refyre</a><ul>
-  <li><a href="refyre.html">refyre package</a><ul>
-      <li>Previous: <a href="refyre.html" title="previous chapter">refyre package</a></li>
-      <li>Next: <a href="refyre.config.html" title="next chapter">refyre.config package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
+</div>
+
+      </div>
+      
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="refyre-cluster-package">
+<h1>refyre.cluster package<a class="headerlink" href="#refyre-cluster-package" title="Permalink to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-refyre.cluster.Association">
+<span id="refyre-cluster-association-module"></span><h2>refyre.cluster.Association module<a class="headerlink" href="#module-refyre.cluster.Association" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.cluster.Association.</span></span><span class="sig-name descname"><span class="pre">AssociationCluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_vals=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper_function=&lt;function</span> <span class="pre">AssociationCluster.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_to_one=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pathlib=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_vars=[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.GLOBAL_COUNTER">
+<span class="sig-name descname"><span class="pre">GLOBAL_COUNTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.GLOBAL_COUNTER" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.all_clusters">
+<span class="sig-name descname"><span class="pre">all_clusters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster.all_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.all_clusters" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.cleanup">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.cleanup" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.clusterify">
+<span class="sig-name descname"><span class="pre">clusterify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapper_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster.clusterify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.clusterify" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.clusters">
+<span class="sig-name descname"><span class="pre">clusters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.clusters" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.item">
+<span class="sig-name descname"><span class="pre">item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster.item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.item" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Association.AssociationCluster.vals">
+<span class="sig-name descname"><span class="pre">vals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Association.html#AssociationCluster.vals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Association.AssociationCluster.vals" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
+</dd></dl>
 
+</section>
+<section id="module-refyre.cluster.Broadcast">
+<span id="refyre-cluster-broadcast-module"></span><h2>refyre.cluster.Broadcast module<a class="headerlink" href="#module-refyre.cluster.Broadcast" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.cluster.Broadcast.</span></span><span class="sig-name descname"><span class="pre">Broadcaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#Broadcaster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.add">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_vals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#Broadcaster.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.add" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.clear">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#Broadcaster.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.clear" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.files_dict">
+<span class="sig-name descname"><span class="pre">files_dict</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.files_dict" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.ignore_list">
+<span class="sig-name descname"><span class="pre">ignore_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.ignore_list" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.release">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#Broadcaster.release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.release" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.Broadcaster.unlink">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unlink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#Broadcaster.unlink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.Broadcaster.unlink" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="refyre.cluster.Broadcast.insert">
+<span class="sig-prename descclassname"><span class="pre">refyre.cluster.Broadcast.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Broadcast.html#insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Broadcast.insert" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-refyre.cluster.Cache">
+<span id="refyre-cluster-cache-module"></span><h2>refyre.cluster.Cache module<a class="headerlink" href="#module-refyre.cluster.Cache" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.cluster.Cache.</span></span><span class="sig-name descname"><span class="pre">AutoCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.refyre_cache'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.cache" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.cache_files">
+<span class="sig-name descname"><span class="pre">cache_files</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.cache_files" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.contains" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.decache">
+<span class="sig-name descname"><span class="pre">decache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.decache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.decache" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.load" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.obliterate">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">obliterate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.obliterate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.obliterate" title="Permalink to this definition">#</a></dt>
+<dd><p>Automatically wipe the entire cache object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cache.AutoCache.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cache.html#AutoCache.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cache.AutoCache.save" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-refyre.cluster.Cluster">
+<span id="refyre-cluster-cluster-module"></span><h2>refyre.cluster.Cluster module<a class="headerlink" href="#module-refyre.cluster.Cluster" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.cluster.Cluster.</span></span><span class="sig-name descname"><span class="pre">FileCluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_pathlib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The workhorse of refyre. Variables do all of the heavylifting, harnessing
+the power of the data parsed through the fgraphs.</p>
+<p>Paradigms - any method that involves transporting data must be wrapped in the
+refresher decorator method above. This will prevent overlapping variables from
+incorrectly altering results from each other, as well as ensures that variables
+only contain valid data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.GLOBAL_COUNTER">
+<span class="sig-name descname"><span class="pre">GLOBAL_COUNTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.GLOBAL_COUNTER" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.all_clusters">
+<span class="sig-name descname"><span class="pre">all_clusters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.all_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.all_clusters" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.cache">
+<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.cache" title="Permalink to this definition">#</a></dt>
+<dd><p>Saves all the files to cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.cached">
+<span class="sig-name descname"><span class="pre">cached</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.cached" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns all the FileCluster files in the cluster that are currently cached</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.cleanup">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.cleanup" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.clone">
+<span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.clone" title="Permalink to this definition">#</a></dt>
+<dd><p>The function returns a deep clone of the current object.
+:return: A deep clone of the current object is being returned.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.clusters">
+<span class="sig-name descname"><span class="pre">clusters</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.clusters" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_function=&lt;function</span> <span class="pre">handle_file_conflict&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.copy" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Input:</dt><dd><ul class="simple">
+<li><p>target_dir: the directory to which all files will be sent.</p></li>
+</ul>
+</dd>
+<dt>Returns</dt><dd><ul class="simple">
+<li><p>FileCluster object with the new values</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.decache">
+<span class="sig-name descname"><span class="pre">decache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.decache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.decache" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.decompress">
+<span class="sig-name descname"><span class="pre">decompress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.decompress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.decompress" title="Permalink to this definition">#</a></dt>
+<dd><p>Takes any folders within the values, and replaces them with all the items in the folder</p>
+<p>If complete is set to True, then it will recursively empty all files</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.delete" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>change_arr: List[Tuple(Str, Str)]</dt><dd><ul class="simple">
+<li><p>Lists the Str that the path started out as, and what it became.</p></li>
+<li><p>If second tuple None, it implies a path was deleted</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.dirs">
+<span class="sig-name descname"><span class="pre">dirs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.dirs" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a FileCluster of all parent directories</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.filecount">
+<span class="sig-name descname"><span class="pre">filecount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.filecount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.filecount" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the total number of files over all folders</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.filesize">
+<span class="sig-name descname"><span class="pre">filesize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bytes'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.filesize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.filesize" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the total file size, in bytes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.filter" title="Permalink to this definition">#</a></dt>
+<dd><p>This function takes a filter function as input and returns a new FileCluster object with values
+filtered based on the input function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_func</strong> – filter_func is a function that takes a filepath as input and returns a boolean</p>
+</dd>
+</dl>
+<p>value. It is used to filter out values that we don’t want to keep in a FileCluster object. If the
+function returns True for a given filepath, it will be included in the filtered FileCluster object.
+If it
+:return: A FileCluster object with the filtered values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.item">
+<span class="sig-name descname"><span class="pre">item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.item" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Pathlib.Paths list of all
+filepaths</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.map" title="Permalink to this definition">#</a></dt>
+<dd><p>This function maps each filepath in a FileCluster object using a given function and returns a
+new FileCluster object with the mapped values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>map_func</strong> – <cite>map_func</cite> is a function that takes a filepath as input and returns a filepath</p>
+</dd>
+</dl>
+<p>as output. This function is used to map each filepath in the <cite>values</cite> attribute of a
+<cite>FileCluster</cite> object. The resulting <cite>FileCluster</cite> object will have the same structure as the
+original one, but
+:return: A new FileCluster object with the mapped values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.move" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>change_arr: List[Tuple(Str, Str)]</dt><dd><ul class="simple">
+<li><p>Lists the Str that the path started out as, and what it became.</p></li>
+<li><p>If second tuple None, it implies a path was deleted</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.post" title="Permalink to this definition">#</a></dt>
+<dd><p>This function sends a post request to a specified API endpoint with additional payload parameters
+and returns the response object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – The link to the API endpoint where the post request will be sent</p></li>
+<li><p><strong>additional_data</strong> – a dictionary containing any additional metadata you want to send along with</p></li>
+</ul>
+</dd>
+</dl>
+<p>the request. This could include things like authentication tokens or other parameters required by
+the API endpoint you are sending the request to
+:param payload_name: The name you want to give to the zip file that will be sent as part of the POST
+request
+:return: the Response object returned from the requests.post() call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.reduce">
+<span class="sig-name descname"><span class="pre">reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reducer_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.reduce" title="Permalink to this definition">#</a></dt>
+<dd><p>The reduce function takes in a reducer function and returns the result of reducing the values in
+the array using the reducer function, or None if the array is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reducer_function</strong> – A function that takes in two parameters and returns a third parameter</p>
+</dd>
+</dl>
+<p>that can be used to reduce a list of values into a single value. This function is used in the
+reduce method of a class to perform the reduction operation on the list of values stored in the
+class instance
+:return: the result of the reduction of the values in the array using the given reducer
+function. If the array is empty, it returns None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.relink">
+<span class="sig-name descname"><span class="pre">relink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.relink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.relink" title="Permalink to this definition">#</a></dt>
+<dd><p>Reconnect the FileCluster to the broadcaster</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.rename" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>change_arr: List[Tuple(Str, Str)]</dt><dd><ul class="simple">
+<li><p>Lists the Str that the path started out as, and what it became.</p></li>
+<li><p>If second tuple None, it implies a path was deleted</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.unlink">
+<span class="sig-name descname"><span class="pre">unlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.unlink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.unlink" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a FileCluster detached from the Broadcaster system</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.vals">
+<span class="sig-name descname"><span class="pre">vals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.vals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.vals" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a Pathlib.Paths list of all
+filepaths</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.wipe">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wipe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.wipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.wipe" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.FileCluster.zip">
+<span class="sig-name descname"><span class="pre">zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir='.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name='out.zip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_function=&lt;function</span> <span class="pre">handle_file_conflict&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#FileCluster.zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.FileCluster.zip" title="Permalink to this definition">#</a></dt>
+<dd><p>This function zips all the files in a directory into a single zip file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>save_dir</strong> – The directory where the zip file will be saved. If not specified, it will</p>
+</dd>
+</dl>
+<p>default to the current working directory, defaults to . (optional)
+:param save_name: The name of the zip file that will be created, defaults to out.zip (optional)
+:param conflict_function: The conflict_function parameter is a function that is used to handle
+conflicts that may arise when trying to save the zip file to the specified directory. It takes
+in the path of the file that is being saved and returns a new path if there is a conflict with
+an existing file in the directory. If no
+:return: a <cite>FileCluster</cite> object that contains the path to the newly created zip file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="refyre.cluster.Cluster.handle_file_conflict">
+<span class="sig-prename descclassname"><span class="pre">refyre.cluster.Cluster.</span></span><span class="sig-name descname"><span class="pre">handle_file_conflict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/Cluster.html#handle_file_conflict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.Cluster.handle_file_conflict" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-refyre.cluster.ClusterIterator">
+<span id="refyre-cluster-clusteriterator-module"></span><h2>refyre.cluster.ClusterIterator module<a class="headerlink" href="#module-refyre.cluster.ClusterIterator" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="refyre.cluster.ClusterIterator.FileClusterIterator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.cluster.ClusterIterator.</span></span><span class="sig-name descname"><span class="pre">FileClusterIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/cluster/ClusterIterator.html#FileClusterIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.cluster.ClusterIterator.FileClusterIterator" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A simple iterator to run through the variable data</p>
+</dd></dl>
+
+</section>
+<section id="module-refyre.cluster">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-refyre.cluster" title="Permalink to this heading">#</a></h2>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="refyre.config.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">refyre.config package</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="refyre.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">refyre package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Ansh, flockfysh
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">refyre.cluster package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-refyre.cluster.Association">refyre.cluster.Association module</a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster"><code class="docutils literal notranslate"><span class="pre">AssociationCluster</span></code></a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.GLOBAL_COUNTER"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.GLOBAL_COUNTER</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.all_clusters"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.all_clusters()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.cleanup"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.cleanup()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.clusterify"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.clusterify()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.clusters"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.clusters</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.item"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.item()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Association.AssociationCluster.vals"><code class="docutils literal notranslate"><span class="pre">AssociationCluster.vals()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-refyre.cluster.Broadcast">refyre.cluster.Broadcast module</a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster"><code class="docutils literal notranslate"><span class="pre">Broadcaster</span></code></a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.add"><code class="docutils literal notranslate"><span class="pre">Broadcaster.add()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.clear"><code class="docutils literal notranslate"><span class="pre">Broadcaster.clear()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.files_dict"><code class="docutils literal notranslate"><span class="pre">Broadcaster.files_dict</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.ignore_list"><code class="docutils literal notranslate"><span class="pre">Broadcaster.ignore_list</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.release"><code class="docutils literal notranslate"><span class="pre">Broadcaster.release()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.Broadcaster.unlink"><code class="docutils literal notranslate"><span class="pre">Broadcaster.unlink()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#refyre.cluster.Broadcast.insert"><code class="docutils literal notranslate"><span class="pre">insert()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-refyre.cluster.Cache">refyre.cluster.Cache module</a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache"><code class="docutils literal notranslate"><span class="pre">AutoCache</span></code></a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.cache"><code class="docutils literal notranslate"><span class="pre">AutoCache.cache()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.cache_files"><code class="docutils literal notranslate"><span class="pre">AutoCache.cache_files</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.contains"><code class="docutils literal notranslate"><span class="pre">AutoCache.contains()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.decache"><code class="docutils literal notranslate"><span class="pre">AutoCache.decache()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.load"><code class="docutils literal notranslate"><span class="pre">AutoCache.load()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.obliterate"><code class="docutils literal notranslate"><span class="pre">AutoCache.obliterate()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cache.AutoCache.save"><code class="docutils literal notranslate"><span class="pre">AutoCache.save()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-refyre.cluster.Cluster">refyre.cluster.Cluster module</a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster"><code class="docutils literal notranslate"><span class="pre">FileCluster</span></code></a><ul>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.GLOBAL_COUNTER"><code class="docutils literal notranslate"><span class="pre">FileCluster.GLOBAL_COUNTER</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.all_clusters"><code class="docutils literal notranslate"><span class="pre">FileCluster.all_clusters()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.cache"><code class="docutils literal notranslate"><span class="pre">FileCluster.cache()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.cached"><code class="docutils literal notranslate"><span class="pre">FileCluster.cached()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.cleanup"><code class="docutils literal notranslate"><span class="pre">FileCluster.cleanup()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.clone"><code class="docutils literal notranslate"><span class="pre">FileCluster.clone()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.clusters"><code class="docutils literal notranslate"><span class="pre">FileCluster.clusters</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.copy"><code class="docutils literal notranslate"><span class="pre">FileCluster.copy()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.decache"><code class="docutils literal notranslate"><span class="pre">FileCluster.decache()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.decompress"><code class="docutils literal notranslate"><span class="pre">FileCluster.decompress()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.delete"><code class="docutils literal notranslate"><span class="pre">FileCluster.delete()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.dirs"><code class="docutils literal notranslate"><span class="pre">FileCluster.dirs()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.filecount"><code class="docutils literal notranslate"><span class="pre">FileCluster.filecount()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.filesize"><code class="docutils literal notranslate"><span class="pre">FileCluster.filesize()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.filter"><code class="docutils literal notranslate"><span class="pre">FileCluster.filter()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.item"><code class="docutils literal notranslate"><span class="pre">FileCluster.item()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.map"><code class="docutils literal notranslate"><span class="pre">FileCluster.map()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.move"><code class="docutils literal notranslate"><span class="pre">FileCluster.move()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.post"><code class="docutils literal notranslate"><span class="pre">FileCluster.post()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.reduce"><code class="docutils literal notranslate"><span class="pre">FileCluster.reduce()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.relink"><code class="docutils literal notranslate"><span class="pre">FileCluster.relink()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.rename"><code class="docutils literal notranslate"><span class="pre">FileCluster.rename()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.unlink"><code class="docutils literal notranslate"><span class="pre">FileCluster.unlink()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.vals"><code class="docutils literal notranslate"><span class="pre">FileCluster.vals()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.wipe"><code class="docutils literal notranslate"><span class="pre">FileCluster.wipe()</span></code></a></li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.FileCluster.zip"><code class="docutils literal notranslate"><span class="pre">FileCluster.zip()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#refyre.cluster.Cluster.handle_file_conflict"><code class="docutils literal notranslate"><span class="pre">handle_file_conflict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-refyre.cluster.ClusterIterator">refyre.cluster.ClusterIterator module</a><ul>
+<li><a class="reference internal" href="#refyre.cluster.ClusterIterator.FileClusterIterator"><code class="docutils literal notranslate"><span class="pre">FileClusterIterator</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-refyre.cluster">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2023, Ansh, flockfysh.
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
-      |
-      <a href="_sources/refyre.cluster.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a2a7bb7a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
 </html>

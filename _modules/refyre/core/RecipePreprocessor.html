@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>refyre.reader.ExpressionGenerator - refyre 0.0.1.5.2 documentation</title>
+        <title>refyre.core.RecipePreprocessor - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -201,71 +201,106 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for refyre.reader.ExpressionGenerator</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">re</span> 
+          <h1>Source code for refyre.core.RecipePreprocessor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">venv</span>
+<span class="kn">import</span> <span class="nn">site</span>
+
+<span class="kn">from</span> <span class="nn">refyre.utils</span> <span class="kn">import</span> <span class="n">optional_dependencies</span>
+<span class="kn">from</span> <span class="nn">refyre</span> <span class="kn">import</span> <span class="n">Refyre</span>
 <span class="kn">from</span> <span class="nn">refyre.config</span> <span class="kn">import</span> <span class="n">logger</span>
 
+<span class="kn">from</span> <span class="nn">pip._internal</span> <span class="kn">import</span> <span class="n">main</span> <span class="k">as</span> <span class="n">pip_main</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<div class="viewcode-block" id="ExpressionGenerator"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator">[docs]</a><span class="k">class</span> <span class="nc">ExpressionGenerator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        The ExpressionGenerator class takes in an </span>
-<span class="sd">        input generator string, such as test$.txt, and returns a</span>
-<span class="sd">        lambda function that can be used to evaluate the expressions at various points.</span>
 
-<span class="sd">        For example, test$.txt returns a lambda function, that when called at i = 1, returns test1.txt</span>
 
-<span class="sd">        This class is a static class; it&#39;s sole purpose is to create an organized location</span>
-<span class="sd">        to generate complex expressions.</span>
+<div class="viewcode-block" id="create_virtualenv_and_install_requirements"><a class="viewcode-back" href="../../../refyre.core.html#refyre.core.RecipePreprocessor.create_virtualenv_and_install_requirements">[docs]</a><span class="k">def</span> <span class="nf">create_virtualenv_and_install_requirements</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">requirements_file</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a virtual environment in the specified directory using venv.Builder.</span>
 
-<span class="sd">        For now, only numbers are supported. You can generate number expressions using the &#39;$&#39; symbol </span>
-<span class="sd">        as shown above.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        directory (str): The directory path where the virtual environment will be created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create the directory if it doesn&#39;t exist</span>
+    <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="ExpressionGenerator.generate_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.generate_expression">[docs]</a>    <span class="k">def</span> <span class="nf">generate_expression</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-        <span class="c1"># Replace &#39;$&#39; with &#39;{}&#39; to use it as a placeholder for string formatting</span>
-        <span class="n">lambda_function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="c1"># Set up the builder</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">venv</span><span class="o">.</span><span class="n">EnvBuilder</span><span class="p">(</span><span class="n">with_pip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">lambda_function</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.is_valid_genexp"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_valid_genexp">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid_genexp</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9/\-_$]+$&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ret: </span><span class="si">{</span><span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expression</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">expression</span><span class="p">))</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.is_null_generator"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_null_generator">[docs]</a>    <span class="k">def</span> <span class="nf">is_null_generator</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
+    <span class="c1"># Create the virtual environment</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RecipePreprocessor"><a class="viewcode-back" href="../../../refyre.core.html#refyre.core.RecipePreprocessor.RecipePreprocessor">[docs]</a><span class="k">class</span> <span class="nc">RecipePreprocessor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipe_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            By &quot;null&quot; generator, I just mean a genexp that </span>
-<span class="sd">            doesn&#39;t have any special characters, i.e. one that will stay the same</span>
+<span class="sd">            Performs all the recipe path preprocessing, and then </span>
+<span class="sd">            returns the Refyre instance</span>
+<span class="sd">            to manage.</span>
+
+<span class="sd">            Returns the refyre instance</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Checking: , </span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="s1">&#39;$&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">expression</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;$&#39;</span> <span class="ow">in</span> <span class="n">expression</span><span class="p">)</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.convert_generator_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.convert_generator_expression">[docs]</a>    <span class="k">def</span> <span class="nf">convert_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
-        <span class="n">escaped_expression</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="n">escaped_expression</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;(\d+)&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">regex_pattern</span></div>
-    
-<div class="viewcode-block" id="ExpressionGenerator.reverse_generator_expression"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.ExpressionGenerator.ExpressionGenerator.reverse_generator_expression">[docs]</a>    <span class="k">def</span> <span class="nf">reverse_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-        <span class="n">regex_pattern</span> <span class="o">=</span> <span class="n">ExpressionGenerator</span><span class="o">.</span><span class="n">convert_generator_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">optional_dependencies</span><span class="p">(</span><span class="s2">&quot;warn&quot;</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">yaml</span> 
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">regex_pattern</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex_pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">, exp,  </span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">, str, </span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
-        
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            Hijack the &#39;__new__&#39; method (usually used in constructors) </span>
-<span class="sd">            and make it do our bidding &gt;:)</span>
+            <span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="n">recipe_path</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;The input file you were trying to access - </span><span class="si">{</span><span class="n">recipe_path</span><span class="si">}</span><span class="s2"> - does NOT exist&quot;</span>
 
-<span class="sd">            Takes in an expression, return a lambda function.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+            <span class="n">recipe_dict</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">recipe_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">recipe_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">)</span>
+<span class="w">            </span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Currently, a recipe consists of attributes:</span>
 
-        <span class="k">return</span> <span class="n">ExpressionGenerator</span><span class="o">.</span><span class="n">generate_expression</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
+<span class="sd">                input-spec: a filepath to the input spec</span>
+<span class="sd">                base-dir: filepath to the base directory / entry point you want your program to see</span>
+<span class="sd">                env: a description of the environment you want to setup, with two attributes</span>
+<span class="sd">                    - name: name of the environment</span>
+<span class="sd">                    - requirements: requirements file</span>
+
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+            <span class="c1">#Setup the base directories based on an input spec</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending to: </span><span class="si">{</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s2">&quot;input-spec&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+            <span class="c1">#Current base directory is assumed to be CWD</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            if &#39;base-dir&#39; and Path(recipe_dict[&#39;base-dir&#39;]) != Path.cwd():</span>
+<span class="sd">                current_base_dir = Path.cwd()</span>
+
+<span class="sd">                logger.debug(f&#39;{sys.path}, {current_base_dir.resolve()}&#39;)</span>
+<span class="sd">                sys.path.remove(str(current_base_dir.resolve()))</span>
+
+<span class="sd">                sys.path.append(str(Path(recipe_dict[&#39;base-dir&#39;].resolve())))</span>
+<span class="sd">                logger.debug()</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">Refyre</span><span class="o">.</span><span class="n">Refyre</span><span class="p">(</span><span class="n">input_specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s2">&quot;input-spec&quot;</span><span class="p">]])</span>
+
+            <span class="c1">#Create the env if it doesn&#39;t exist already or needs to be refreshed</span>
+            <span class="n">venv_path</span> <span class="o">=</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;env&#39;</span> <span class="ow">in</span> <span class="n">recipe_dict</span> <span class="ow">and</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                        <span class="n">create_virtualenv_and_install_requirements</span><span class="p">(</span><span class="n">venv_path</span><span class="p">,</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;requirements&#39;</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="s1">&#39;refresh&#39;</span> <span class="ow">in</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;refresh&#39;</span><span class="p">]:</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+                        <span class="n">create_virtualenv_and_install_requirements</span><span class="p">(</span><span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">recipe_dict</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">][</span><span class="s1">&#39;requirements&#39;</span><span class="p">])</span>
+
+
+            <span class="k">return</span> <span class="n">ref</span></div>
+            
+
 </pre></div>
         </article>
       </div>
