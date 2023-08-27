@@ -24,6 +24,7 @@ extensions = [
     'sphinx.ext.autodoc', #Automatic documentation from docstrings
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'myst_parser',
 ]
 
 templates_path = ['_templates']
