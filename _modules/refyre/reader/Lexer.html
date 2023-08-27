@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>refyre.reader.Lexer &#8212; refyre 0.0.1.5.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for refyre.reader.Lexer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">.cogs.lexer_utils</span> <span class="kn">import</span> <span class="n">split_string_ignore_quotes</span><span class="p">,</span> <span class="n">find_missing_separator</span>
+<span class="kn">from</span> <span class="nn">.cogs.LexerToken</span> <span class="kn">import</span> <span class="n">Token</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">from</span> <span class="nn">refyre.config</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<div class="viewcode-block" id="Lexer"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.Lexer.Lexer">[docs]</a><span class="k">class</span> <span class="nc">Lexer</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        refyre&#39;s static lexer </span>
+
+<span class="sd">        Fundamental assumptions:</span>
+<span class="sd">             - There are 4 spaces / tab. On some systems, there are 8, hence I&#39;ve made a SPACES_PER_TAB variable that can be adjusted</span>
+<span class="sd">             - Only one cluster can be specified per line. The lexer is designed to error if someone tries some dumb shit</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">SPACES_PER_TAB</span> <span class="o">=</span> <span class="mi">4</span>
+
+<div class="viewcode-block" id="Lexer.preprocess"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.Lexer.Lexer.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">input_str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Goal: Clean up the new file in preparation </span>
+<span class="sd">        for lexical analysis. This means we&#39;re going to </span>
+<span class="sd">        get rid of the unnecessary clutter.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1">#Remove any multiline comments</span>
+        <span class="n">multiline_removal_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&#39;&#39;&#39;[\s\S]*?&#39;&#39;&#39;&quot;</span>
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">multiline_removal_pattern</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">input_str</span><span class="p">)</span>
+
+
+        <span class="n">split_lines</span> <span class="o">=</span> <span class="n">updated_content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1">#Remove any single line comments</span>
+        <span class="n">singleline_removal_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#.*$&#39;</span>
+        
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">singleline_removal_pattern</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">split_lines</span><span class="p">]</span> 
+
+        <span class="c1">#Remove any purely whitespace lines</span>
+        <span class="n">whitespace_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\s*$&#39;</span>
+
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">whitespace_pattern</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">updated_content</span><span class="p">]</span>
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">updated_content</span> <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">updated_content</span><span class="p">)</span>
+
+
+        <span class="c1">#Remove any stay newlines</span>
+        <span class="n">updated_content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\n+&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">updated_content</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">updated_content</span></div>
+
+<div class="viewcode-block" id="Lexer.extract_line_data"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.Lexer.Lexer.extract_line_data">[docs]</a>    <span class="k">def</span> <span class="nf">extract_line_data</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Packages all the important line data into a Token()</span>
+<span class="sd">            object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1">#Extract all data inside the pattern</span>
+        <span class="c1">#inside_bracket_pattern = r&#39;\[(.*?)\]&#39;</span>
+        <span class="c1">#inside_bracket_pattern = r&#39;\[(.*?(?=\[(?!.*?\])).*?)\]&#39;</span>
+        <span class="c1">#inside_bracket_pattern = r&#39;\[(?:[^\[\]]+|(?R))*\]&#39;</span>
+        <span class="n">inside_bracket_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\[([^[\]]*(?:\[[^[\]]*\])*[^[\]]*)\]&#39;</span>
+
+        <span class="c1">#First, ensure the file is properly bracketed.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">find_missing_separator</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: The lexer has found that some of the attributes don&#39;t have a &#39;|&#39; between them. This is a necessary, and will directly alter Lexer output if not fixed. Here&#39;s the attributes to check for:</span><span class="se">\n\n</span><span class="s2"> &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Here&#39;s the line we detected the error on: {line.strip()}&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Make sure that there</span><span class="se">\&#39;</span><span class="s1">s a bar between all parts. For example, dir=&quot;a&quot;name=&quot;k&quot; is incorrect, while dir=&quot;a&quot;|name=&quot;k&quot; is.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting ...&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Error in bracketing.&quot;</span><span class="p">)</span>
+
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">inside_bracket_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: The lexer attempted to parse line </span><span class="si">{line}</span><span class="s2"> but couldn&#39;t find a match. Can you make sure that you have opening and closing brackets? (&#39;[&#39;,&#39;]&#39;)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting ...&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Error in parsing lines.&quot;</span><span class="p">)</span>
+
+
+        <span class="n">match</span> <span class="o">=</span> <span class="n">split_string_ignore_quotes</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+        <span class="n">dict_of_args</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+        <span class="c1">#Extract the key and value of each item, while accounting for potential spaces</span>
+        <span class="n">extraction_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\s*([^=\s]+)\s*=\s*&quot;(.*?)&quot;\s*&#39;</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">match</span><span class="p">:</span>
+
+            <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">extraction_pattern</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: it looks like you&#39;re missing a key attribute. Check to make sure each attribute and value have an &#39;=&#39; sign between them, and are in </span><span class="se">\&quot;\&quot;</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The error happened on line: {line.strip()}, when we tried to handle match </span><span class="si">{arg}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting ...&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing a key attribute&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: it looks like you&#39;re missing a val attribute. Check to make sure each attribute and value have an &#39;=&#39; sign between them, and are in </span><span class="se">\&quot;\&quot;</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The error happened on line: {line.strip()}, when we tried to handle match </span><span class="si">{arg}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting ...&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Missing a val attribute&quot;</span><span class="p">)</span>
+
+            <span class="n">dict_of_args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="c1">#Grab the tab counts - we grab spaces, and count total</span>
+        <span class="n">space_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^(\s*)\[.*\]&#39;</span>
+
+        <span class="n">num_spaces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">space_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">num_spaces</span> <span class="o">%</span> <span class="n">Lexer</span><span class="o">.</span><span class="n">SPACES_PER_TAB</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uneven number of tabs - we assume </span><span class="si">{Lexer.SPACES_PER_TAB}</span><span class="s2"> spaces / tab. If you have a different number (ex: 8 spaces / tab), modify the SPACES_PER_TAB variable.&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">num_spaces</span> <span class="o">//</span> <span class="n">Lexer</span><span class="o">.</span><span class="n">SPACES_PER_TAB</span><span class="p">,</span> <span class="o">**</span><span class="n">dict_of_args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: The lexer failed to read one of the attributes. It&#39;s most likely because you typed one of the attributes wrong. Here&#39;s the full error message below.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting ...&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Lexer failed to read attribute&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="Lexer.lex"><a class="viewcode-back" href="../../../refyre.reader.html#refyre.reader.Lexer.Lexer.lex">[docs]</a>    <span class="k">def</span> <span class="nf">lex</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Performs &quot;lexical analysis&quot;, a.k.a grabs all the important information </span>
+<span class="sd">            from each line</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The input file path to the spec at </span><span class="si">{input_file}</span><span class="s2"> doesn&#39;t exist or is a directory!&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">cleaned_lines</span> <span class="o">=</span> <span class="n">Lexer</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+            <span class="n">cleaned_lines</span> <span class="o">=</span> <span class="n">cleaned_lines</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cleaned_lines</span><span class="p">)</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cleaned_lines</span><span class="p">:</span>
+            <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Lexer</span><span class="o">.</span><span class="n">extract_line_data</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+
+            
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tokens</span></div>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Lexer</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">refyre</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">refyre</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Ansh, flockfysh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
