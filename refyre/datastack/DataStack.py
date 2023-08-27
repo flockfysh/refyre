@@ -15,8 +15,7 @@ class PandasStack:
 	def create_dataframe(self, col_names, mapper_func):
 		'''
 			col_names: List[String] An array of the names of the columns of the dataframe
-			mapper_func: A function that takes in input of a tuple (var1_output, var2_output, ...), and returns a tuple with values for each of the columns
-				- Note each tuple value should be the value for the corresponding columns (i.e the ith col_name should be associated with the ith tuple val)
+			mapper_func: A function that takes in input of a tuple (var1_output, var2_output, ...), and returns a tuple with values for each of the columns. Note each tuple value should be the value for the corresponding columns (i.e the ith col_name should be associated with the ith tuple val)
 		'''
 
 		out_dct = {}

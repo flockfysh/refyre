@@ -538,9 +538,7 @@ class Refyre:
 		Creates a spec given by the spec path
 
 		spec_path - filepath to the spec path
-		mode - 
-			- "cut": Any files that are being transferred to create this spec will be cut from their place
-			- "copy": Any files that are being transferred to create this spec will be duplicated from their original place
+		mode: "cut": Any files that are being transferred to create this spec will be cut from their place "copy": Any files that are being transferred to create this spec will be duplicated from their original place
 		'''
 
 		assert Path(spec_path).exists(), f"The spec to create at {spec_path} cannot be located"
