@@ -3,9 +3,8 @@ name: "Deploy Sphinx"
 # execute this workflow automatically when a we push to master
 on: 
   push:
-    paths:
-      - branches: ['main']
-      - paths: ['docs/**']
+    branches: ['main']
+    paths: ['docs/**']
 
 permissions:
  contents: write
