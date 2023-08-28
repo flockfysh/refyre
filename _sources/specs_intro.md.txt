@@ -1,3 +1,3 @@
-# A gentle introduction and motivation to refyre specs
+# What are refyre specs?
 
 kljdfkdjfl

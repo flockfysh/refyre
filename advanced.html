@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="refyre.graph package" href="refyre.graph.html" /><link rel="prev" title="refyre.core package" href="refyre.core.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Core Features" href="basics.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>refyre.datastack package - refyre 0.0.1.5.2 documentation</title>
+        <title>Advanced Features - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -156,12 +156,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">refyre</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of refyre</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="refyre.html">refyre package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of refyre package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">refyre</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of refyre</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="refyre.html">refyre package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of refyre package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="refyre.cluster.html">refyre.cluster package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="refyre.config.html">refyre.config package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="refyre.core.html">refyre.core package</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">refyre.datastack package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refyre.datastack.html">refyre.datastack package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="refyre.graph.html">refyre.graph package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="refyre.reader.html">refyre.reader package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="refyre.utils.html">refyre.utils package</a></li>
@@ -170,10 +170,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="concepts.html">Fundamentals</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Fundamentals</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="concepts.html">Fundamentals</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Fundamentals</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="specs_intro.html">What are refyre specs?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="basics.html">Core Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced.html">Advanced Features</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Advanced Features</a></li>
 </ul>
 </li>
 </ul>
@@ -204,51 +204,14 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="refyre-datastack-package">
-<h1>refyre.datastack package<a class="headerlink" href="#refyre-datastack-package" title="Permalink to this heading">#</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
-</section>
-<section id="module-refyre.datastack.DataStack">
-<span id="refyre-datastack-datastack-module"></span><h2>refyre.datastack.DataStack module<a class="headerlink" href="#module-refyre.datastack.DataStack" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.NumpyStack">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.datastack.DataStack.</span></span><span class="sig-name descname"><span class="pre">NumpyStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#NumpyStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.NumpyStack" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.NumpyStack.create_numpy">
-<span class="sig-name descname"><span class="pre">create_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processing_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#NumpyStack.create_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.NumpyStack.create_numpy" title="Permalink to this definition">#</a></dt>
-<dd><p>processing_function:</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.PandasStack">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.datastack.DataStack.</span></span><span class="sig-name descname"><span class="pre">PandasStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">association</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#PandasStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.PandasStack" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.PandasStack.create_dataframe">
-<span class="sig-name descname"><span class="pre">create_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#PandasStack.create_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.PandasStack.create_dataframe" title="Permalink to this definition">#</a></dt>
-<dd><p>col_names: List[String] An array of the names of the columns of the dataframe
-mapper_func: A function that takes in input of a tuple (var1_output, var2_output, …), and returns a tuple with values for each of the columns. Note each tuple value should be the value for the corresponding columns (i.e the ith col_name should be associated with the ith tuple val)</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-refyre.datastack.TorchStack">
-<span id="refyre-datastack-torchstack-module"></span><h2>refyre.datastack.TorchStack module<a class="headerlink" href="#module-refyre.datastack.TorchStack" title="Permalink to this heading">#</a></h2>
-</section>
-<section id="module-refyre.datastack">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-refyre.datastack" title="Permalink to this heading">#</a></h2>
-</section>
+          <section id="advanced-features">
+<h1>Advanced Features<a class="headerlink" href="#advanced-features" title="Permalink to this heading">#</a></h1>
 </section>
 
         </article>
@@ -256,23 +219,15 @@ mapper_func: A function that takes in input of a tuple (var1_output, var2_output
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="refyre.graph.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">refyre.graph package</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="refyre.core.html">
+          
+          <a class="prev-page" href="basics.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">refyre.core package</div>
+                <div class="title">Core Features</div>
                 
               </div>
             </a>
@@ -294,40 +249,8 @@ mapper_func: A function that takes in input of a tuple (var1_output, var2_output
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">refyre.datastack package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-refyre.datastack.DataStack">refyre.datastack.DataStack module</a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.NumpyStack"><code class="docutils literal notranslate"><span class="pre">NumpyStack</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.NumpyStack.create_numpy"><code class="docutils literal notranslate"><span class="pre">NumpyStack.create_numpy()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.PandasStack"><code class="docutils literal notranslate"><span class="pre">PandasStack</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.PandasStack.create_dataframe"><code class="docutils literal notranslate"><span class="pre">PandasStack.create_dataframe()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.datastack.TorchStack">refyre.datastack.TorchStack module</a></li>
-<li><a class="reference internal" href="#module-refyre.datastack">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
