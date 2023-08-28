@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="refyre.utils package" href="refyre.utils.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>refyre Quickstart - refyre 0.0.1.5.2 documentation</title>
+        <title>Quickstart - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -169,7 +169,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">refyre Quickstart</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Quickstart</a></li>
 </ul>
 
 </div>
@@ -198,15 +198,119 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="refyre-quickstart">
-<h1>refyre Quickstart<a class="headerlink" href="#refyre-quickstart" title="Permalink to this heading">#</a></h1>
-<p>Sample quickstart asdlkljlsfklj</p>
+          <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">#</a></h1>
+<p><img alt="image" src="_images/logo.png" /></p>
+<p>Welcome to refyre, an open source Python library dedicated to mass filesystem management / operations with a focus on advancing fields like artificial intelligence.</p>
+<p>Refyre is an AI-fused Python package that provides two high level features:</p>
+<ul class="simple">
+<li><p>Easy large scale filesystem manipulations</p></li>
+<li><p>Efficient, code-less directory structuring and restructuring</p></li>
+</ul>
+<p>Enhance your favorite Python packages such as Pandas, NumPy, Spark, and other data manipulation tools to quickly structure scattered data.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Filesystem agnostic data handshakes</p></li>
+<li><p>Kickstart loading entire repositories &amp; setting up virtual environments in a single command, your way</p></li>
+<li><p>Perform mass operations on files such as copying, moving, zipping, POST-ing, in 1 line of code</p></li>
+<li><p>Homebrew structured data such as Pandas DataFrames, and image datasets in a snap of your fingers (&lt; 30 lines)</p></li>
+<li><p>Refactor, organize, and analyze periodic research experiments with zero lines of code</p></li>
+</ul>
+</section>
+<section id="kickstart">
+<h2>Kickstart!<a class="headerlink" href="#kickstart" title="Permalink to this heading">#</a></h2>
+<p>Simply provide refyre with an “input specification”, telling it what directories to focus on</p>
+<p><code class="docutils literal notranslate"><span class="pre">sample_input_spec.txt</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Suppose you have a directory structure</span>
+
+<span class="sd">a/</span>
+<span class="sd">    a1.txt</span>
+<span class="sd">    a2.txt</span>
+<span class="sd">    ...</span>
+<span class="sd">b/</span>
+<span class="sd">    c/</span>
+<span class="sd">        c1.txt</span>
+<span class="sd">        c2.txt</span>
+<span class="sd">        d.txt</span>
+<span class="sd">        d2.txt</span>
+<span class="sd">        ...</span>
+
+<span class="sd">You seek to analyze the a files and the c files</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="p">[</span><span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="o">|</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a_var&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+    <span class="p">[</span><span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="o">|</span><span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;g!c?.txt&quot;</span><span class="o">|</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;c_var&quot;</span><span class="p">]</span> <span class="c1">#Glob patterns start with &#39;g!&#39;, regex with &#39;r!&#39;, no need for just normal pattern matching</span>
+</pre></div>
+</div>
+<p>Have refyre analyze the directory with the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Main analysis line</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">Refyre</span><span class="p">(</span><span class="n">input_specs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sample_input_spec.txt&#39;</span><span class="p">])</span>
+
+<span class="c1">#Now, have a bit of fun!</span>
+<span class="n">a_var</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;a_var&quot;</span><span class="p">]</span>
+<span class="n">c_var</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;c_var&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a_var</span><span class="p">))</span> <span class="c1">#Number of files</span>
+
+<span class="c1">#Move all the files to another directory, copy works the same way</span>
+<span class="n">a_var</span> <span class="o">=</span> <span class="n">a_var</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="s1">&#39;dir2&#39;</span><span class="p">)</span> <span class="c1">#.copy() ...</span>
+
+<span class="c1">#Get all the files in a List[Pathlib.Path] objects</span>
+<span class="n">all_a_var</span> <span class="o">=</span> <span class="n">a_var</span><span class="o">.</span><span class="n">vals</span><span class="p">()</span>
+
+<span class="c1">#Automatically zip a copy of all the files </span>
+<span class="n">zipped_c_var</span> <span class="o">=</span> <span class="n">c_var</span><span class="o">.</span><span class="n">zip</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">zipped_c_var</span><span class="p">))</span> <span class="c1">#1, the zipped c_var files</span>
+
+<span class="c1">#Get all the parents dirs</span>
+<span class="n">c_var_parent_dirs</span> <span class="o">=</span> <span class="n">c_var</span><span class="o">.</span><span class="n">dirs</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">c_var</span><span class="p">))</span> <span class="c1">#refyre.cluster.FileCluster (this is what each variable type is)</span>
+
+<span class="c1">#Do mass file management operations such as delete(), filter()</span>
+<span class="n">all_a_var_and_c_vars</span> <span class="o">=</span> <span class="n">FileCluster</span><span class="p">(</span><span class="n">values</span> <span class="o">=</span> <span class="p">[])</span> <span class="c1">#Values are strings of filepaths you want to do operations on</span>
+<span class="n">all_a_var_and_c_vars</span> <span class="o">=</span> <span class="n">a_var</span> <span class="o">+</span> <span class="n">c_var</span>
+
+<span class="n">filtered_c</span> <span class="o">=</span> <span class="n">all_a_var_and_c_vars</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span> <span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">))</span>
+
+<span class="c1">#Delete all files</span>
+<span class="n">filtered_c</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+<span class="c1">#Automatically account for any modifications by variables</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_a_var_and_c_vars</span><span class="p">))</span>
+
+</pre></div>
+</div>
+<p>And finally, after any analysis, you can use the variables to generate
+specs</p>
+<p>Let’s say you want to generate directories &amp; data in the format specified by <code class="docutils literal notranslate"><span class="pre">output_spec.txt</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Sample output spec, creates</span>
+<span class="sd">directories d &amp; e, and ports the data</span>
+<span class="sd">from a_var and c_var into it.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="p">[</span><span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="o">|</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;a_var&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">|</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;c_var&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>One line.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ref</span><span class="o">.</span><span class="n">create_spec</span><span class="p">(</span><span class="s1">&#39;output_spec.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, this entire process (minus the in-between analysis) can be done through our CLI.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">refyre</span> <span class="o">-</span><span class="n">i</span> <span class="nb">input</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</section>
 </section>
 
         </article>
@@ -244,8 +348,28 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Quickstart</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#kickstart">Kickstart!</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
