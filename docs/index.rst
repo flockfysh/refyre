@@ -12,6 +12,7 @@ Welcome to refyre's documentation!
 
    modules
    quickstart
+   concepts
 
 Indices and tables
 ==================
