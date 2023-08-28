@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -204,7 +204,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -212,6 +212,151 @@
         <article role="main">
           <section id="core-features">
 <h1>Core Features<a class="headerlink" href="#core-features" title="Permalink to this heading">#</a></h1>
+<p>Let’s provide a quick overview of the basic capabilities refyre packs.</p>
+<section id="spec-attributes">
+<h2>Spec Attributes:<a class="headerlink" href="#spec-attributes" title="Permalink to this heading">#</a></h2>
+<p>Specs, as shown above are a Pythonic way for you to feed information to refyre. Each [] represents a <em>cluster</em>, which usually has a dir attribute specified. Attributes are seperated using the ‘|’ seperator.</p>
+<p>As shown above, Pythonic comments can be used in a similar fashion to Python. Back to the various attributes:</p>
+<ul class="simple">
+<li><p><strong>dir</strong>: Specifies the directory the cluster is targeting. <em>Usually, the clusters are relative paths</em>.</p>
+<ul>
+<li><p>You can specify the three pattern types to target multiple directories</p></li>
+</ul>
+</li>
+<li><p><strong>pattern</strong>: Allows you to target specific files by specifying a template pattern. Currently, glob, regex, and “generator expressions” are supported.</p>
+<ul>
+<li><p>For glob patterns, add a ‘g!’ before the pattern; ex: <code class="docutils literal notranslate"><span class="pre">g!*.txt</span></code></p></li>
+<li><p>For regex patterns, add an ‘r!’ before the pattern ex: <code class="docutils literal notranslate"><span class="pre">r!.txt</span></code></p></li>
+<li><p>Generator expressions a simplified pattern matching, that’s more humanly controllable</p>
+<ul>
+<li><p>Just one template matching –&gt; <code class="docutils literal notranslate"><span class="pre">$</span></code> matches to a number</p></li>
+<li><p>refyre supports generator expressions the most out of the three</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>name</strong>: The workhorse of specs. Arguably the <strong>meat</strong> of the spec. Assigns all the values to a variable specified by <strong>name</strong>. <em>Only single variable / cluster are supported</em></p>
+<ul>
+<li><p>You can achieve ‘appending’ by specifying a <code class="docutils literal notranslate"><span class="pre">+</span></code> before the name</p></li>
+</ul>
+</li>
+<li><p><strong>flags</strong>: A grab bag of various tricks you can use. You can specify as many as you want, and they work together to bring out cool cluster behaviours</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">*m</span></code> makes a directory if it doesn’t exist in a read spec</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*d</span></code> (only during generation) deletes everything in the <em>current</em> directory except for the clusters specified</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*da</span></code> deletes everything in the <em>current &amp; all subclusters</em> except for clusters listed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*f</span></code> gets all the files listed in the current directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*d</span></code> gets all the directories listed in the current directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*r</span></code> allows <code class="docutils literal notranslate"><span class="pre">*f</span></code> and <code class="docutils literal notranslate"><span class="pre">*d</span></code> to behave recursively (i.e, get all files from subdirectories, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*s</span></code> enables <em>step generation</em>, Each time <code class="docutils literal notranslate"><span class="pre">refyre.step()</span></code> is called, the next directory in the pattern is generated. (ex:, if <code class="docutils literal notranslate"><span class="pre">dir=&quot;test$&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">*s</span></code>, <code class="docutils literal notranslate"><span class="pre">test1</span></code> would be generated on first <code class="docutils literal notranslate"><span class="pre">.step()</span></code>, <code class="docutils literal notranslate"><span class="pre">test2</span></code>, …)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*c</span></code> enables code analysis. If you seek to import a directory / repository you recently cloned, you can specify the <code class="docutils literal notranslate"><span class="pre">*c</span></code> flag and then import it in your code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">&amp;</span> <span class="pre">link</span></code> are used for specific behaviours, most commonly <em>git cloning</em>. Automatically clone in repos by specifying <code class="docutils literal notranslate"><span class="pre">type=&quot;git&quot;</span></code> and the link to your git.</p></li>
+</ul>
+</li>
+<li><p><strong>mode</strong>: Can either be set to <code class="docutils literal notranslate"><span class="pre">cut</span></code> or <code class="docutils literal notranslate"><span class="pre">copy</span></code>. During generation, the variable files will either be cut or copied to their respective place.</p></li>
+<li><p><strong>limit</strong>: Limits the number of results targeted, or directories generated</p></li>
+<li><p><strong>serialize</strong> specify a generator expression to rename all the files into a consistent format</p></li>
+</ul>
+<p>These are all the basic quantifiers you can use, they cover ~80% of refyre’s inner power. The other 20% are pretty obscure and aren’t that useful normally.</p>
+</section>
+<section id="fileclusters-variables">
+<h2>FileClusters (Variables)<a class="headerlink" href="#fileclusters-variables" title="Permalink to this heading">#</a></h2>
+<p>Variables are the backbone of refyre. The clusters provide an <em>avenue</em> for the variables to easily target the data without worrying about writing any code. However, they aren’t the only way to access variable’s powers. The docs below, again, specify the most useful abilities for these variables.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FileCluster(values</span> <span class="pre">=</span> <span class="pre">[],</span> <span class="pre">dirs</span> <span class="pre">=</span> <span class="pre">[],</span> <span class="pre">patterns</span> <span class="pre">=</span> <span class="pre">[],</span> <span class="pre">as_pathlib</span> <span class="pre">=</span> <span class="pre">False,)</span></code>
+- <code class="docutils literal notranslate"><span class="pre">values</span></code>: string filepaths, or <code class="docutils literal notranslate"><span class="pre">Path</span></code> objects depending on whether <code class="docutils literal notranslate"><span class="pre">as_pathlib</span></code> is true or false.
+- <code class="docutils literal notranslate"><span class="pre">patterns</span></code>: corresponds to the dirs, lists what patterns you want to target</p>
+<p>FileClusters are strongly rooted in <em>object oriented operations</em>, meaning each operation returns another FileCluster, so you can continue channeling FileCluster capabilities. To get out of FileClusters, you can use the following options:
+- <code class="docutils literal notranslate"><span class="pre">.vals()</span></code>: Returns a list of Path objects
+- <code class="docutils literal notranslate"><span class="pre">.item()</span></code>: Returns the first Path object</p>
+<p>Using this basic constructor, you can make some easy operations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.move(target_dir)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.copy(target_dir)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.filter(filter_func)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.map(map_func)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.zip()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.delete()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post(url,</span> <span class="pre">additional_data,</span> <span class="pre">payload_name)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.filesize()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.clone()</span></code></p></li>
+</ul>
+<p>You can also do other operations between FileClusters</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">+</span></code> (Returns the sum of the contents of two FileClusters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-</span></code> (Returns the contents in the current FileCluster while removing all other contents that are also in the other FileCluster)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&amp;</span></code> (Intersection operator)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">|</span></code> (Union operator)</p></li>
+</ul>
+</section>
+<section id="the-refyre-object">
+<h2>The Refyre Object<a class="headerlink" href="#the-refyre-object" title="Permalink to this heading">#</a></h2>
+<p>These docs are running too long already, I will try to keep this as short as possible.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Refyre(input_specs</span> <span class="pre">=</span> <span class="pre">[],</span> <span class="pre">output_specs</span> <span class="pre">=</span> <span class="pre">[])</span></code></p>
+<ul>
+<li><p>Instantiates a refyre spec</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_spec(spec_path,</span> <span class="pre">track</span> <span class="pre">=</span> <span class="pre">False)</span></code></p>
+<ul>
+<li><p>Adds a spec for refyre <em>reading</em>. If track is set to true, it can
+later be reused for step generation.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_spec(spec_path,</span> <span class="pre">track</span> <span class="pre">=</span> <span class="pre">False)</span></code></p>
+<ul>
+<li><p>Creates a spec. If track is set to true, it can later be reused for step
+generation.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step()</span></code></p>
+<ul>
+<li><p>Any specs with a <code class="docutils literal notranslate"><span class="pre">*s</span></code> attribute have the next directory in the patterns they specify generated</p></li>
+</ul>
+</li>
+</ul>
+<p>Accessing variables can be done using the <code class="docutils literal notranslate"><span class="pre">[]</span></code> notation. Use it to get and attach variables to a <code class="docutils literal notranslate"><span class="pre">Refyre</span></code> object.</p>
+<p><strong>Congratulations, you know everything to be a refyre expert!</strong></p>
+</section>
+<section id="misc-docs">
+<h2>Misc Docs<a class="headerlink" href="#misc-docs" title="Permalink to this heading">#</a></h2>
+<section id="datastack">
+<h3>DataStack<a class="headerlink" href="#datastack" title="Permalink to this heading">#</a></h3>
+<p>Let’s say you want to brew a dataset &amp; structure data of you’re own. refyre allows you to combine the power of variables with the DataStack, processing them to create constructs such as Pandas Dataframes.</p>
+<p>The process is twofold - (1) <em>secure your variables</em>, and then (2) <em>run them through the DataStack</em>. The DataStack itself is a <em>processor</em>, taking in a bunch of variables, and producing the variables.</p>
+<p>Your job with the DataStack will be to figure out how can you convert the variables to the dataset format you want.</p>
+<p>Consider the PandasStack (a DataStack). Here, your job is to figure out how you can convert each row of variables into a <em>DataFrame column</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">refyre</span> <span class="kn">import</span> <span class="n">Refyre</span>
+<span class="kn">from</span> <span class="nn">refyre.datastack</span> <span class="kn">import</span> <span class="n">PandasStack</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">ref</span> <span class="o">=</span> <span class="n">Refyre</span><span class="p">(</span><span class="n">input_specs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;specs/in.txt&#39;</span><span class="p">])</span>
+
+<span class="c1">#We will do some pandas visualizations on the input data</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="n">PandasStack</span><span class="p">(</span><span class="n">AssociationCluster</span><span class="p">(</span><span class="n">input_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">]]))</span>
+
+<span class="k">def</span> <span class="nf">processor</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;processing&#39;</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span> 
+
+    <span class="n">ar</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">ab</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+            <span class="n">ar</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ar</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">ag</span> <span class="o">+</span> <span class="n">g</span><span class="p">,</span> <span class="n">ab</span> <span class="o">+</span> <span class="n">b</span> 
+        
+    <span class="n">ar</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">ab</span> <span class="o">=</span> <span class="n">ar</span> <span class="o">/</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">height</span><span class="p">),</span> <span class="n">ag</span> <span class="o">/</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">height</span><span class="p">),</span> <span class="n">ab</span> <span class="o">/</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">ar</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">ab</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">create_dataframe</span><span class="p">([</span><span class="s1">&#39;image_name&#39;</span><span class="p">,</span> <span class="s1">&#39;image_width&#39;</span><span class="p">,</span> <span class="s1">&#39;image_height&#39;</span><span class="p">,</span> <span class="s1">&#39;average_red&#39;</span><span class="p">,</span> <span class="s1">&#39;average_green&#39;</span><span class="p">,</span> <span class="s1">&#39;average_blue&#39;</span><span class="p">],</span> <span class="n">processor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As you can see, the majority of the work here comes from building a <em>processor</em> method to convert each row of variables into a DataFrame row.</p>
+</section>
+</section>
 </section>
 
         </article>
@@ -257,8 +402,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Core Features</a><ul>
+<li><a class="reference internal" href="#spec-attributes">Spec Attributes:</a></li>
+<li><a class="reference internal" href="#fileclusters-variables">FileClusters (Variables)</a></li>
+<li><a class="reference internal" href="#the-refyre-object">The Refyre Object</a></li>
+<li><a class="reference internal" href="#misc-docs">Misc Docs</a><ul>
+<li><a class="reference internal" href="#datastack">DataStack</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
