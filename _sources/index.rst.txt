@@ -11,6 +11,7 @@ Welcome to refyre's documentation!
    :caption: Contents:
 
    modules
+   quickstart
 
 Indices and tables
 ==================
