@@ -1,8 +1,12 @@
 name: Publish to Test PyPI
-on: [workflow_dispatch]
+on:
+  push:
+    branches:
+      - preprod
 
 jobs:
   test_pypi_release:
+    name: Builds Using Poetry and Publishes to Test PyPI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
