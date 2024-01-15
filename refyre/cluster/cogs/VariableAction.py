@@ -14,7 +14,7 @@ class VariableAction:
     be used in specs.
     '''
 
-    def __new__(self, expression, node, path, variable_dict, out_variable_dict , is_read, is_write, mode = ""):
+    def __new__(self, var_name , node, path, variable_dict, out_variable_dict , is_read, is_write, mode = ""):
         '''
         Reads in all parameters, and returns the name of the updated 
         variable
@@ -27,10 +27,11 @@ class VariableAction:
         Similarly, is_write is for output specs
         '''
 
+        logger.debug(mode)
         #Currently, this operator pattern supports only + and "" (appending and defining)
         options_pattern = r'^(\+)?(.*)$' 
 
-        match = re.match(options_pattern, node.name)
+        match = re.match(options_pattern, var_name)
         operator = match.group(1) or ""
         name = match.group(2)
 
@@ -74,6 +75,7 @@ class VariableAction:
         
         if is_write:
 
+            logger.debug(f'{name} {variable_dict}')
             name, sliced, start, stop, step = VariableParser(name, variable_dict)
 
             #The refresher method will eliminate the invalid paths, so let's add back in the new paths at their original positions

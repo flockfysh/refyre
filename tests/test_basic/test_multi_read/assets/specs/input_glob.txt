@@ -1,1 +1,1 @@
-[dir="ga*"|name="+var"]
+[dir="g!a*"|name="+var"]

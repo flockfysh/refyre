@@ -15,4 +15,5 @@ logger = logging.getLogger()
 # Setting the threshold of logger to DEBUG
 logger.setLevel(logging.DEBUG)
 
+logger.setLevel(logging.CRITICAL)
 logger.disabled = True

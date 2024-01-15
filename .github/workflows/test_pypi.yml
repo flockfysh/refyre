@@ -1,0 +1,19 @@
+name: Publish to Test PyPI
+on:
+  push:
+    branches:
+      - preprod
+
+jobs:
+  test_pypi_release:
+    name: Builds Using Poetry and Publishes to Test PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org/ | python -
+      - name: Install dependencies
+        run: poetry install
+      - name: Publish package
+        run: poetry config repositories.testpypi https://test.pypi.org/legacy/ && poetry publish --build -r testpypi -u __token__ -p ${{ secrets.TEST_PYPI_API_KEY }}

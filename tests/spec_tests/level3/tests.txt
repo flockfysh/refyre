@@ -1,5 +1,0 @@
-Level 3 tests will test the expansion of all the other tests, at once.
-
-New tests would include:    
-    - Testing the "type" attribute, alongside cloning repos when they don't exist
-    

@@ -1,0 +1,5 @@
+furo
+tqdm
+myst-parser
+Jinja2==3.0.0
+docutils==0.20

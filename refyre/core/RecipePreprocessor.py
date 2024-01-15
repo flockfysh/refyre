@@ -10,23 +10,27 @@ from refyre.config import logger
 from pip._internal import main as pip_main
 import subprocess
 import shutil
+import os
 
-def create_virtualenv_and_install_requirements(venv_path, requirements_file):
+
+
+def create_virtualenv_and_install_requirements(directory, requirements_file):
+    """
+    Create a virtual environment in the specified directory using venv.Builder.
+
+    Args:
+        directory (str): The directory path where the virtual environment will be created.
+    """
+    # Create the directory if it doesn't exist
+    Path(directory).mkdir(parents=True, exist_ok=True)
+
+    # Set up the builder
+    builder = venv.EnvBuilder(with_pip=True)
+
     # Create the virtual environment
-    venv_builder = venv.EnvBuilder(with_pip=True)
-    venv_builder.create(venv_path)
+    builder.create(directory)
 
-    # Activate the virtual environment
-    activate_script = (
-        Path(venv_path) / "Scripts" / "activate" if sys.platform == "win32"
-        else Path(venv_path) / "bin" / "activate"
-    )
-    activate_cmd = f"source {activate_script} && python -m pip"
-    
-    # Install the requirements using pip within the virtual environment
-    logger.debug("installing reqs")
-    pip_install_cmd = f"{activate_cmd} install -r {requirements_file}"
-    subprocess.run(pip_install_cmd, shell=True, check=True)
+
 
 class RecipePreprocessor:
     def __new__(self, recipe_path):
@@ -89,13 +93,6 @@ class RecipePreprocessor:
                         shutil.rmtree(recipe_dict['env']['name'])
                         create_virtualenv_and_install_requirements(recipe_dict['env']['name'], recipe_dict['env']['requirements'])
 
-            #Activate the env 
-            activate_script = (
-                Path(venv_path) / "Scripts" / "activate" if sys.platform == "win32"
-                else Path(venv_path) / "bin" / "activate"
-            )
-            activate_cmd = f"source {activate_script}"
-            subprocess.run(activate_cmd, shell=True, check=True)
 
             return ref
             

@@ -24,7 +24,9 @@ class ExpressionGenerator:
         return lambda_function
     
     def is_valid_genexp(expression):
-        pattern = r'^[a-zA-Z0-9\-_$]+$'
+        pattern = r'^[a-zA-Z0-9/\-_$]+$'
+        logger.debug(f'Pattern: {pattern}')
+        logger.debug(f'Ret: {bool(re.match(pattern, expression))}')
         return bool(re.match(pattern, expression))
     
     def is_null_generator(expression):

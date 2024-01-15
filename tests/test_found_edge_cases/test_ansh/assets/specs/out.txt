@@ -1,0 +1,2 @@
+[dir="ray/out-0"]
+    [dir="test"|name="bruh"]

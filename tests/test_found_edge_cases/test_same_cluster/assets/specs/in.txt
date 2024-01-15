@@ -1,0 +1,5 @@
+[dir="in"]
+    [dir="a"|name="ab"]
+    [dir="b"|name="+ab"]
+    [dir="b"|name="bc"]
+    [dir="c"|name="+bc"]
