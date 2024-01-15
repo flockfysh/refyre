@@ -10,10 +10,14 @@ Welcome to refyre's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   concepts
+   quickstart
+   demos   
    modules
 
 Indices and tables
 ==================
+
 
 * :ref:`genindex`
 * :ref:`modindex`

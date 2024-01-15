@@ -1,7 +1,10 @@
 name: "Deploy Sphinx"
  
 # execute this workflow automatically when a we push to master
-on: [push]
+on: 
+  push:
+    branches: ['main']
+    paths: ['docs/**']
 
 permissions:
  contents: write

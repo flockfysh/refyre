@@ -14,3 +14,4 @@ initial-data
 *.json
 __pycache__
 *.log
+.env
