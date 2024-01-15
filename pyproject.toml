@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "refyre"
-version = "0.0.1.5.6"
+version = "0.0.1.5.8"
 description = "Filesystem dominance is all you need."
 authors = ["Ansh <teamnebulaco@gmail.com>"]
 readme = "README.md"
@@ -21,7 +21,6 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-tqdm = ">=4.64.0"
 requests = ">=2.29.0"
 pandas = ">=2.0.0"
 gitpython = ">=3.1.30"
