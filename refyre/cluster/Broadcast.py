@@ -28,6 +28,7 @@ class Broadcaster:
         
     @classmethod
     def release(cls, cluster_id):
+        
         logger.debug(f'released {cluster_id}')
         for k in cls.files_dict:
             logger.debug(f'{k}, {cluster_id}, {cls.files_dict[k]}')
