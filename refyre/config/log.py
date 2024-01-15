@@ -1,4 +1,4 @@
-import logging 
+import logging
 from logging.config import fileConfig
 from pathlib import Path
 
@@ -11,6 +11,8 @@ logging.basicConfig(filename="refyre.log",
                     filemode='w')
 
 logger = logging.getLogger()
- 
+
 # Setting the threshold of logger to DEBUG
 logger.setLevel(logging.DEBUG)
+
+logger.disabled = True
