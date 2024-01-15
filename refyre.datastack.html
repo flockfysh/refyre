@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="refyre.graph package" href="refyre.graph.html" /><link rel="prev" title="refyre.core package" href="refyre.core.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
         <title>refyre.datastack package - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -218,39 +218,14 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.datastack.DataStack">
-<span id="refyre-datastack-datastack-module"></span><h2>refyre.datastack.DataStack module<a class="headerlink" href="#module-refyre.datastack.DataStack" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.NumpyStack">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.datastack.DataStack.</span></span><span class="sig-name descname"><span class="pre">NumpyStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#NumpyStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.NumpyStack" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.NumpyStack.create_numpy">
-<span class="sig-name descname"><span class="pre">create_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">processing_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#NumpyStack.create_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.NumpyStack.create_numpy" title="Permalink to this definition">#</a></dt>
-<dd><p>processing_function:</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.PandasStack">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.datastack.DataStack.</span></span><span class="sig-name descname"><span class="pre">PandasStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">association</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#PandasStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.PandasStack" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.datastack.DataStack.PandasStack.create_dataframe">
-<span class="sig-name descname"><span class="pre">create_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/datastack/DataStack.html#PandasStack.create_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.datastack.DataStack.PandasStack.create_dataframe" title="Permalink to this definition">#</a></dt>
-<dd><p>col_names: List[String] An array of the names of the columns of the dataframe
-mapper_func: A function that takes in input of a tuple (var1_output, var2_output, …), and returns a tuple with values for each of the columns. Note each tuple value should be the value for the corresponding columns (i.e the ith col_name should be associated with the ith tuple val)</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="refyre-datastack-datastack-module">
+<h2>refyre.datastack.DataStack module<a class="headerlink" href="#refyre-datastack-datastack-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.datastack.TorchStack">
-<span id="refyre-datastack-torchstack-module"></span><h2>refyre.datastack.TorchStack module<a class="headerlink" href="#module-refyre.datastack.TorchStack" title="Permalink to this heading">#</a></h2>
+<section id="refyre-datastack-torchstack-module">
+<h2>refyre.datastack.TorchStack module<a class="headerlink" href="#refyre-datastack-torchstack-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.datastack">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-refyre.datastack" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -311,19 +286,9 @@ mapper_func: A function that takes in input of a tuple (var1_output, var2_output
             <ul>
 <li><a class="reference internal" href="#">refyre.datastack package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-refyre.datastack.DataStack">refyre.datastack.DataStack module</a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.NumpyStack"><code class="docutils literal notranslate"><span class="pre">NumpyStack</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.NumpyStack.create_numpy"><code class="docutils literal notranslate"><span class="pre">NumpyStack.create_numpy()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.PandasStack"><code class="docutils literal notranslate"><span class="pre">PandasStack</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.datastack.DataStack.PandasStack.create_dataframe"><code class="docutils literal notranslate"><span class="pre">PandasStack.create_dataframe()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.datastack.TorchStack">refyre.datastack.TorchStack module</a></li>
-<li><a class="reference internal" href="#module-refyre.datastack">Module contents</a></li>
+<li><a class="reference internal" href="#refyre-datastack-datastack-module">refyre.datastack.DataStack module</a></li>
+<li><a class="reference internal" href="#refyre-datastack-torchstack-module">refyre.datastack.TorchStack module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="refyre.utils package" href="refyre.utils.html" /><link rel="prev" title="refyre.graph package" href="refyre.graph.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
         <title>refyre.reader package - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -218,168 +218,20 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.reader.ExpressionGenerator">
-<span id="refyre-reader-expressiongenerator-module"></span><h2>refyre.reader.ExpressionGenerator module<a class="headerlink" href="#module-refyre.reader.ExpressionGenerator" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.reader.ExpressionGenerator.</span></span><span class="sig-name descname"><span class="pre">ExpressionGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The ExpressionGenerator class takes in an
-input generator string, such as test$.txt, and returns a
-lambda function that can be used to evaluate the expressions at various points.</p>
-<p>For example, test$.txt returns a lambda function, that when called at i = 1, returns test1.txt</p>
-<p>This class is a static class; it’s sole purpose is to create an organized location
-to generate complex expressions.</p>
-<p>For now, only numbers are supported. You can generate number expressions using the ‘$’ symbol
-as shown above.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator.convert_generator_expression">
-<span class="sig-name descname"><span class="pre">convert_generator_expression</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator.convert_generator_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.convert_generator_expression" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator.generate_expression">
-<span class="sig-name descname"><span class="pre">generate_expression</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator.generate_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.generate_expression" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator.is_null_generator">
-<span class="sig-name descname"><span class="pre">is_null_generator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator.is_null_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_null_generator" title="Permalink to this definition">#</a></dt>
-<dd><p>By “null” generator, I just mean a genexp that
-doesn’t have any special characters, i.e. one that will stay the same</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator.is_valid_genexp">
-<span class="sig-name descname"><span class="pre">is_valid_genexp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator.is_valid_genexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_valid_genexp" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.ExpressionGenerator.ExpressionGenerator.reverse_generator_expression">
-<span class="sig-name descname"><span class="pre">reverse_generator_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/ExpressionGenerator.html#ExpressionGenerator.reverse_generator_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.reverse_generator_expression" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="refyre-reader-expressiongenerator-module">
+<h2>refyre.reader.ExpressionGenerator module<a class="headerlink" href="#refyre-reader-expressiongenerator-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.reader.Lexer">
-<span id="refyre-reader-lexer-module"></span><h2>refyre.reader.Lexer module<a class="headerlink" href="#module-refyre.reader.Lexer" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.reader.Lexer.Lexer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.reader.Lexer.</span></span><span class="sig-name descname"><span class="pre">Lexer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Lexer.html#Lexer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Lexer.Lexer" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>refyre’s static lexer</p>
-<dl class="simple">
-<dt>Fundamental assumptions:</dt><dd><ul class="simple">
-<li><p>There are 4 spaces / tab. On some systems, there are 8, hence I’ve made a SPACES_PER_TAB variable that can be adjusted</p></li>
-<li><p>Only one cluster can be specified per line. The lexer is designed to error if someone tries some dumb shit</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="refyre.reader.Lexer.Lexer.SPACES_PER_TAB">
-<span class="sig-name descname"><span class="pre">SPACES_PER_TAB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#refyre.reader.Lexer.Lexer.SPACES_PER_TAB" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.Lexer.Lexer.extract_line_data">
-<span class="sig-name descname"><span class="pre">extract_line_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Lexer.html#Lexer.extract_line_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Lexer.Lexer.extract_line_data" title="Permalink to this definition">#</a></dt>
-<dd><p>Packages all the important line data into a Token()
-object</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.Lexer.Lexer.lex">
-<span class="sig-name descname"><span class="pre">lex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Lexer.html#Lexer.lex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Lexer.Lexer.lex" title="Permalink to this definition">#</a></dt>
-<dd><p>Performs “lexical analysis”, a.k.a grabs all the important information
-from each line</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.Lexer.Lexer.preprocess">
-<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Lexer.html#Lexer.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Lexer.Lexer.preprocess" title="Permalink to this definition">#</a></dt>
-<dd><p>Goal: Clean up the new file in preparation
-for lexical analysis. This means we’re going to
-get rid of the unnecessary clutter.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="refyre-reader-lexer-module">
+<h2>refyre.reader.Lexer module<a class="headerlink" href="#refyre-reader-lexer-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.reader.Parser">
-<span id="refyre-reader-parser-module"></span><h2>refyre.reader.Parser module<a class="headerlink" href="#module-refyre.reader.Parser" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.reader.Parser.Parser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.reader.Parser.</span></span><span class="sig-name descname"><span class="pre">Parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Parser.html#Parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Parser.Parser" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Refyre’s static parser</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.Parser.Parser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">INF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Parser.html#Parser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Parser.Parser.parse" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="refyre.reader.Parser.pop">
-<span class="sig-prename descclassname"><span class="pre">refyre.reader.Parser.</span></span><span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Parser.html#pop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Parser.pop" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="refyre.reader.Parser.push">
-<span class="sig-prename descclassname"><span class="pre">refyre.reader.Parser.</span></span><span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/Parser.html#push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.Parser.push" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
+<section id="refyre-reader-parser-module">
+<h2>refyre.reader.Parser module<a class="headerlink" href="#refyre-reader-parser-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.reader.PatternGenerator">
-<span id="refyre-reader-patterngenerator-module"></span><h2>refyre.reader.PatternGenerator module<a class="headerlink" href="#module-refyre.reader.PatternGenerator" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.reader.PatternGenerator.</span></span><span class="sig-name descname"><span class="pre">PatternGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/PatternGenerator.html#PatternGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The pattern generator is designed to parse all pattern based
-strings and return regex versions of them that can be used to
-pattern match.</p>
-<p>We created the generator to help differentiate between glob patterns and
-regex. Most of the time, people use glob, but sometimes the power of regex
-matching does come in handy.</p>
-<p>A glob string will come in the normal form. A regex string will start with an r before the actual pattern.</p>
-<p>ex: “a?.txt” is a glob pattern. “ra?.txt” is regex.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.GLOB_STARTER">
-<span class="sig-name descname"><span class="pre">GLOB_STARTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'g!'</span></em><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.GLOB_STARTER" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.REGEX_STARTER">
-<span class="sig-name descname"><span class="pre">REGEX_STARTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'r!'</span></em><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.REGEX_STARTER" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.convert_generator_expression">
-<span class="sig-name descname"><span class="pre">convert_generator_expression</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/PatternGenerator.html#PatternGenerator.convert_generator_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.convert_generator_expression" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.get_pattern_type">
-<span class="sig-name descname"><span class="pre">get_pattern_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/PatternGenerator.html#PatternGenerator.get_pattern_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.get_pattern_type" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.is_valid_genexp">
-<span class="sig-name descname"><span class="pre">is_valid_genexp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/PatternGenerator.html#PatternGenerator.is_valid_genexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.is_valid_genexp" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.reader.PatternGenerator.PatternGenerator.is_valid_regex">
-<span class="sig-name descname"><span class="pre">is_valid_regex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/reader/PatternGenerator.html#PatternGenerator.is_valid_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.reader.PatternGenerator.PatternGenerator.is_valid_regex" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="refyre-reader-patterngenerator-module">
+<h2>refyre.reader.PatternGenerator module<a class="headerlink" href="#refyre-reader-patterngenerator-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.reader">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-refyre.reader" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -440,49 +292,11 @@ matching does come in handy.</p>
             <ul>
 <li><a class="reference internal" href="#">refyre.reader package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-refyre.reader.ExpressionGenerator">refyre.reader.ExpressionGenerator module</a><ul>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.convert_generator_expression"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator.convert_generator_expression()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.generate_expression"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator.generate_expression()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_null_generator"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator.is_null_generator()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.is_valid_genexp"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator.is_valid_genexp()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.ExpressionGenerator.ExpressionGenerator.reverse_generator_expression"><code class="docutils literal notranslate"><span class="pre">ExpressionGenerator.reverse_generator_expression()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.reader.Lexer">refyre.reader.Lexer module</a><ul>
-<li><a class="reference internal" href="#refyre.reader.Lexer.Lexer"><code class="docutils literal notranslate"><span class="pre">Lexer</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.reader.Lexer.Lexer.SPACES_PER_TAB"><code class="docutils literal notranslate"><span class="pre">Lexer.SPACES_PER_TAB</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.Lexer.Lexer.extract_line_data"><code class="docutils literal notranslate"><span class="pre">Lexer.extract_line_data()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.Lexer.Lexer.lex"><code class="docutils literal notranslate"><span class="pre">Lexer.lex()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.Lexer.Lexer.preprocess"><code class="docutils literal notranslate"><span class="pre">Lexer.preprocess()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.reader.Parser">refyre.reader.Parser module</a><ul>
-<li><a class="reference internal" href="#refyre.reader.Parser.Parser"><code class="docutils literal notranslate"><span class="pre">Parser</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.reader.Parser.Parser.parse"><code class="docutils literal notranslate"><span class="pre">Parser.parse()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#refyre.reader.Parser.pop"><code class="docutils literal notranslate"><span class="pre">pop()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.Parser.push"><code class="docutils literal notranslate"><span class="pre">push()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.reader.PatternGenerator">refyre.reader.PatternGenerator module</a><ul>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator"><code class="docutils literal notranslate"><span class="pre">PatternGenerator</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.GLOB_STARTER"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.GLOB_STARTER</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.REGEX_STARTER"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.REGEX_STARTER</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.convert_generator_expression"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.convert_generator_expression()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.get_pattern_type"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.get_pattern_type()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.is_valid_genexp"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.is_valid_genexp()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.reader.PatternGenerator.PatternGenerator.is_valid_regex"><code class="docutils literal notranslate"><span class="pre">PatternGenerator.is_valid_regex()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.reader">Module contents</a></li>
+<li><a class="reference internal" href="#refyre-reader-expressiongenerator-module">refyre.reader.ExpressionGenerator module</a></li>
+<li><a class="reference internal" href="#refyre-reader-lexer-module">refyre.reader.Lexer module</a></li>
+<li><a class="reference internal" href="#refyre-reader-parser-module">refyre.reader.Parser module</a></li>
+<li><a class="reference internal" href="#refyre-reader-patterngenerator-module">refyre.reader.PatternGenerator module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="refyre.reader package" href="refyre.reader.html" /><link rel="prev" title="refyre.datastack package" href="refyre.datastack.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
         <title>refyre.graph package - refyre 0.0.1.5.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -218,60 +218,14 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.graph.FileGraph">
-<span id="refyre-graph-filegraph-module"></span><h2>refyre.graph.FileGraph module<a class="headerlink" href="#module-refyre.graph.FileGraph" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.graph.FileGraph.FileGraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.graph.FileGraph.</span></span><span class="sig-name descname"><span class="pre">FileGraph</span></span><a class="reference internal" href="_modules/refyre/graph/FileGraph.html#FileGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraph.FileGraph" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class is really just a wrapper class.</p>
-<p>The goal is to provide a proxy interface for the Refyre objects to
-interact with the fgraph without interfering with the inner
-workings.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.graph.FileGraph.FileGraph.add_graph">
-<span class="sig-name descname"><span class="pre">add_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraph.html#FileGraph.add_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraph.FileGraph.add_graph" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="refyre-graph-filegraph-module">
+<h2>refyre.graph.FileGraph module<a class="headerlink" href="#refyre-graph-filegraph-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.graph.FileGraphNode">
-<span id="refyre-graph-filegraphnode-module"></span><h2>refyre.graph.FileGraphNode module<a class="headerlink" href="#module-refyre.graph.FileGraphNode" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="refyre.graph.FileGraphNode.FileGraphNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">refyre.graph.FileGraphNode.</span></span><span class="sig-name descname"><span class="pre">FileGraphNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraphNode.html#FileGraphNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraphNode.FileGraphNode" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>How the graph will be orchestrated:</p>
-<p>Problem: There may be multiple root “entry” directories the user many want to be
-able to target.</p>
-<p>Solution: We abstract that away in the graph.</p>
-<p>We will have one virtual “root” node stringing together all the other entry points.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.graph.FileGraphNode.FileGraphNode.add_child">
-<span class="sig-name descname"><span class="pre">add_child</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraphNode.html#FileGraphNode.add_child"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraphNode.FileGraphNode.add_child" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.graph.FileGraphNode.FileGraphNode.add_children">
-<span class="sig-name descname"><span class="pre">add_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraphNode.html#FileGraphNode.add_children"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraphNode.FileGraphNode.add_children" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.graph.FileGraphNode.FileGraphNode.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraphNode.html#FileGraphNode.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraphNode.FileGraphNode.copy" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="refyre.graph.FileGraphNode.FileGraphNode.is_root_dir">
-<span class="sig-name descname"><span class="pre">is_root_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/refyre/graph/FileGraphNode.html#FileGraphNode.is_root_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#refyre.graph.FileGraphNode.FileGraphNode.is_root_dir" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="refyre-graph-filegraphnode-module">
+<h2>refyre.graph.FileGraphNode module<a class="headerlink" href="#refyre-graph-filegraphnode-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-refyre.graph">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-refyre.graph" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -332,24 +286,9 @@ able to target.</p>
             <ul>
 <li><a class="reference internal" href="#">refyre.graph package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-refyre.graph.FileGraph">refyre.graph.FileGraph module</a><ul>
-<li><a class="reference internal" href="#refyre.graph.FileGraph.FileGraph"><code class="docutils literal notranslate"><span class="pre">FileGraph</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.graph.FileGraph.FileGraph.add_graph"><code class="docutils literal notranslate"><span class="pre">FileGraph.add_graph()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.graph.FileGraphNode">refyre.graph.FileGraphNode module</a><ul>
-<li><a class="reference internal" href="#refyre.graph.FileGraphNode.FileGraphNode"><code class="docutils literal notranslate"><span class="pre">FileGraphNode</span></code></a><ul>
-<li><a class="reference internal" href="#refyre.graph.FileGraphNode.FileGraphNode.add_child"><code class="docutils literal notranslate"><span class="pre">FileGraphNode.add_child()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.graph.FileGraphNode.FileGraphNode.add_children"><code class="docutils literal notranslate"><span class="pre">FileGraphNode.add_children()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.graph.FileGraphNode.FileGraphNode.copy"><code class="docutils literal notranslate"><span class="pre">FileGraphNode.copy()</span></code></a></li>
-<li><a class="reference internal" href="#refyre.graph.FileGraphNode.FileGraphNode.is_root_dir"><code class="docutils literal notranslate"><span class="pre">FileGraphNode.is_root_dir()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-refyre.graph">Module contents</a></li>
+<li><a class="reference internal" href="#refyre-graph-filegraph-module">refyre.graph.FileGraph module</a></li>
+<li><a class="reference internal" href="#refyre-graph-filegraphnode-module">refyre.graph.FileGraphNode module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
