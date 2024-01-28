@@ -1,6 +1,7 @@
 name: Run refyre unit tests on dispatch
 on: [workflow_dispatch]
 
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
+jobs:
+  test:
+    using: 'docker'
+    image: 'Dockerfile'
