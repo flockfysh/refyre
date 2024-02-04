@@ -11,7 +11,18 @@ testa2
 atest
 new_dataset/*
 initial-data
+
+# Miscellaneous Files
 *.json
 __pycache__
+
+
+# Logging
 *.log
+
+
+# Environment Configurations
 .env
+
+# Tox Files
+.tox

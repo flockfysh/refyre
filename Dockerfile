@@ -19,14 +19,11 @@ ENV YOUR_ENV=${YOUR_ENV} \
   # Make sure to update it!
 
 # System deps:
-RUN pip install poetry
+RUN pip install tox
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /code
-COPY pyproject.toml /code/
 COPY . /code/ 
 
-# Project initialization:
-RUN poetry install $(test "$YOUR_ENV" == production && echo "--only=main") --no-interaction --no-ansi
-
-CMD ["pytest", "-v"]
+# Run our tox tests
+CMD ["tox"]
